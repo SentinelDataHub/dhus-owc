@@ -1,0 +1,32 @@
+{"sections":[
+{
+"title":"account",
+"icon":"perm-identity",
+"component":"login-container",
+"width":"250px",
+"remoteUrl":""
+,"maxInstances":"1"
+},
+{
+"title":"Search Results",
+"icon":"search",
+"component":"combo-search-container",
+"width":"1400px",
+"remoteUrl":""
+,"maxInstances":"2"
+},
+{
+"title":"Data Visualization Components",
+"icon":"assessment",
+"component":"dataviz-container",
+"width":"500px",
+"remoteUrl":""
+},
+{
+"title":"Settings",
+"icon":"settings",
+"component":"settings-panel",
+"width":"250px",
+"remoteUrl":""
+},
+]}
