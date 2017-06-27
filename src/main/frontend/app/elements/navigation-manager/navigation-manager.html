@@ -207,9 +207,9 @@ pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInsta
             }
 
             /**
-             * Push a polymer to navigation-component.
+             * Clean the stack of components
              *
-             * @param {?Polymer.Base} component The new polymer to show in the navigation.
+             * @param {Object} caller: what component is calling the clean method
              * @return {null}
              */
             _cleanStack(caller) {
@@ -320,6 +320,10 @@ pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInsta
             /**
              * Manager responsive layout
              *
+             * @param {Function} xsCallback: callback for XSmall screen size
+             * @param {Function} smCallback: callback for Small screen size
+             * @param {Function} mdCallback: callback for Medium screen size
+             * @param {Function} lgCallback: callback for Large screen size
              * @return {null}
              */
             responsiveLayout(xsCallback, smCallback, mdCallback, lgCallback) {
@@ -357,6 +361,7 @@ pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInsta
             /**
              * Remove a component from navigation manager by uuid.
              *
+             * @param {Function} xsCallback: callback for XSmall screen size
              * @return {null}
              */
             removePanel(uuid) {
@@ -509,10 +514,12 @@ pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInsta
             /**
              * Push a polymer to navigation-component.
              *
-             * @param {Polymer.Base} component The new polymer to show in the navigation.
-             * @param {Number} Width (pixel) of container panel.
-             * @param {Title} Title of panel.
-             * @param {Boolean} If true the close button of panel isn't shown
+             * @param {Polymer.Base} component: The new polymer to show in the navigation.
+             * @param {Number} panelWidth: (pixel) of container panel.
+             * @param {String} title:  Title of panel.
+             * @param {Boolean} hideCloseButton: If true the close button of panel isn't shown
+             * @param {Boolean} resizable: If the panel is resizable
+             * @param {Number} maxInstances: Max instances of panels pushed in the navigation system for this panel.
              * @return {null}
              */
             pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInstances) {

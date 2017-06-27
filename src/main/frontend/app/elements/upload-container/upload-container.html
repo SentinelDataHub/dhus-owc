@@ -210,12 +210,12 @@ This is the main component for DHuS administrator functionality related to Files
                     </div>
                 </template>
                 <div class="buttonContainer">
-                    <paper-button raised class="colorful left" on-click="refresh" title="{{i18n('refresh all')}}">{{i18n("refresh all")}}</paper-button>
+                    <paper-button raised class="colorful left" on-click="refresh" title="{{i18n('Refresh All')}}">{{i18n("Refresh All")}}</paper-button>
                     <template is="dom-if" if="{{enableAdd}}">
-                        <paper-button raised class="colorful right" on-click="addFileScanner" title="{{i18n('add')}}">{{i18n("add")}}</paper-button>
+                        <paper-button raised class="colorful right" on-click="addFileScanner" title="{{i18n('Add')}}">{{i18n("Add")}}</paper-button>
                     </template>
                     <template is="dom-if" if="{{!enableAdd}}">
-                        <paper-button raised class="colorful right" on-click="saveFileScanner" title="{{i18n('save')}}">{{i18n("save")}}</paper-button>
+                        <paper-button raised class="colorful right" on-click="saveFileScanner" title="{{i18n('Save')}}">{{i18n("Save")}}</paper-button>
                     </template>
                 </div>
                 <div class="fsContainer">
@@ -235,7 +235,7 @@ This is the main component for DHuS administrator functionality related to Files
                 <paper-input class="upload-file" label="" type="file" placeholder="{{i18n('no file choosen')}}" id="uploaded-file" value="{{uploadfile}}">
                 </paper-input>
                 <br>
-                <paper-button raised class="colorful right" on-click="upload" title="{{i18n('upload')}}">{{i18n("upload")}}</paper-button>
+                <paper-button raised class="colorful right" on-click="upload" title="{{i18n('Upload')}}">{{i18n("Upload")}}</paper-button>
             </div>
             <br>
         </div>

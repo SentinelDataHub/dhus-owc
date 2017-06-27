@@ -170,9 +170,9 @@
         </style>
         <div id="search-container">
             <paper-input label="search" id="search-box-input">
-                <paper-icon-button style="width: 33px;" suffix on-click="saveSearch" icon="save" alt="clear" title="clear"></paper-icon-button>
-                <paper-icon-button style="width: 33px;" suffix on-click="clearSearch" icon="clear" alt="clear" title="clear"></paper-icon-button>
-                <paper-icon-button style="width: 33px;" suffix on-click="search" icon="search" alt="clear" title="clear"></paper-icon-button>
+                <paper-icon-button style="width: 33px;" suffix on-click="saveSearch" icon="save" alt="clear" title="Save Search"></paper-icon-button>
+                <paper-icon-button style="width: 33px;" suffix on-click="clearSearch" icon="clear" alt="clear" title="Clear Search Filter"></paper-icon-button>
+                <paper-icon-button style="width: 33px;" suffix on-click="search" icon="search" alt="clear" title="Search"></paper-icon-button>
                 <!--  <paper-icon-button style="width: 33px;" suffix on-click="showPlugins" icon="extension" alt="show plugins" title="{{i18n('Show Plugins')}}"></paper-icon-button> -->
             </paper-input>
         </div>
@@ -206,11 +206,11 @@
                     </div>
                     <div style="float:left;padding-top: 13px; font-size: 13px;">{{sensingStartShort}}</div>
                     <div style="float:left">
-                        <paper-icon-button  raised icon="date-range" class="colorful date-icon" on-click="sensingStopDatePicker" title="{{i18n('Sensing Start')}}"></paper-icon-button>
+                        <paper-icon-button  raised icon="date-range" class="colorful date-icon" on-click="sensingStopDatePicker" title="{{i18n('Sensing Stop')}}"></paper-icon-button>
                     </div>
                     <div style="float:left;padding-top: 13px;font-size: 13px;">{{sensingStopShort}}</div>
                     <div style="float:left">
-                        <paper-icon-button raised icon="cancel" class="colorful date-icon" on-click="cleanSensingDate" title="{{i18n('Clean Sensing Date')}}"></paper-icon-button>
+                        <paper-icon-button raised icon="cancel" class="colorful date-icon" on-click="cleanSensingDate" title="{{i18n('Clear Sensing Date')}}"></paper-icon-button>
                     </div>
                
             </div>
@@ -223,11 +223,11 @@
                     </div>
                     <div style="float:left;padding-top: 13px;font-size: 13px;">{{ingestionStartShort}}</div>
                     <div style="float:left;">
-                        <paper-icon-button raised icon="date-range" class="colorful date-icon" on-click="ingestionStopDatePicker" title="{{i18n('Ingestion Start')}}"></paper-icon-button>
+                        <paper-icon-button raised icon="date-range" class="colorful date-icon" on-click="ingestionStopDatePicker" title="{{i18n('Ingestion Stop')}}"></paper-icon-button>
                     </div>
                     <div style="float:left;padding-top: 13px;font-size: 13px;">{{ingestionStopShort}}</div>
                     <div style="float:left">
-                        <paper-icon-button raised icon="cancel" class="colorful date-icon" on-click="cleanIngestionDate" title="{{i18n('Clean Sensing Date')}}"></paper-icon-button>
+                        <paper-icon-button raised icon="cancel" class="colorful date-icon" on-click="cleanIngestionDate" title="{{i18n('Clear Ingestion Date')}}"></paper-icon-button>
                     </div>
                 
             </div>

@@ -52,45 +52,45 @@ This component contains:
         .container {
             @apply(--layout-horizontal);
         }
-
+        
         .containerVertical {
             @apply(--layout-vertical);
             @apply(--layout-center-justified);
         }
-
+        
         .menu-container {
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
             margin-top: 0px;
         }
-
+        
         .disabled {
             color: gray !important;
         }
-
+        
         .main-logo {
             max-width: 75px;
             max-height: 75px;
         }
-
+        
         .main-logo:hover {
             background: var(--paper-light-blue-50);
             border-radius: 10%;
             cursor: pointer;
         }
-
+        
         paper-icon-button.menu-item {
             color: #002664;
             margin-left: 0px;
             width: 50px;
             height: 50px;
         }
-
+        
         paper-icon-button.menu-item:hover {
             background: var(--paper-light-blue-50);
             border-radius: 50%;
         }
-
+        
         #dynamic-menu-container {
             height: var(--menuheight, 500px);
             width: var(--menuwidth, 300px);
@@ -99,7 +99,7 @@ This component contains:
             width: 100%!important;
             /*height: 10px;*/
         }
-
+        
         #dynamic-menu-title {
             height: 70px!important;
             overflow-y: hidden !important;
@@ -107,17 +107,18 @@ This component contains:
             width: 100%!important;
             /*height: 10px;*/
         }
-
+        
         .oldgui_link {
             font-size: 12px;
             font-style: italic;
             cursor: pointer;
         }
-
+        
         a {
             color: #002664;
             text-decoration: none;
         }
+        
         a:visited {
             color: #002664;
             text-decoration: none;
@@ -139,7 +140,6 @@ This component contains:
                     </paper-icon-button>
                 </div>
                 <br>
-
             </template>
         </div>
     </template>
@@ -214,14 +214,6 @@ This component contains:
 
                 this.initMenuManager();
 
-                owcApp.messageBroker.subscribe('loaded-configurations', function(eventName, sections) {
-                    setTimeout(function() {
-                        self.loadMenuConfiguration();
-                    }, 0);
-                    self.sections = sections;
-
-                });
-
                 owcApp.messageBroker.subscribe('update-configurations', function(eventName, sections) {
                     self.sections = sections;
                     self._loadMenuItems();
@@ -236,6 +228,22 @@ This component contains:
                     self.oldgui_label = self.owcApp.appconfig.oldgui_label;
 
                 });
+
+                owcApp.messageBroker.subscribe('loaded-configurations', function(eventName, sections) {
+                    setTimeout(function() {
+                        self.loadMenuConfiguration();
+                    }, 0);
+                    self.sections = sections;
+
+                });
+
+                owcApp.messageBroker.subscribe('theme-loaded', function() {                    
+                    self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "./images/logo_esa.png";
+                    self.parentPanel.title = (self.owcApp.theme.title) ? self.owcApp.theme.title : "Copernicus Data Hub";
+                    self.resize();
+
+                });
+
                 Polymer.dom(self.root).querySelector('#dynamic-menu-container').addEventListener("resize", function() {});
                 window.addEventListener("resize", function() {
                     self.resize();
@@ -268,6 +276,11 @@ This component contains:
              */
             initMenuManager() {
                 var self = this;
+                if (self.owcApp.appconfig) {
+                    self.show_oldgui_link = self.owcApp.appconfig.show_oldgui_link;
+                    self.oldgui_link = self.owcApp.appconfig.oldgui_link;
+                    self.oldgui_label = self.owcApp.appconfig.oldgui_label;
+                }
                 self.dynamicMenuManager = new eu.serco.Owc.DynamicMenuManager();
                 this.loadMenuConfiguration();
 
@@ -281,8 +294,7 @@ This component contains:
                 var self = this;
                 for (var i = 0; i < self.sections.length; i++)
                     if ((self.sections[i].remoteUrl != '') || (self.sections[i].remoteUrl != null))
-                        self.importHref(self.sections[i].remoteUrl, function(e) {
-                        });
+                        self.importHref(self.sections[i].remoteUrl, function(e) {});
 
             }
 

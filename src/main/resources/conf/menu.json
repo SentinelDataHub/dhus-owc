@@ -16,7 +16,7 @@
 ,"maxInstances":"2"
 },
 {
-"title":"Data Visualization Components",
+"title":"Dashboard",
 "icon":"assessment",
 "component":"dataviz-container",
 "width":"500px",

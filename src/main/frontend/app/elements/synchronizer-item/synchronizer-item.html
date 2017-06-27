@@ -302,9 +302,10 @@ synchronizer item
              * @return {null}
              */
             stopSynch() {
-                var self = this;
-                var newSynch = document.createElement('synchronizer-editor');
-                var modelStart = {
+              
+              var self = this;
+              var synchEditor = document.createElement('synchronizer-editor');
+              var modelStart = {
                     Label: self.model.Label,
                     ServiceUrl: self.model.ServiceUrl,
                     ServiceLogin: self.model.ServiceLogin,
@@ -312,8 +313,9 @@ synchronizer item
                     Schedule: self.model.Schedule,
                     RemoteIncoming: self.model.RemoteIncoming,
                     Request: "stop"
-                }
-                newSynch.updateSynchronizer(self.model.Id, self.model);
+              };
+              synchEditor.stop(self.model.Id,modelStart);
+              //synchEditor.updateSynchronizer(self.model.Id, self.model);
             }
 
 

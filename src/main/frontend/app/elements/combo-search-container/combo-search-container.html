@@ -125,14 +125,14 @@
         <owc-query id="owc-query"></owc-query>
         <generic-model id="generic-model"></generic-model>
         <div class="container">
-            <paper-icon-button id="showSearch" class="iconButton" icon="search" on-click="showSearch" hidden></paper-icon-button>
+            <paper-icon-button id="showSearch" class="iconButton" icon="search" on-click="showSearch" hidden title="Expand"></paper-icon-button>
             <iron-collapse id="searchContainer" class="flexchild" horizontal="true" opened="true">
-                <paper-icon-button id="hideSearch" class="iconButton" icon="first-page" on-click="toggleSearch"></paper-icon-button>
+                <paper-icon-button id="hideSearch" class="iconButton" icon="first-page" on-click="toggleSearch" title="Collapse"></paper-icon-button>
                 <search-component id="search-component"></search-component>
             </iron-collapse>
-            <paper-icon-button id="showList" class="iconButton" icon="view-list" on-click="showList" hidden></paper-icon-button>
+            <paper-icon-button id="showList" class="iconButton" icon="view-list" on-click="showList" hidden title="Expand"></paper-icon-button>
             <iron-collapse id="listContainer" class="flex2child" horizontal="true" opened="true">
-                <paper-icon-button id="hideList" class="iconButton" icon="first-page" on-click="toggleList"></paper-icon-button>
+                <paper-icon-button id="hideList" class="iconButton" icon="first-page" on-click="toggleList" title="Collapse"></paper-icon-button>
                 <div class="listHeader">
                     <div id="queryDone">
                         <textarea class="child" id="query" disabled>{{query}}</textarea>
@@ -150,10 +150,10 @@
             </iron-collapse>
             <anchor-component id="anchor"></anchor-component>
             <div>
-                <paper-icon-button id="showMap" class="iconButton" icon="language" on-click="showMap" hidden></paper-icon-button>
+                <paper-icon-button id="showMap" class="iconButton" icon="language" on-click="showMap" hidden title="Expand"></paper-icon-button>
             </div>
             <iron-collapse id="mapContainer" class="flex3child" opened="true">
-                <paper-icon-button id="hideMap" class="iconButton" icon="first-page" on-click="toggleMap"></paper-icon-button>
+                <paper-icon-button id="hideMap" class="iconButton" icon="first-page" on-click="toggleMap" title="Collapse"></paper-icon-button>
                 <owc-map id="owc-map"></owc-map>
                 <map-coder id="map-coder"></map-coder>
             </iron-collapse>

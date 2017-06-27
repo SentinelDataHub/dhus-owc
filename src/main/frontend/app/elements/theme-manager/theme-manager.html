@@ -116,6 +116,7 @@ This component is devoted to manage main theme for OWC application
                             navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
                                 self.owcApp.theme.bgimageurl + "\")";
                             navigationMaanger.updateStyles();
+                            self.owcApp.messageBroker.publish('theme-loaded');
                         }, 0);
                     });
                 } else {
@@ -126,6 +127,7 @@ This component is devoted to manage main theme for OWC application
                     navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
                         self.owcApp.theme.bgimageurl + "\")";
                     navigationMaanger.updateStyles();
+                    self.owcApp.messageBroker.publish('theme-loaded');
                 }
 
                 self.owcApp.messageBroker.subscribe('update-theme', function(model) {

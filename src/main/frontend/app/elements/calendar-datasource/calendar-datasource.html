@@ -26,10 +26,80 @@
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <!--
-This component is devoted to handle Calendar Datasource
+<i>calendar-datasource</i> component is devoted to perform HTTP search request towards server, making data available for a calendar graphical components used to show products publication density per day in the last 13 weeks.
 
+<img src="https://user-images.githubusercontent.com/10920750/27025688-aaa9abf8-4f5b-11e7-96e3-ea0f758ffe88.png" align="middle"></img>
 
-@demo demo/index.html
+In the context of <b>OWC</b> software, this component is used together with:
+<ul>
+<li><i>owc-calendar</i> component, which is used to draw the calendar of publication density, after creating the <i>calendar-datasource</i>, the <i>calendar-semantic-manager</i> and the <i>calendar-coder</i> components, by means of the following instructions:
+<pre>
+    var datasource = document.createElement('calendar-datasource');
+    var coder = document.createElement('calendar-coder');
+    var semanticManager = document.createElement('calendar-semantic-manager');
+</pre>
+</li>
+<li><i>calendar-semantic-manager</i> component, which is in charge of generating a generic model extracting the data from HTTP search request and applying a mapping between data and a set of pre-defined rules;</li>
+<li><i>calendar-coder</i> component, which is in charge of getting fields useful for component representation from the data model resulting from <i>calendar-semantic-manager</i> component.</li>
+</ul>
+
+HTTP requests performed by this component are based on Solr OpenSearch API. 
+In order to get information needed to draw the calendar of the publication density per day in the last 13 weeks, the component performes 91 HTTP requests based on product sensing start (beginposition Solr index).
+More in detail, the HTTP request gets how many products are sensed between the midnight of a day and the midnight of the nex day.
+An example of the request is reported below.
+<pre>
+    /search?q=beginposition:[2017-03-15T00:00:00.000Z TO 2017-03-16T00:00:00.000Z]&format=JSON&rows=0&group=true
+</pre> 
+
+The information related to the number of products sensed in a date is extracted from the JSON object returned by the HTTP request, which is 
+<pre>
+response.feed['opensearch:totalResults']
+</pre>
+An example of HTTP response is reported below.
+<pre>
+{
+    "feed": {
+        "xmlns:opensearch": "http://a9.com/-/spec/opensearch/1.1/",
+        "xmlns": "http://www.w3.org/2005/Atom",
+        "title": "Data Hub Service search results for: beginposition:[2017-05-15T00:00:00.000Z TO 2017-05-16T00:00:00.000Z]",
+        "subtitle": "Displaying 0 to -1 of 1669 total results. Request done in 0 seconds.",
+        "updated": "2017-06-11T21:30:53.736Z",
+        "author": {
+            "name": "Data Hub Service"
+        },
+        "id": "https://scihub.copernicus.eu/demohub/search?q=beginposition:[2017-05-15T00:00:00.000Z TO 2017-05-16T00:00:00.000Z]",
+        "opensearch:totalResults": "1669",
+        "opensearch:startIndex": "0",
+        "opensearch:itemsPerPage": "0",
+        "opensearch:Query": {
+            "role": "request",
+            "searchTerms": "beginposition:[2017-05-15T00:00:00.000Z TO 2017-05-16T00:00:00.000Z]",
+            "startPage": "1"
+        },
+        "link": [{
+            "rel": "self",
+            "type": "application/atom+xml",
+            "href": "https://scihub.copernicus.eu/demohub/search?q=beginposition:[2017-05-15T00:00:00.000Z TO 2017-05-16T00:00:00.000Z]&start=0&rows=0"
+        }, {
+            "rel": "first",
+            "type": "application/atom+xml",
+            "href": "https://scihub.copernicus.eu/demohub/search?q=beginposition:[2017-05-15T00:00:00.000Z TO 2017-05-16T00:00:00.000Z]&start=0&rows=0"
+        }, {
+            "rel": "next",
+            "type": "application/atom+xml",
+            "href": "https://scihub.copernicus.eu/demohub/search?q=beginposition:[2017-05-15T00:00:00.000Z TO 2017-05-16T00:00:00.000Z]&start=NaN&rows=0"
+        }, {
+            "rel": "last",
+            "type": "application/atom+xml",
+            "href": "https://scihub.copernicus.eu/demohub/search?q=beginposition:[2017-05-15T00:00:00.000Z TO 2017-05-16T00:00:00.000Z]&start=1668&rows=0"
+        }, {
+            "rel": "search",
+            "type": "application/opensearchdescription+xml",
+            "href": "opensearch_description.xml"
+        }]
+    }
+}
+</pre>
 -->
 <dom-module id="calendar-datasource">
     <script>
@@ -53,8 +123,7 @@ This component is devoted to handle Calendar Datasource
              * BeforeRegister method Polymer calls before creating the element.
              * This method is where you shoud define the is property (element's name) and
              * properties  object.
-             *
-             * @return {null}
+             *             
              */
 
             beforeRegister() {
@@ -106,40 +175,59 @@ This component is devoted to handle Calendar Datasource
 
 
             /**
-             * This method sets the calendar reference
-             * @param {Object} calendar
-             *
-             * @return {null}
+             * This method is used to set the component (e.g. <i>owc-calendar</i>) devoted to 
+             * show HTTP request data in a calendar of publication density
+             * @param {Object} calendar: object containing reference to calendar component. 
+             * This object can be obtained using properPolymer selection component method, like
+             *   <pre>
+             *   var calendar  = Polymer.dom(this.root).querySelector('#my-calendar');
+             *   </pre>
+             *            
              */
             setCalendar(calendar) {
                 this._calendar = calendar;
             }
 
             /**
-             * This method sets the calendar coder reference
-             * @param {Object} calendarCoder
-             *
-             * @return {null}
+             * This method is used to set the component (e.g. <i>calendar-coder</i>) which is 
+             * in charge of getting fields useful for component representation from the 
+             * server data model
+             * @param {Object} coder: object containing reference to calendar-coder component. 
+             * This object can be obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var coder  = Polymer.dom(this.root).querySelector('#my-coder');
+             *   </pre>
+             *            
              */
             setCoder(coder) {
                 this._coder = coder;
             }
 
             /**
-             * This method sets the calendar semantic manager reference
-             * @param {Object} calendartSemanticManager
-             *
-             * @return {null}
+             * This method is used to set the <i>calendar-semantic-manager</i> component, which is
+             * in charge of generating a model from server data model useful for calendar 
+             * representation
+             * @param {Object} semanticManager: object containing reference to 
+             * <i>calendar-semantic-manager</i> component. This object can be obtained using 
+             * proper Polymer selection component method, like
+             *   <pre>
+             *   var semanticmng = Polymer.dom(this.root).querySelector('#my-cal-semantic-mng');
+             *   </pre>
+             *            
              */
             setSemanticManager(semanticManager) {
                 this._semanticManager = semanticManager;
             }
 
             /**
-             * This method sets the calendar container as delegate container
-             * @param {Object} delegate
-             *
-             * @return {null}
+             * This method is used to set the calendar container component 
+             * @param {Object} container: object containing reference to calendar container
+             * component. This object can be obtained using proper Polymer selection component 
+             * method, like
+             *   <pre>
+             *   var container  = Polymer.dom(this.root).querySelector('#my-cal-container');
+             *   </pre>
+             *            
              */
             setContainer(container) {
                 this.delegateContainer = container;
@@ -182,8 +270,10 @@ This component is devoted to handle Calendar Datasource
             }
 
             /**
-             * This method generates url for http request
+             * This method generates url for http ODATA request used to get the list of products 
+             * sensed in the last quarted
              *
+             * @private
              * @param {String} skip: start index
              * @param {String} top : end index
              * @param {String} filter: search filters
@@ -202,8 +292,10 @@ This component is devoted to handle Calendar Datasource
             }
 
             /**
-             * This method generates url for count request
+             * This method generates url for http ODATA count request used to get the list of 
+             * products sensed in the last quarted
              *
+             * @private
              * @param {String} filter
              *
              * @return {String} searchUrl
@@ -220,6 +312,7 @@ This component is devoted to handle Calendar Datasource
             /**
              * This method generates url for count request between two dates
              *
+             * @private
              * @param {Integer} day1
              * @param {Integer} day2
              *
@@ -234,6 +327,18 @@ This component is devoted to handle Calendar Datasource
                 return searchUrl;
             }
 
+            /**
+             * This method is used to get date information from JSON object resulting from
+             * an OData request used to get the list of news
+             * This OData API is not available in the current distribution, so this method
+             * is used only in demo instances
+             *
+             * @private
+             * @param {Integer} day1
+             * @param {Integer} day2
+             *
+             * @return {String} searchUrl
+             */
             _extractDateFromJson(date) {
                 var dateString = null;
                 if (date) {
@@ -245,8 +350,9 @@ This component is devoted to handle Calendar Datasource
 
 
             /**
-             * This method calculates minutes between two dates
+             * This method computes minutes between two dates
              *
+             * @private
              * @param {String} lastupdate
              *
              * @return {Integer}
@@ -259,10 +365,14 @@ This component is devoted to handle Calendar Datasource
 
 
             /**
-             * This method performs http requests used to retrieve products density in the last quarter.
-             * A request per day is performed
+             * This method performs http requests used to retrieve products density in the 
+             * last quarter.
+             * This method performes 91 HTTP requests based on product sensing start 
+             * (beginposition Solr index), storing the result in an array containing the number
+             * of product sensed in the last 13 weeks.
              *
-             * @return {null}
+             * @return {Array} products: array containing the number of product sensed in the 
+             * last 13 weeks.
              */
             getCalendar() {
                 this.genericModel = [];
@@ -308,9 +418,14 @@ This component is devoted to handle Calendar Datasource
             }
 
             /**
-             * This method performs a real http request
-             *
-             * @return {null}
+             * This method performs an ODATA request used to retrieve products density in the 
+             * last quarter.
+             * This method is deprecated, since OData requests with filter have bad performances.
+             * 
+             * @private
+             * @deprecated
+             * @return {Array} products: array containing the number of product sensed in the 
+             * last 13 weeks.
              */
             request() {
 
@@ -334,9 +449,13 @@ This component is devoted to handle Calendar Datasource
             }
 
             /**
-             * This method performs a real http count request
-             *
-             * @return {null}
+             * This method performs an ODATA request used to retrieve products count in the 
+             * last quarter.
+             * This method is deprecated, since OData requests with filter have bad performances.
+             * 
+             * @private
+             * @deprecated
+             * @return {Number} count: number of products in the last 13 weeks.
              */
             requestCount() {
 
@@ -361,6 +480,9 @@ This component is devoted to handle Calendar Datasource
             /**
              * This method is used to extract events list model from server data model
              *
+             * This OData API is not available in the current distribution, so this method
+             * is used only in demo instances
+             * @private
              * @return {Object}: List of JSON objects representing DHuS events
              */
             getEventsListModel(data) {
@@ -393,9 +515,13 @@ This component is devoted to handle Calendar Datasource
             }
 
             /**
-             * This method is used to get the list of last 13 weeks events from server via OData API
+             * This method is used to get the list of last 13 weeks events from server via 
+             * OData API
              *
-             * @return {Object}: List of JSON objects representing DHuS events
+             * This OData API is not available in the current distribution, so this method
+             * is used only in demo instances
+             * @private
+             * @return {Object}: List of JSON objects representing DHuS events (news)
              */
             getEvents() {
 
@@ -425,9 +551,15 @@ This component is devoted to handle Calendar Datasource
             }
 
             /*
-             * This method is used to get data model for calendar
+             * This method gets data model for calendar representation, using the methods 
+             * <i>request()</i> and <i>requestCount()</i>, which are based on HTTP OData requests 
+             * with filter.
              * @param {String} filter: search filters
              *
+             * This method is deprecated, since OData requests with filter have bad performances.
+             * 
+             * @private
+             * @deprecated
              * @return {null}
              */
             loadDataFromServer(filter) {
@@ -449,7 +581,6 @@ This component is devoted to handle Calendar Datasource
                                 products = response;
 
                                 self.getEvents().then(function(result) {
-                                    console.log("here2");
                                     events = result;
                                     model.products = products;
                                     model.events = events;
@@ -462,7 +593,6 @@ This component is devoted to handle Calendar Datasource
                                             self.owcApp.toastManager.info(self.i18n("completed_new_search_message"));
                                         });
                                 }, function(){
-                                  console.log("there2");
                                   model.products = products;
                                   model.events = [];
                                   self._semanticManager.processModel(model)
@@ -483,7 +613,8 @@ This component is devoted to handle Calendar Datasource
             }
 
             /*
-             * This method is used by list datasource to retrieve calendar model
+             * This method is used to get datasource model
+             * @private
              * @return{Object} calendar model
              */
             getModel() {

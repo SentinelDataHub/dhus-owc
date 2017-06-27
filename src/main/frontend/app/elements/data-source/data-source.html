@@ -26,11 +26,17 @@
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <!--
-    This component retrieves and manages data
+<i>data-source</i> component is devoted to perform HTTP search request towards server, making data available for the graphical components which are used for data representation
 
-
-    @demo demo/index.html
-    -->
+In the context of <b>OWC</b> software, this component is used together with:
+<ul>
+<li><i>semantic-manager</i> component, which is in charge of generating a generic model extracting the data from HTTP search request and applying a mapping between data and extraction rules defined in its proper schema;</li>
+<li><i>generic-model</i> component, which contains the result of data processing performed by the <i>semantic-manager</i> component on the data provided by the <i>data-source</i> component;</li>
+<li><i>coder</i> component, which is in charge of getting fields useful for component representation from the <i>generic-model</i> component, implementing the data-binding between the Model and the View;</li>
+<li><i>owc-query</i> component, which is used to set filter in HTTP requests.</li>
+</ul>
+   
+-->
 <dom-module id="data-source">
     <script>
     (function() {
@@ -41,9 +47,7 @@
             /**
              * BeforeRegister method Polymer calls before creating the element.
              * This method is where you shoud define the is property (element's name) and
-             * properties  object.
-             *
-             * @return {null}
+             * properties  object.            
              */
             beforeRegister() {
                 this.is = 'data-source';
@@ -153,40 +157,53 @@
 
 
             /**
-             * This method sets the list reference
-             * @param {Object} list: the list reference
-             *
-             * @return {null}
+             * This method is used to set the component (e.g. <i>owc-list</i>) devoted to show HTTP request data in a list
+             * @param {Object} list: object containing reference to list component. This object can be obtained using proper 
+             * Polymer selection component method, like
+             *   <pre>
+             *   var list  = Polymer.dom(this.root).querySelector('#my-list');
+             *   </pre>
+             *            
              */
             setList(list) {
                 this._list = list;
             }
 
             /**
-             * This method sets the list coder reference
-             * @param {Object} listCoder: the list coder reference
-             *
-             * @return {null}
+             * This method is used to set the component (e.g. <i>list-coder</i>) which is in charge of getting fields useful
+             * for component representation from the <i>generic-model</i> component
+             * @param {Object} listCoder: object containing reference to list-coder component. This object can be obtained using  
+             * proper Polymer selection component method, like
+             *   <pre>
+             *   var coder  = Polymer.dom(this.root).querySelector('#my-coder');
+             *   </pre>
+             *            
              */
             setListCoder(listCoder) {
                 this._listCoder = listCoder;
             }
 
             /**
-             * This method sets the list container reference
-             * @param {Object} listCoder: the list container reference
-             *
-             * @return {null}
+             * This method is used to set the list container component 
+             * @param {Object} listContainer: object containing reference to list container component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var container  = Polymer.dom(this.root).querySelector('#my-container');
+             *   </pre>
+             *            
              */
             setListContainer(listContainer) {
                 this._listContainer = listContainer;
             }
 
             /**
-             * This method sets the search Component reference
-             * @param {Object} searchComponent: the search Component reference
-             *
-             * @return {null}
+             * This method is used to set the component used to trigger an HTTP search request
+             * @param {Object} searchComponent: object containing reference to search component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var search  = Polymer.dom(this.root).querySelector('#my-search');
+             *   </pre>
+             *            
              */
             setSearchComponent(searchComponent) {
                 this._searchComponent = searchComponent;
@@ -194,38 +211,59 @@
 
 
             /**
-             * This method sets the list semantic manager reference
-             * @param {Object} listSemanticManager: the list semantic manager reference
-             *
-             * @return {null}
+             * This method is used to set the <i>semantic-manager</i> component, which is in charge of generating a generic model 
+             * from server data model
+             * @param {Object} listSemanticManager: object containing reference to <i>semantic-manager</i> component. This object 
+             * can be obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var semantic_manager  = Polymer.dom(this.root).querySelector('#my-semantic-manager');
+             *   </pre>
+             *            
              */
             setListSemanticManager(listSemanticManager) {
                 this._listSemanticManager = listSemanticManager;
             }
 
             /**
-             * This method sets the list owcquery reference
-             * @param {Object} owcquery: the owcquery reference
-             *
-             * @return {null}
+             * This method is used to set <i>owc-query</i> component, which is used to set filter in HTTP requests
+             * @param {Object} owcquery: object containing reference to <i>owc-query</i> component. This object 
+             * can be obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var query  = Polymer.dom(this.root).querySelector('#my-query');
+             *   </pre>
+             *            
              */
             setOwcQuery(owcquery) {
                 this._owcquery = owcquery;
             }
 
             /**
-             * This method sets the genericModel reference
-             * @param {Object} genericModel: the genericModel reference
-             *
-             * @return {null}
+             * This method is used to set <i>generic-model</i> component, which contains the result of data processing performed
+             * by the <i>semantic-manager</i> component on the data provided by the <i>data-source</i> component
+             * @param {Object} genericModel: object containing reference to <i>generic-model</i> component. This object 
+             * can be obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var model  = Polymer.dom(this.root).querySelector('#my-model');
+             *   </pre>
+             *            
              */
             setGenericModel(genericModel) {
                 this._genericModel = genericModel;
             }
 
             /**
-             * This method sets the combo search container reference
-             * @param {Object} combo: the combo search container reference
+             * This method is used to set a <i>Combo</i> component, i.e. a composite component typically formed by
+             * <ul>
+             * <li>a search component, used to trigger HTTP search request towards server</li>
+             * <li>a list component, used to display search results</li>
+             * <li>a map, used to show product footprint (if needed)</li>
+             * </ul>
+             * @param {Object} combo: object containing reference to combo component. This object 
+             * can be obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var model  = Polymer.dom(this.root).querySelector('#my-model');
+             *   </pre>
+             *           
              *
              * @return {null}
              */
@@ -234,13 +272,13 @@
             }
 
             /**
-             * This method generates url for http request
+             * This method generates url for search http request
              *
              * @param {String} filter: query filters
              * @param {String} offset: start index
              * @param {String} limit: number of products per page
-             * @param {String} sortedby: sorting parameter
-             * @param {String} order: order parameter
+             * @param {String} sortedby: sorting parameter (ingestiondate|beginposition|cloudcoverpercentage)
+             * @param {String} order: order parameter (asc|desc)
              * @return {String} searchUrl
              */
             _generateSearchRequest(filter, offset, limit, sortedby, order) {
@@ -254,11 +292,12 @@
             }
 
             /**
-             * This method generates url for count request
+             * This method generates the HTTP URL for search count request, which gets the number of data fulfilling the 
+             * applied search filter 
              *
-             * @param {String} filter: query filters
-             *
-             * @return {String} searchUrl
+             * @private
+             * @param {String} filter: request search filters
+             * @return {String} searchUrl: HTTP request URL for search count request
              */
             _generateCountRequest(filter) {
                 var searchUrl = this._countUrl;
@@ -267,9 +306,19 @@
             }
 
             /**
-             * This method performs a real http request
+             * This method performs the http request used to retrieve data from the Server, according to the following component 
+             * parameters:
              *
-             * @return {Object} genericModel: data model from server
+             * <ul>
+             * <li>_owcquery, i.e. the query filters</li>
+             * <li>_currentPage, i.e. the start index for the request</li>
+             * <li>_pageSize, i.e. the maximum number of data to be retrieved within the request</li>
+             * </ul>
+             * This method applies data processing implemented by <i>semantic-manager</i> component to the data model 
+             * resulting from HTTP serach request
+             *
+             * @return {Object} genericModel: generic model genarated by the data processing performed by the 
+             * <i>semantic-manager</i> component
              */
             request() {
                 var self = this,
@@ -308,10 +357,19 @@
             }
 
             /**
-             * This method performs the subsequent http requests
-             * @param {String} offset: start index
-             * @param {String} limit: number of products per page
-             * @return {Object} genericModel: data model from server
+             * This method is used by <i>loadPreviousPage()</i> and <i>loadPreviousPage()</i> methods and performs the same http 
+             * request performed by <i>request()</i> method, except for the following component parameters:
+             * 
+             * <ul>             
+             * <li>_currentPage, i.e. the start index for the request</li>
+             * <li>_pageSize, i.e. the maximum number of data to be retrieved within the request</li>
+             * </ul>
+             *
+             * @private
+             * @param {String} offset: start index for the request
+             * @param {String} limit: the maximum number of data to be retrieved within the request
+             * @return {Object} genericModel: generic model genarated by the data processing performed by the 
+             * <i>semantic-manager</i> component
              */
             newRequest(offset, limit) {
                 var self = this,
@@ -341,9 +399,10 @@
             }
 
             /**
-             * This method performs a real http request to get products number
-             *
-             * @return {Number}
+             * This method performs the http request used to retrieve the number of data fulfilling the applied search filter, 
+             * according to the _owcquery component parameter.             
+             *            
+             * @return {Number} count: number of data fulfilling the applied search filter
              */
             requestCount() {
                 var self = this,
@@ -362,9 +421,15 @@
             }
 
             /**
-             * This method is the public interface to get the model from server
+             * This method is used to trigger HTTP search request useful for data retrieval from server.
+             * The following methods are called within this function:
              *
-             * @return {null}
+             * <ul>             
+             * <li><i>requestCount()</i>, which performs the http request used to retrieve the number of data fulfilling the 
+             * applied search filter</li>
+             * <li><i>request()</i>, which performs the http request used to retrieve data from the Server, according to the
+             * proper search filters</li>
+             * </ul>             
              */
             loadDataFromServer() {
                 var self = this;
@@ -404,9 +469,16 @@
             }
 
             /**
-             * This method manages the filters to be included in the request
-             * @param {String} query: the current query
-             * @return {String} searchFilter
+             * This method is used to format properly the HTTP request filters contained in the <i>owc-query</i> component, i.e.
+             *
+             * <ul>
+             * <li>text filter, which is set by means of text or combo fields;</li>
+             * <li>geographical filter (useful for opensearch queries), which is set by means of area selection on maps;</li>
+             * <li>advanced filters, which can be set by means of text and/or combo and/or checkbox fields.</li>
+             * </ul> 
+             *
+             * @param {String} query: <i>owc-query</i> component containing search filters
+             * @return {String} searchFilter: filter to be passed to the HTTP search request as query string parameter 
              */
             createSearchFilter(query) {
                 var searchFilter = '';
@@ -421,9 +493,8 @@
             }
 
             /**
-             * This method updates the current query
-             *
-             * @return {null}
+             * This method is used to update the <i>owc-query</i> component used within <i>loadDataFromServer()</i> method
+             *             
              */
             updateQuery() {
                 this._currentQuery = this._owcquery;
@@ -431,18 +502,19 @@
             }
 
             /**
-             * This method return the current query
+             * This method gets the <i>owc-query</i> component used within <i>loadDataFromServer()</i> method
              *
-             * @return {Object} current query
+             * @return {Object} _currentQuery: <i>owc-query</i> component
              */
             getQuery() {
                 return this._currentQuery;
             }
 
             /**
-             * This method loads the the previous page of results for pagination optimization
-             *
-             * @return {null}
+             * This method is used to perform the same http request performed by <i>request()</i> method, except for the 
+             * _currentPage component parameter, which is descreased in order to get the previous _pageSize (i.e. the maximum 
+             * number of data to be retrieved) data elements of the search request (if available) 
+             *             
              */
             loadPreviousPage() {
                 if (this._isPreviousPageLoadEnabled) {
@@ -480,9 +552,10 @@
             }
 
             /**
-             * This method loads the next page of results for pagination optimization
-             *
-             * @return {null}
+             * This method is used to perform the same http request performed by <i>request()</i> method, except for the 
+             * _currentPage component parameter, which is increased in order to get the next _pageSize (i.e. the maximum 
+             * number of data to be retrieved) data elements of the search request (if available) 
+             *             
              */
             loadNextPage() {
                 if (this._isNextPageLoadEnabled) {

@@ -80,7 +80,7 @@ This component is the coder for users cart
              */
             _getIsOnline(id) {
                 var self = this;
-                var url = this.owcApp.appconfig.odataContentLengthUrl;
+                var url = (this.owcApp.appconfig.odataContentLengthUrl) ? this.owcApp.appconfig.odataContentLengthUrl : "/odata/v1/Products(%27:uuid%27)/ContentLength/$value";
                 return this.owcApp.httpManager.sendRequest(
                     'GET',
                     self.owcApp.config.baseUrl + url.replace(':uuid', id)

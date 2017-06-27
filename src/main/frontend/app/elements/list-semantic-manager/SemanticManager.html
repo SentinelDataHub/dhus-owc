@@ -23,6 +23,20 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
+<!--
+<b>Open Web Components (OWC)</b> software is composed by a generic set of components used for disseminating data regardless of their types.
+<br>
+Since DHuS products have a specific class type, for each class type a set of <b>OWC</b> components (e.g. owc-list, owc-map) need to extract a specific set of attributes from the server model (e.g. <i>sensing date</i> for owc-list, <i>footprint</i> for owc-map). 
+<br>This means that  OWC software needs to  know the semantic of the server model, i.e. where the information is located within server data model. 
+<br>To avoid hardcoded semantic in components code, <b>OWC</b> uses a generic model containing proper attributes for each different data item, exploiting a Semantic Schema retrieved from Server and containing the list of needed attributes and the syntax useful to extract them from server data model
+<br>
+<br>
+The <i>Semantic Manager</i> generates the generic model extracting the data from the Search Request Model and applying the mapping defined in the Semantic Schema, as described in the figure below
+
+
+<img src="https://user-images.githubusercontent.com/10920750/26940211-23f59088-4c7a-11e7-9eee-ea8b32e05c87.png"></img>
+-->
+
 <script>
 (function() {
     'use strict';
@@ -54,8 +68,7 @@
          * BeforeRegister method Polymer calls before creating the element.
          * This method is where you shoud define the is property (element's name) and
          * properties  object.
-         *
-         * @return {null}
+         *         
          */
         beforeRegister() {
             this.is = "semantic-manager";

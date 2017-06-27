@@ -26,10 +26,19 @@
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <!--
-semantic manager
+<b>Open Web Components (OWC)</b> software is composed by a generic set of components used for disseminating data regardless of their types.
+<br>
+Since DHuS products have a specific class type, for each class type a set of <b>OWC</b> components (e.g. owc-list, owc-map) need to extract a specific set of attributes from the server model (e.g. <i>sensing date</i> for owc-list, <i>footprint</i> for owc-map). 
+<br>This means that  OWC software needs to  know the semantic of the server model, i.e. where the information is located within server data model. 
+<br>To avoid hardcoded semantic in components code, <b>OWC</b> uses a generic model containing proper attributes for each different data item, exploiting a Semantic Schema retrieved from Server and containing the list of needed attributes and the syntax useful to extract them from server data model
+<br>
+<br>
+The <i>Semantic Manager</i> generates the generic model extracting the data from the Search Request Model and applying the mapping defined in the Semantic Schema, as described in the figure below
 
 
-@demo demo/index.html
+<img src="https://user-images.githubusercontent.com/10920750/26940211-23f59088-4c7a-11e7-9eee-ea8b32e05c87.png"></img>
+
+
 -->
 <dom-module id="semantic-manager">
     <template>
@@ -44,8 +53,7 @@ semantic manager
              * BeforeRegister method Polymer calls before creating the element.
              * This method is where you shoud define the is property (element's name) and
              * properties  object.
-             *
-             * @return {null}
+             *            
              */
             beforeRegister() {
                 this.is = 'semantic-manager';
@@ -55,10 +63,11 @@ semantic manager
             }
 
             /**
-             *  Public method of semantic manager to process model from server
-             * 
-             * @param {Object} modelFromServer: the response from server 
-             * @return {Promise}
+             *  This public method is used to process request data model retrieved from server 
+             *  on the basis of the information contained in the semantic schema
+             *              
+             * @param {Object} modelFromServer: the content of HTTP response coming from server 
+             * @return {Promise}: Promise object containing the result of data processing, i.e. the generic model 
              */
             processModel(modelFromServer) {
 
@@ -69,10 +78,12 @@ semantic manager
             }
 
             /**
-             *  Private method of semantic manager to process model from server
-             * 
-             * @param {Object} modelFromServer: the response from server 
-             * @return {Promise}
+             *  This private method is used to create a generic model applying the mapping 
+             *  defined in the Semantic Schema to the  data model retrieved from server 
+             *
+             * @private
+             * @param {Object} modelFromServer: the content of HTTP response coming from server 
+             * @return {Array}: the generic model used as basis for data representation
              */
             _processModel(modelFromServer) {
 
@@ -99,10 +110,10 @@ semantic manager
             }
 
             /**
-             * Semantic (hard coded) quicklook
+             * This method is used to create the OData request useful to retrieve product quicklook
              * 
-             * @param {Object} product 
-             * @return {null}
+             * @param {Object} product: a single data item of HTTP search request data model 
+             * @return {String}: OData request useful to retrieve product quicklook
              */
             getQuicklook(product) {
                 var IMAGE_PLACE_HOLDER_URL = this.owcApp.config.clientUrl + '/images/placeholder.png';
@@ -111,10 +122,10 @@ semantic manager
             }
 
             /**
-             * Semantic (hard coded) instrument
+             * This method is used to get Instrument information from  HTTP search request data model
              * 
-             * @param {Object} product 
-             * @return {null}
+             * @param {Object} product: a single data item of HTTP search request data model 
+             * @return {String}: product instrument, if any available
              */
             getInstrument(product) {
 
@@ -122,10 +133,10 @@ semantic manager
             }
 
             /**
-             * Semantic ingestion date
+             * This method is used to get Ingestion Date information from  HTTP search request data model
              * 
-             * @param {Object} product 
-             * @return {null}
+             * @param {Object} product: a single data item of HTTP search request data model 
+             * @return {String}: product ingestion date
              */
             getIngestionDate(product) {
                 var summary = _.findWhere(product.indexes, {
@@ -137,10 +148,10 @@ semantic manager
             }
 
             /**
-             * Semantic file size
+             * This method is used to get product size information from  HTTP search request data model
              * 
-             * @param {Object} product 
-             * @return {null}
+             * @param {Object} product: a single data item of HTTP search request data model 
+             * @return {String}: product size
              */
             getFileSize(product) {
                     var summary = _.findWhere(product.indexes, {

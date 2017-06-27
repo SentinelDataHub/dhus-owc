@@ -29,11 +29,19 @@
 <link rel="import" href="../adf-list-item/adf-list-item.html">
 <link rel="import" href="../button-list-item/button-list-item.html">
 <!--
-  Owc list
+<i>owc-list</i> component is based on Polymer <i>iron-list</i> component and it is used to display a virtual, <i>infinite</i> list. 
 
+The template inside the iron-list element represents the DOM to create for each list item.
+The <b><i>items</i></b> property specifies an array of list item data. The alias used within <i>iron-list</i> component is used as data model for <i>button-list-item</i> component, which represents a single list item.
 
-  @demo demo/index.html
-  -->
+This component, at present, is used to show:
+
+<ul>
+<li>list of products</li>
+<li>list of users registered on the DHuS system</li>
+</ul> 
+
+-->
 <dom-module id="owc-list">
     <template>
         <style is="custom-style">
@@ -122,8 +130,7 @@
              * BeforeRegister method Polymer calls before creating the element.
              * This method is where you shoud define the is property (element's name) and
              * properties  object.
-             *
-             * @return {null}
+             *             
              */
             beforeRegister() {
                 this.is = 'owc-list';
@@ -133,7 +140,7 @@
                 this.properties = {
 
                     /**
-                     * internal property, If it is true the infinite scroll calls http requests,
+                     * internal property, If it is true the infinite scroll calls http requests used to load new pages,
                      * if it is false the scroll event is ignored.
                      *
                      * @type {Boolean}
@@ -141,7 +148,8 @@
                     readyToLoadNewPage: true,
 
                     /**
-                     * UI variable: visibleList, to hide the empty list in case of 0 results
+                     * UI variable: If it is true, the list is hidden. If it is false, the list is shown.
+                     * This property is mainly used to hide the empty list in case of 0 results
                      *
                      * @type {Boolean}
                      */
@@ -152,7 +160,8 @@
                     },
 
                     /**
-                     * Enable pagination in owc list
+                     * If it is true the infinite scroll calls http requests used to load new pages.
+                     * if it is false the scroll event is ignored.
                      *
                      * @type {Boolean}
                      */
@@ -163,7 +172,8 @@
                     },
 
                     /**
-                     * List model
+                     * Array object containing list data model, which is the result of data processing performed by the 
+                     * <i>list-coder</i> component on the <b>model</b> of the <i>generic-model</i> component
                      *
                      * @type {Array}
                      */
@@ -174,7 +184,8 @@
                     },
 
                     /**
-                     * Cart Ids
+                     * Array object containing the identifiers of products belonging to user's cart (i.e. the list of favorite
+                     * products)
                      *
                      * @type {Array}
                      */
@@ -185,7 +196,11 @@
                     },
 
                     /**
-                     * Data source reference
+                     * Object containing reference to <i>data-source</i> component. This object can be obtained using proper 
+                     * Polymer selection component method, like
+                     *   <pre>
+                     *   var datasource  = Polymer.dom(this.root).querySelector('#my-datasource');
+                     *   </pre>
                      *
                      * @type {Object}
                      */
@@ -196,7 +211,11 @@
                     },
 
                     /**
-                     * Data source reference
+                     * Object containing reference to <i>owc-map</i> component. This object can be obtained using proper 
+                     * Polymer selection component method, like
+                     *   <pre>
+                     *   var map  = Polymer.dom(this.root).querySelector('#my-map');
+                     *   </pre>
                      *
                      * @type {Object}
                      */
@@ -208,7 +227,11 @@
 
 
                     /**
-                     * Generic model object reference
+                     * Object containing reference to <i>generic-model</i> component. This object can be obtained using proper 
+                     * Polymer selection component method, like
+                     *   <pre>
+                     *   var model  = Polymer.dom(this.root).querySelector('#my-model');
+                     *   </pre>
                      *
                      * @type {Object}
                      */
@@ -219,7 +242,11 @@
                     },
 
                     /**
-                     * Coder object reference
+                     * Object containing reference to <i>list-coder</i> component. This object can be obtained using proper 
+                     * Polymer selection component method, like
+                     *   <pre>
+                     *   var coder  = Polymer.dom(this.root).querySelector('#my-coder');
+                     *   </pre>
                      *
                      * @type {Object}
                      */
@@ -228,9 +255,15 @@
                         value: {},
                         notify: true
                     },
+
                     /**
-                     * WMS Coder object reference
-                     *
+                     * Object containing reference to <i>wms-coder</i> component. This object can be obtained using proper 
+                     * Polymer selection component method, like
+                     *   <pre>
+                     *   var coder  = Polymer.dom(this.root).querySelector('#my-wms-coder');
+                     *   </pre>
+                     *               
+                     * @private
                      * @type {Object}
                      */
                     wmsCoder: {
@@ -240,8 +273,13 @@
                     },
 
                     /**
-                     * Owc Cart Manager reference
-                     *
+                     * Object containing reference to <i>cart-manager</i> component. This object can be obtained using proper 
+                     * Polymer selection component method, like
+                     *   <pre>
+                     *   var cartmng  = Polymer.dom(this.root).querySelector('#my-cartmng');
+                     *   </pre>
+                     *               
+                     * @private
                      * @type {Object}
                      */
                     cartManager: {
@@ -252,7 +290,8 @@
 
 
                     /**
-                     * Internal property, If it is true list item shows buttons.
+                     * Internal property, If it is true, the toolbar containing <i>paper-icon</i> buttons is shown in list item.
+                     * If it is false, the toolbar containing <i>paper-icon</i> buttons is hidden in list item.
                      *
                      * @type {Boolean}
                      */
@@ -264,8 +303,10 @@
                     },
 
                     /**
-                     * Internal property, If it is true list adf item shown.
+                     * Internal property, If it is true, the <i>paper-icon</i> button used to show adf list is shown in list item.
+                     * If it is false, the <i>paper-icon</i> button used to show adf list is hidden in list item.
                      *
+                     * @private
                      * @type {Boolean}
                      */
                     showAdfitem: {
@@ -276,8 +317,9 @@
                     },
 
                     /**
+                     * Internal property, If it is true, <i>owc-list</i> component shows the list of products
                      *
-                     *
+                     * @private
                      * @type {Boolean}
                      */
                     default: {
@@ -288,8 +330,9 @@
                     },
 
                     /**
+                     * Internal property, If it is true, <i>owc-list</i> component shows the list of users
                      *
-                     *
+                     * @private
                      * @type {Boolean}
                      */
                     users: {
@@ -300,8 +343,13 @@
                     },
 
                     /**
-                     * List container reference
-                     *
+                     * Object containing reference to list container component. This object can be obtained using proper 
+                     * Polymer selection component method, like
+                     *   <pre>
+                     *   var container  = Polymer.dom(this.root).querySelector('#my-container');
+                     *   </pre>
+                     *               
+                     * @private
                      * @type {Object}
                      */
                     container: {
@@ -310,8 +358,13 @@
                     },
 
                     /**
-                     * Combo component reference
-                     *
+                     * Object containing reference to <i>search-combo-container</i> component. This object can be obtained using  
+                     * proper Polymer selection component method, like
+                     *   <pre>
+                     *   var combo  = Polymer.dom(this.root).querySelector('#my-combo');
+                     *   </pre>
+                     *               
+                     * @private
                      * @type {Object}
                      */
                     combo: {
@@ -320,7 +373,9 @@
                     },
 
                     /**
-                     * Target reference
+                     * String containing the name of the  target component of <i>message-broker</i> notification
+                     * This property ensures that only the components expressing interest in the notification are stimulated
+                     * by a data model change
                      *
                      * @type {String}
                      */
@@ -329,15 +384,23 @@
                         value: null
                     },
 
+                    /**
+                     * Object containing reference to <i>owc-list</i> parent component
+                     *
+                     * @private
+                     * @type {Object}
+                     */
                     that: {
                         type: Object,
                         value: null
                     },
 
                     /**
-                     * check if is cart list
+                     * Internal property, If it is true, <i>owc-list</i> component is used to show list of products in user's cart
+                     * If it is false, <i>owc-list</i> component is used to show list of products
                      *
-                     * @type {String}
+                     * @private
+                     * @type {Boolean}
                      */
                     isCart: {
                         type: Boolean,
@@ -345,8 +408,9 @@
                     },
 
                     /**
+                     * Internal property, If it is true, <i>owc-list</i> component shows the list of published news
                      *
-                     *
+                     * @private
                      * @type {Boolean}
                      */
                     events: {
@@ -364,9 +428,10 @@
             }
 
             /**
-             * Private method used to set (reset) list model and properties.
+             * Private method used to update <b>listmodel</b>  property.
              *
-             * @param {Object} model: list data model                        
+             * @private
+             * @param {Object} model: object containg list data model                        
              */
             _setListProperties(model) {
                 var self = this;
@@ -378,12 +443,7 @@
                 self.loadingNewPage = false;
                 self.set('visibleList', self.visibleList);
                 self.notifyPath('visibleList', self.visibleList);
-            }
-
-            addMapLayer() {
-                var self = this;
-                self.addLayer();
-            }
+            }            
 
             attached() {
                 var self = this;
@@ -550,9 +610,9 @@
             }
 
             /**
-             * Public method to set (reset) a new  list model.
+             * Public method to update <b>listmodel</b> property.
              *
-             * @param {Object} page: new page of list
+             * @param {Object} page: updated list data model
              *
              * @return {null}
              */
@@ -580,51 +640,71 @@
 
 
 
-            /**
-             *  set delegate
+             /**
+             * This method is used to set <i>data-source</i> component
              *
-             * @param {Object} delegate: datasource object reference
-             * @return {null}
+             * @param {Object} delegate: object containing reference to <i>data-source</i> component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var datasource  = Polymer.dom(this.root).querySelector('#my-datasource');
+             *   </pre>
+             *            
              */
             setDelegate(delegate) {
                 this.datasource = delegate;
             }
 
             /**
-             * Set generic model
+             * This method is used to set <i>generic-model</i> component
              *
-             * @param {Object} genericModel: list generic model object reference
-             * @return {null}
+             * @param {Object} genericModel: object containing reference to <i>generic-model</i> component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var model  = Polymer.dom(this.root).querySelector('#my-model');
+             *   </pre>
+             *            
              */
             setGenericModel(genericModel) {
                 this.genericModel = genericModel;
             }
 
             /**
-             *  set delegate
+             * This method is used to set list container component
              *
-             * @param {Object} listContainer: datasource object reference
-             * @return {null}
+             * @param {Object} listContainer: object containing reference to list container component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var container  = Polymer.dom(this.root).querySelector('#my-container');
+             *   </pre>
+             *            
              */
             setContainer(listContainer) {
                 this.container = listContainer;
             }
 
             /**
-             *  set combo component
+             * This method is used to set <i>combo-search-container</i> component
              *
-             * @param {Object} combo: combo component reference
-             * @return {null}
+             * @param {Object} combo: object containing reference to <i>combo-search-container</i> component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var combo  = Polymer.dom(this.root).querySelector('#my-combo');
+             *   </pre>
+             *            
              */
             setCombo(combo) {
                 this.combo = combo;
             }
 
             /**
-             *  set combo component
+             * This method is used to set map component
              *
-             * @param {Object} combo: combo component reference
-             * @return {null}
+             * @param {Object} map: object containing reference to map component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var map  = Polymer.dom(this.root).querySelector('#my-map');
+             *   </pre>
+             *            
              */
             setMap(map) {
                 this.map = map;
@@ -632,40 +712,55 @@
             }
 
             /**
-             * set coder component
+             * This method is used to set <i>list-coder</i> component
              *
-             * @param {Object} listCoder: coder component object reference
-             * @return {null}
+             * @param {Object} listCoder: object containing reference to <i>list-coder</i> component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var coder  = Polymer.dom(this.root).querySelector('#my-coder');
+             *   </pre>
+             *            
              */
             setCoder(listCoder) {
                 this.coder = listCoder;
             }
 
             /**
-             * set wms coder component
+             * This method is used to set <i>wms-coder</i> component
              *
-             * @param {Object} wmsCoder: coder component object reference
-             * @return {null}
+             * @private
+             * @param {Object} wmsCoder: object containing reference to <i>wms-coder</i> component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var wms-coder  = Polymer.dom(this.root).querySelector('#my-wms-coder');
+             *   </pre>
+             *            
              */
             setWmsCoder(wmsCoder) {
                 this.wmsCoder = wmsCoder;
             }
 
             /**
-             * set owc cart manager component
+             * This method is used to set <i>owc-cart-manager</i> component
              *
-             * @param {Object} cartManager: cartManager object reference
-             * @return {null}
+             * @private
+             * @param {Object} cartManager: object containing reference to <i>owc-cart-manager</i> component. This object can be 
+             * obtained using proper Polymer selection component method, like
+             *   <pre>
+             *   var cartmng  = Polymer.dom(this.root).querySelector('#my-cartmng');
+             *   </pre>
+             *            
              */
             setCartManager(cartManager) {
                 this.cartManager = cartManager;
             }
 
             /**
-             * set target
+             * This method is used to set target component of <i>message-broker</i> notification, in order to grant that only 
+             * the components expressing interest in the notification are stimulated by a data model change
              *
-             * @param {Object} target: target component object reference
-             * @return {null}
+             * @param {Object} target: target component of <i>message-broker</i> notification
+             * @return model
              */
             setTarget(target) {
                 this.target = target;

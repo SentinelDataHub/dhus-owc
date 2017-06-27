@@ -41,7 +41,7 @@ At application startup, it creates all the components used to manage:
 - components visualization on the screen
 - notification to users after operations execution
 
-@demo demo/index.html
+
 -->
 <dom-module id="owc-app">
     <template>
@@ -68,8 +68,8 @@ At application startup, it creates all the components used to manage:
 
             baseUrl: window.location.href.split("dhus")[0] + "dhus",
             clientUrl: window.location.href.split("dhus")[0] + "dhus/new"
-            //baseUrl: "../", // dev config
-            //clientUrl: "./" // dev config
+            //baseUrl: "https://scihub.copernicus.eu/demohub", //debug
+            //clientUrl: "./" //debug
 
         };
 
@@ -226,7 +226,29 @@ At application startup, it creates all the components used to manage:
              */
             _init() {
                 var dynamicMenu = document.createElement('dynamic-main-menu');
-                this.navigationManager.pushComponent(dynamicMenu, "150px", (this.theme.title) ? this.theme.title : 'Copernicus Data Hub', true, true, 1);
+                var self=this;
+                setTimeout(function(){
+                    self.navigationManager.pushComponent(dynamicMenu, "150px", (self.theme.title) ? self.theme.title : 'Copernicus Data Hub', true, true, 1);
+                
+                },100);
+
+                this.httpManager.sendRequest('GET', this.config.baseUrl + '/api/owc/version')
+                    .then(function(response) {
+                        var currentVersion = response.data.value;
+                        var savedVersion = localStorage.getItem("version");
+                        if(savedVersion){
+                          if(currentVersion != savedVersion){
+                            localStorage.setItem("version", currentVersion);
+                            alert("refresh");
+                            location.reload(true);
+                          }
+                        }else{
+                          localStorage.setItem("version", currentVersion);
+                          location.reload(true);
+                        }
+
+                    });
+
             }
         };
 

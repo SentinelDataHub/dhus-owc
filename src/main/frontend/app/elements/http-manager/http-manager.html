@@ -69,7 +69,7 @@ This approach is inspired from Aspect oriented programming.
                 this.is = 'http-manager';
                 this.demoMode = false;
                 this.navigationManager = document.getElementById('navigation-manager');
-                
+
             };
 
             /**
@@ -79,7 +79,7 @@ This approach is inspired from Aspect oriented programming.
              */
             attached() {
                 this.navigationManager = document.getElementById('navigation-manager');
-              
+
             }
 
 
@@ -133,10 +133,10 @@ This approach is inspired from Aspect oriented programming.
 
                 var spinner = document.getElementById('request-spinner');
                 this.navigationManager.counter -= 1;
-                   
-                if(this.navigationManager.counter<=0)                
+
+                if(this.navigationManager.counter<=0)
                     spinner.active = false;
-                
+
                 var processedResponse = response;
                 if (this.owcApp.utils.isJsonLike(response)) {
                     processedResponse = this.owcApp.utils.fromJson(response);
@@ -153,24 +153,25 @@ This approach is inspired from Aspect oriented programming.
             *   This method is used to manage HTTP requests.
             *
             * @param {?Object} method:  String containing request method (GET|POST|PUT|DELETE)
-                               url:     String containing request url (doesn't include base url)
-                               options: Object containing request parameters like
-                                          body: Object type containing request body, if needed.
-                                          headers: JSON Array containing request headers. Each element of the array it's a JSON object with the following fields:
-                                            name: String containing header name
-                                            value: String containing header value
+            * @param {?Object} url:     String containing request url (doesn't include base url)
+            * @param {?Object} options: Object containing request parameters like:
+              - body: Object type containing request body, if needed.
+              - headers: JSON Array containing request headers.
+                Each element of the array it's a JSON object with the following fields:
+                  - name: String containing header name
+                  - value: String containing header value
 
 
             * @return {null}
             */
             sendRequest(method, url, options) {
                 var spinner = document.getElementById('request-spinner');
-                
+
                 this.navigationManager.counter += 1;
-                   
-                if(this.navigationManager.counter>0)                
+
+                if(this.navigationManager.counter>0)
                     spinner.active = true;
-                
+
 
                 var self = this;
                 if (self.filter != null) {
@@ -179,8 +180,8 @@ This approach is inspired from Aspect oriented programming.
                     if (!result.status) return new Promise(function(resolve, reject) {
                         var spinner = document.getElementById('request-spinner');
                         self.navigationManager.counter -= 1;
-                           
-                        if(self.navigationManager.counter<=0)                            
+
+                        if(self.navigationManager.counter<=0)
                             spinner.active = false;
                         reject(result.code);
                     });
@@ -201,10 +202,10 @@ This approach is inspired from Aspect oriented programming.
                         } else {
                             var spinner = document.getElementById('request-spinner');
                             self.navigationManager.counter -= 1;
-                               
-                            if(self.navigationManager.counter<=0)                            
+
+                            if(self.navigationManager.counter<=0)
                                 spinner.active = false;
-                            
+
                             reject({
                                 status: xhr.status,
                                 statusText: xhr.statusText
@@ -214,10 +215,10 @@ This approach is inspired from Aspect oriented programming.
                     xhr.onerror = function() {
                         var spinner = document.getElementById('request-spinner');
                         self.navigationManager.counter -= 1;
-                           
-                        if(self.navigationManager.counter<=0)                        
+
+                        if(self.navigationManager.counter<=0)
                             spinner.active = false;
-                       
+
                         reject({
                             status: xhr.status,
                             statusText: xhr.statusText

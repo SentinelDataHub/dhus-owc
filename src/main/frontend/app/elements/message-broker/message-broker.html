@@ -120,6 +120,7 @@ Here is an example of usage:
              *
              * @param {?String} topic: event name to subscribe
              * @param {?String} data: callback parameter
+             * @param {?String} target: subset of object to receive the messages
              * @return {boolean}
              */
             publish(topic, data, target) {
@@ -174,6 +175,7 @@ Here is an example of usage:
              *
              * @param {?String} topic: event name to subscribe
              * @param {?Function} func: callback
+             * @param {?String} target: subset of object to receive the messages
              * @return {String} generated token
              */
             subscribe(topic, func, target) {
@@ -200,7 +202,7 @@ Here is an example of usage:
             /**
              * Unsubscribe to an event via token
              *
-             * @param {?Number} token.
+             * @param {?Number} token: registration token
              * @return {boolean}
              */
             unsubscribe(token) {

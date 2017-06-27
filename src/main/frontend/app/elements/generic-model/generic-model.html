@@ -26,11 +26,12 @@
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <!--
-    This component is used to provide a generic data model as base model for other components
+<i>generic-model</i> component contains the result of data processing performed by the <i>semantic-manager</i> component on the data provided by the <i>data-source</i> component.
 
 
-    @demo demo/index.html
-    -->
+This data model, contained in the <b>model</b> property of the component, can be used as input for <b>OWC coders</b> componenents, which are devoted to get fields useful for component representation from the <i>generic-model</i> component, implementing the data-binding between the Model and the View.
+
+-->
 <dom-module id="generic-model">
     <template>
     </template>
@@ -44,8 +45,7 @@
              * BeforeRegister method Polymer calls before creating the element.
              * This method is where you shoud define the is property (element's name) and
              * properties  object.
-             *
-             * @return {null}
+             *            
              */
             beforeRegister() {
                 this.is = 'generic-model';
@@ -91,8 +91,7 @@
              *  Called after the element is detached from the document.
              *  Can be called multiple times during the lifetime of an element.
              *  Uses include removing event listeners added in attached.
-             *
-             * @return {null}
+             *            
              */
             detached() {
                 var self = this;
@@ -100,9 +99,9 @@
             }
 
             /**
-             *  This method is used to send a notification to a target component on data model changes
+             * This method is used to send a notification to a target component on data model changes  by means of the 
+             * <i>message-broker</i> component
              *
-             * @return {null}
              */
             setNewModel() {
                 var self = this;
@@ -110,9 +109,12 @@
             }
 
             /**
-             *  This method is used to append new pages to an infinite list during down list scroll
+             * This method is used to extend the data model with the result of the <i>loadNextPage()</i> method of the 
+             * <i>data-source</i> component, which is used to get the next _pageSize (i.e. the maximum number of data to be 
+             * retrieved) data elements of an HTTP search request previously performed 
              *
-             * @return {null}
+             * @param {Object} genericModel: data model retrieved by the <i>loadNextPage()</i> method of the <i>data-source</i> 
+             * component          
              */
             appendNewPage(genericModel) {
                 var newPageSize = genericModel.length;
@@ -134,9 +136,10 @@
             }
 
             /**
-             *  This method is used to update the data model and send a notification to a target component on data model changes
+             *  This method is used to update the <b>model</b> property of the component and to send a notification to a target 
+             *  component on data model changes  by means of the <i>message-broker</i> component
              *
-             * @return {null}
+             *  @param {Object} genericModel: data model retrieved by means of the <i>data-source</i> component            
              */
             setModel(genericModel) {
                 this.model = genericModel;
@@ -148,17 +151,19 @@
             }
 
             /**
-             *  This method is used to get data model
+             *  This method is used to get the <b>model</b> property of the component
              *
-             * @return model
+             * @return model: <b>model</b> property of the component
              */
             getModel() {
                 return this.model;
             }
 
             /**
-             *  This method is used to set target component of message broker notification
+             * This method is used to set target component of <i>message-broker</i> notification, in order to grant that only 
+             * the components expressing interest in the notification are stimulated by a data model change
              *
+             * @param {Object} target: target component of <i>message-broker</i> notification
              * @return model
              */
             setTarget(target) {
@@ -166,9 +171,12 @@
             }
 
             /**
-             *  This method is used to prepend new pages to an infinite list during up list scroll
+             * This method is used to extend the data model with the result of the <i>loadPreviousPage()</i> method of the 
+             * <i>data-source</i> component, which is used to get the previous _pageSize (i.e. the maximum number of data to be 
+             * retrieved) data elements of an HTTP search request previously performed 
              *
-             * @return {null}
+             * @param {Object} genericModel: data model retrieved by the <i>loadPreviousPage()</i> method of the <i>data-source</i> 
+             * component          
              */
             prependNewPage(genericModel) {
                 var newPageSize = genericModel.length;

@@ -29,10 +29,28 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <!--
-list with button
+<i>button-list-item</i> component is used to represent a single list item for:
+<ul>
+<li>list of products</li>
+<li>list of products in user's cart (pinned list)</li>
+</ul> 
+
+This component contains the following sections:
+<ul>
+<li>thumbnail section, used to show product thumbnail;</li>
+<li>attributes section, used to show main product attributes defined in the Semantic Schema retrieved from Server and extracted by means of <i>semantic-manager</i> component;</li>
+<li>toolbar section, containing a set of <i>paper-icon-button</i> used to:</li>
+    <ul>
+    <li>show product details;</li>
+    <li>show the list of auxiliary data files used to process the product;</li>
+    <li>download the product.</li>
+    </ul>
+</ul>
 
 
-@demo demo/index.html
+<img src="https://user-images.githubusercontent.com/10920750/26986234-e6c1ac56-4d46-11e7-8d38-d5943fe864cb.png"></img>
+
+
 -->
 <dom-module id="button-list-item">
     <!-- VIEW  CODE HERE -->
@@ -199,8 +217,8 @@ list with button
         </style>
         <div class$="{{computeCssClass(model.isOnline)}}" id="{{model.uuid}}" hidden="{{!model.showAdf}}">
             <div>
-                <paper-icon-button icon="star" class="star" on-click="pinnedList" title="Pinned List" hidden="{{pinned}}"></paper-icon-button>
-                <paper-icon-button icon="star" class="star checked" on-click="pinnedList" title="Pinned List" hidden="{{!pinned}}"></paper-icon-button>
+                <paper-icon-button icon="star" class="star" on-click="pinnedList" title="Add Product to Cart" hidden="{{pinned}}"></paper-icon-button>
+                <paper-icon-button icon="star" class="star checked" on-click="pinnedList" title="Remove Product from Cart" hidden="{{!pinned}}"></paper-icon-button>
                 <div class="title owc-list-item-title" hidden="{{!model.title}}" title="{{model.title}}">
                     {{model.title}}
                 </div>
@@ -261,8 +279,7 @@ list with button
                 this.properties = {
 
                     /**
-                     * Model of list item
-                     *
+                     * Object containing list item data model                     
                      * @type {Object}
                      */
                     model: {
@@ -271,9 +288,13 @@ list with button
                     },
 
                     /**
-                     * Status of WMS icon visibility
+                     * Internal property
+                     * If it is true, it indicates that product quicklook available on a WMS server has to be project on the map 
+                     * if it is false, it indicates that product quicklook available on a WMS server hasn' to be project on the 
+                     *  map                      
                      *
-                     * @type {Object}
+                     * @private
+                     * @type {Boolean}
                      */
                     status: {
                         type: Boolean,
@@ -281,7 +302,7 @@ list with button
                     },
 
                     /**
-                     * Model of list item
+                     * Object containing reference to <i>owc-list</i> component.
                      *
                      * @type {Object}
                      */
@@ -291,9 +312,10 @@ list with button
                     },
 
                     /**
-                     * Parent reference. The parent is the container list.
+                     * Object containing reference to <i>button-list-item</i> parent component
                      *
-                     * @type {object}
+                     * @private
+                     * @type {Object}
                      */
                     parent: {
                         type: Object,
@@ -302,9 +324,11 @@ list with button
                     },
 
                     /**
-                     * Parent reference. The parent is the container list.
+                     * String containing the name of the  target component of <i>message-broker</i> notification
+                     * This property ensures that only the components expressing interest in the notification are stimulated
+                     * by a data model change
                      *
-                     * @type {object}
+                     * @type {String}
                      */
                     target: {
                         type: String,
@@ -312,9 +336,14 @@ list with button
                     },
 
                     /**
-                     * Cart Manager. The cartmngr is the cart list manager.
-                     *
-                     * @type {object}
+                     * Object containing reference to <i>cart-manager</i> component. This object can be obtained using proper 
+                     * Polymer selection component method, like
+                     *   <pre>
+                     *   var cartmng  = Polymer.dom(this.root).querySelector('#my-cartmng');
+                     *   </pre>
+                     *               
+                     * @private
+                     * @type {Object}
                      */
                     cartmngr: {
                         type: Object,
@@ -323,7 +352,8 @@ list with button
                     },
 
                     /**
-                     * Cart Ids
+                     * Array object containing the identifiers of products belonging to user's cart (i.e. the list of favorite
+                     * products)
                      *
                      * @type {Array}
                      */
@@ -334,7 +364,7 @@ list with button
                     },
 
                     /**
-                     * Property indicating if buttons on list are hidden or shown.
+                     * Property indicating if buttons on list are hidden (false) or shown (true).
                      *
                      * @type {Boolean}
                      */
@@ -344,7 +374,7 @@ list with button
                     },
 
                     /**
-                     * Property indicating if buttons on list are hidden or shown.
+                     * Property indicating if a product is contained (true) or NOT (false) in the user's cart.
                      *
                      * @type {Boolean}
                      */
@@ -354,8 +384,11 @@ list with button
                     },
 
                     /**
-                     * Property indicating if a layer is enabled or disabled in the list.
+                     * Internal property
+                     * If it is true, it indicates that product quicklook is available on a WMS server  
+                     * if it is false, it indicates that product quicklook is NOT available on a WMS server                    
                      *
+                     * @private
                      * @type {Boolean}
                      */
                     layerEnabled: {
@@ -365,8 +398,9 @@ list with button
                     },
 
                     /**
-                     * Property indicating if a product is online or not.
+                     * Property indicating if a product is available for direct download from the DHuS archive or not.
                      *
+                     * @private
                      * @type {Boolean}
                      */
                     isOnline: {
@@ -497,8 +531,11 @@ list with button
             }
 
             /**
-             * Compute the css class for list item.
+             * This method is used to compute the css class for list item background. 
+             * More in the details, the background is grey for offline product (i.e. product not immediatly available for download)
+             * and is white for online product (i.e. product which can be downloaded directly from DHuS archive)
              *
+             * @private
              * @return {String}
              */
             computeCssClass() {
@@ -508,6 +545,14 @@ list with button
                 return cssclass;
             }
 
+            /**
+             * This method is used to get the list of products contained in the user's cart. This list is used to add a proper 
+             * style to the star icon <img src="https://cloud.githubusercontent.com/assets/10920750/25841129/37793d32-349f-11e7-8a12-56b9af4098e0.png"></img> shown in the top right-hand corner of list item.
+             * If star icon is black coloured, this means that the product is not present in the user cart
+             * If star icon is blue coloured, this means that the product is present in the user cart.
+             *
+             * @return {String}
+             */
             pinnedList() {
                 var self = this;
                 if (self.pinned) {
@@ -531,9 +576,9 @@ list with button
             }
 
             /**
-             * Callback for on error thumb event.
-             *
-             * @return {null}
+             * This callback is used to manage error due to missing product thumbnail. This allows to show a thumbnail placeholder
+             * in case of error occurred retrieving thumbnail via proper OData API.
+             *            
              */
             imageError() {
                 var IMAGE_PLACE_HOLDER_URL = this.owcApp.config.clientUrl + '/images/placeholder.png';
@@ -541,8 +586,8 @@ list with button
             }
 
             /**
-             * Download product button onclick callback
-             *
+             * This method is used to download a product. Product download is triggered clicking on the proper download icon
+             * <img src="https://cloud.githubusercontent.com/assets/10920750/25785352/721f96ec-337e-11e7-827d-ba0fa32135b9.png"></img>
              */
             download() {
                 var self = this;
@@ -593,6 +638,13 @@ list with button
 
             }
 
+            /**
+             * This method is  used to project on the map the product quicklook, if a layer for the product is available on a 
+             * WMS server
+             * This functionality is in a prototype stage and at present is not supported by *OWC*
+             * @deprecated
+             * @private  
+             */
             addLayer() {
                 var self = this;
                 self.parent.addLayer(self.model.identifier, self.target);
@@ -603,9 +655,8 @@ list with button
             }
 
             /**
-             * This method push the product details panel
-             *
-             * @return {null}
+             * This method is used to open product details panel. This action is triggered clicking on the proper details icon
+             * <img src="https://cloud.githubusercontent.com/assets/10920750/25785356/8c127e66-337e-11e7-9bd0-33f791a94fdb.png"></img>
              */
             details() {
                 var product = document.createElement('product-details');
@@ -615,9 +666,9 @@ list with button
             }
 
             /**
-             * ADF List button onclick callback
-             *
-             * @return {null}
+             * This method is used to show the list of auxiliary data files used to process the product. This action is triggered 
+             * clicking on the proper icon
+             * <img src="https://cloud.githubusercontent.com/assets/10920750/25785334/2db839b4-337e-11e7-96bd-50a1e0900f4d.png"></img>
              */
             adfList() {
                 var list = document.createElement('auxiliary-list-container');
@@ -628,9 +679,11 @@ list with button
             }
 
             /**
-             * ADF Search button onclick callback
-             *
-             * @return {null}
+             * This method is used to show the list of auxiliary data files which could be used to process the product.
+             * This auxiliary data files are retrieved from a Data Hub containing auxiliary data product. 
+             * This functionality is in a prototype stage and at present is not supported by *OWC*
+             * @deprecated
+             * @private             
              */
             adfSearch() {
                 var list = document.createElement('auxiliary-search-container');
@@ -640,16 +693,25 @@ list with button
                 this.navigationManager.pushComponent(list, '500px', 'Auxiliary Data Files Search');
             }
 
+            /**
+             * This method is used to set the component (e.g. <i>owc-list</i>) devoted to show HTTP request data in a list
+             * @param {Object} list: object containing reference to list component. This object can be obtained using proper 
+             * Polymer selection component method, like
+             *   <pre>
+             *   var list  = Polymer.dom(this.root).querySelector('#my-list');
+             *   </pre>
+             *            
+             */
             setList(list) {
                 this.list = list;
             }
 
             /**
-             * Set the target
+             * This method is used to set target component of <i>message-broker</i> notification, in order to grant that only 
+             * the components expressing interest in the notification are stimulated by a data model change
              *
-             * @param {Object} target
-             *
-             * @return {null}
+             * @param {Object} target: target component of <i>message-broker</i> notification
+             * @return model
              */
             setTarget(target) {
                 this.target = target;

@@ -73,13 +73,18 @@ The dictionary is a simple json file with the key:values of every definition. e.
 </pre>
 
 
- **Usage** 
+ <strong>Usage</strong>
 
 The method setCurrentLanguage sets the current language of the OWC application.
 The method translate converts the parameter string with the value found in the dictionary of the current language.
 If the key is not present the method translate returns the key.
 
 
+<strong>How to add a new language</strong>
+
+ - Add a new dictionary in the dictionary folders: [https://github.com/SentinelDataHub/DataHubSystem/tree/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/lang](https://github.com/SentinelDataHub/DataHubSystem/tree/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/lang), with the key values strings
+
+ - To add the new language in the settings page: [https://github.com/SentinelDataHub/DataHubSystem/blob/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/elements/settings-panel/settings-panel.html#L90 ](https://github.com/SentinelDataHub/DataHubSystem/blob/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/elements/settings-panel/settings-panel.html#L90 )
 
 
 

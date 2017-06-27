@@ -26,10 +26,17 @@
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <!--
-ComponentsCoder is devoted to take from Generic Model the fields useful for component representation, implementing the data-binding between the Model and the View.
 
+<b>OWC coders</b> componenents are designed to get fields useful for component representation from the <i>generic-model</i> component, implementing the data-binding between the Model and the View
 
-@demo demo/index.html
+<i>list-coder</i> component is one of the available <b>OWC coders</b> componenents and it is devoted to get from <i>generic-model</i> component the fields useful for <i>owc-list</i> component, applying eventually formatting or coding rules in order to fit data to the component structure.
+
+Information extracted from <i>generic-model</i> component by means of <i>list-coder</i> component are:
+<ul>
+<li>product identifier;</li>
+<li>product thumbnail;</li>
+<li>product attributes like size, sensing date (properly formatted) and instrument.</li>
+</ul>
 -->
 <dom-module id="list-coder">
     <!-- MODEL-CONTROLLER CODE -->
@@ -37,8 +44,9 @@ ComponentsCoder is devoted to take from Generic Model the fields useful for comp
     (function() {
         'use strict';
         class ListCoder extends HTMLElement {
+            
             /**
-             * class constructor             
+             * Default class constructor             
              */
             constructor() {
                 super();
@@ -49,7 +57,6 @@ ComponentsCoder is devoted to take from Generic Model the fields useful for comp
              * This method is where you shoud define the is property (element's name) and
              * properties  object.
              *
-             * @return {null}
              */
             beforeRegister() {
                 this.is = 'list-coder';
@@ -59,6 +66,8 @@ ComponentsCoder is devoted to take from Generic Model the fields useful for comp
 
             /**             
              *  This method is used to check if a product is online (i.e. physically present in DHuS archive) or   *  offline (i.e. to be retrieved from a long term archive).
+             *  
+             *  @private
              *  @param {String} product uuid, used in the OData request to get product content length 
              *  (download size)
              *
@@ -66,7 +75,7 @@ ComponentsCoder is devoted to take from Generic Model the fields useful for comp
              */
             _getIsOnline(id) {
                 var self = this;
-                var url = this.owcApp.appconfig.odataContentLengthUrl;
+                var url = (this.owcApp.appconfig.odataContentLengthUrl) ? this.owcApp.appconfig.odataContentLengthUrl : "/odata/v1/Products(%27:uuid%27)/ContentLength/$value";
                 return this.owcApp.httpManager.sendRequest(
                     'GET',
                     self.owcApp.config.baseUrl + url.replace(':uuid', id)
@@ -82,10 +91,10 @@ ComponentsCoder is devoted to take from Generic Model the fields useful for comp
             }
 
             /**
-             * this method is used to get Quicklook OData url (if Quicklook is avalaible)
+             * this method is used to get OData url needed to show thumbnails in the list (if a thumbnail is avalaible)
              *
-             * @param {Object} product item
-             * @return {String} Quicklook OData url (if Quicklook is avalaible), default placeholder url otherwise
+             * @param {Object} product data item
+             * @return {String} thumbnail OData url (if thumbnail is avalaible), default placeholder url otherwise
              */
             getQuicklook(item) {
                 var self = this;
@@ -95,7 +104,7 @@ ComponentsCoder is devoted to take from Generic Model the fields useful for comp
             }
 
             /**
-             * this method is used to compute JTS footprint from gml coordinates
+             * This method is used to compute JTS footprint from gml coordinates. At present this method is not used, but this implementation will be useful if a map containing product footprint will be added in <i>product-details</i> component
              *
              * @param {Array} product footprint coordinates
              * @return {String} WKT multipolygon
@@ -131,10 +140,10 @@ ComponentsCoder is devoted to take from Generic Model the fields useful for comp
             }
 
             /**
-             * this method is used to extract a specific list model from a generic data model
+             * This method is used to extract a specific list model from a generic data model, on the basis of list component structure
              *
-             * @param {Object} generic model
-             * @return {Object} specific model
+             * @param {Object} generic model processed by means of <i>semantic-manager</i> component
+             * @return {Object} specific model, i.e. a data model specific for <i>owc-list</i> component
              */
             extractSpecificModel(genericModel) {
 

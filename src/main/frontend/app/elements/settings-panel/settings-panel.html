@@ -103,19 +103,19 @@ Panel to set language and open main menu
                         <paper-item value="fr">fr</paper-item>
                     </paper-listbox>
                 </paper-dropdown-menu>
-                <paper-icon-button style="width: 33px;display:inline-block;" suffix on-click="setLanguage" icon="save" alt="save" title="save"></paper-icon-button>
+                <paper-icon-button style="width: 33px;display:inline-block;" suffix on-click="setLanguage" icon="save" alt="Save" title="Save"></paper-icon-button>
               </div>
-              <a class="settings-item" hidden$="{{!isDataManager}}" on-click="mainMenu" title="{{i18n('main menu')}}">Main menu</a>
+              <a class="settings-item" hidden$="{{!isDataManager}}" on-click="mainMenu" title="{{i18n('main menu')}}">{{i18n('main menu')}}</a>
 
               <!-- <paper-button hidden$="{{!isDataManager}}" raised class="colorful" on-click="mainMenu" title="{{i18n('main menu')}}">{{i18n("main menu")}}</paper-button> -->
               <!-- <br/> -->
-              <a class="settings-item" hidden$="{{!isLogged}}" raised class="colorful" on-click="listSettings" title="{{i18n('list settings')}}">{{i18n("List settings")}}</a>
+              <a class="settings-item" hidden$="{{!isLogged}}" raised class="colorful" on-click="listSettings" title="{{i18n('List Settings')}}">{{i18n("List Settings")}}</a>
               <!-- <br/> -->
-              <a class="settings-item" raised class="colorful" on-click="mapSettings" title="{{i18n('map settings')}}">{{i18n("Map settings")}}</a>
+              <a class="settings-item" raised class="colorful" on-click="mapSettings" title="{{i18n('Map Settings')}}">{{i18n("Map Settings")}}</a>
               <!-- <br/> -->
               <!-- <a class="settings-item" hidden$="{{!isLogged}}"raised class="colorful" on-click="wmsSettings" title="{{i18n('wms settings')}}">{{i18n("Wms settings")}}</a> -->
               <!-- <br/> -->
-              <a class="settings-item" raised class="colorful" on-click="theme" title="{{i18n('theme')}}">{{i18n("Theme")}}</a>
+              <a class="settings-item" raised class="colorful" on-click="theme" title="{{i18n('Theme')}}">{{i18n("Theme")}}</a>
               <!-- <br/> -->
 
           </div>
@@ -123,7 +123,7 @@ Panel to set language and open main menu
           <div class="settingsSection">
               <div class="settingsTitle">{{i18n("Data management")}}</div>
 
-              <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="upload" title="{{i18n('upload')}}">{{i18n("Upload")}}</a>
+              <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="upload" title="{{i18n('Upload')}}">{{i18n("Upload")}}</a>
 
               <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="odataSynch" title="Product Synchronizers">Product Synchronizers</a>
 
@@ -136,7 +136,7 @@ Panel to set language and open main menu
                 hidden$="{{!isDataManager}}"
                 raised class="colorful"
                 on-click="restoreDatabase"
-                title="{{i18n('Mail configuration')}}">{{i18n("Restore database")}}</a>
+                title="{{i18n('Restore Database')}}">{{i18n("Restore Database")}}</a>
 
               <a
                 class="settings-item"
@@ -144,7 +144,7 @@ Panel to set language and open main menu
                 raised class="colorful"
                 on-click="localArchive"
                 class="settings-item"
-                title="{{i18n('Mail configuration')}}">{{i18n("Local archive")}}</a>
+                title="{{i18n('Local Archive')}}">{{i18n("Local Archive")}}</a>
           </div>
 
           <div class="settingsSection">
@@ -154,16 +154,16 @@ Panel to set language and open main menu
                 raised class="colorful"
                 on-click="mailConfiguration"
                 class="settings-item"
-                title="{{i18n('Mail')}}">{{i18n("Mail")}}</a>
+                title="{{i18n('Mail Configuration')}}">{{i18n("Mail")}}</a>
 
               <a  class="settings-item"
                 hidden$="{{!isDataManager}}"
                 raised class="colorful"
                 on-click="rootConfiguration"
                 class="settings-item"
-                title="{{i18n('Root account')}}">{{i18n("Root account")}}</a>
+                title="{{i18n('Root Account')}}">{{i18n("Root Account")}}</a>
 
-              <a  class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="users" title="{{i18n('users')}}">{{i18n("Users")}}</a>
+              <a  class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="users" title="{{i18n('Users')}}">{{i18n("Users")}}</a>
 
 
           </div>
