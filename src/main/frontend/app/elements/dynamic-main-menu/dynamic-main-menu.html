@@ -52,45 +52,45 @@ This component contains:
         .container {
             @apply(--layout-horizontal);
         }
-        
+
         .containerVertical {
             @apply(--layout-vertical);
             @apply(--layout-center-justified);
         }
-        
+
         .menu-container {
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
             margin-top: 0px;
         }
-        
+
         .disabled {
             color: gray !important;
         }
-        
+
         .main-logo {
             max-width: 75px;
             max-height: 75px;
         }
-        
+
         .main-logo:hover {
             background: var(--paper-light-blue-50);
             border-radius: 10%;
             cursor: pointer;
         }
-        
+
         paper-icon-button.menu-item {
             color: #002664;
             margin-left: 0px;
             width: 50px;
             height: 50px;
         }
-        
+
         paper-icon-button.menu-item:hover {
             background: var(--paper-light-blue-50);
             border-radius: 50%;
         }
-        
+
         #dynamic-menu-container {
             height: var(--menuheight, 500px);
             width: var(--menuwidth, 300px);
@@ -99,7 +99,7 @@ This component contains:
             width: 100%!important;
             /*height: 10px;*/
         }
-        
+
         #dynamic-menu-title {
             height: 70px!important;
             overflow-y: hidden !important;
@@ -107,18 +107,18 @@ This component contains:
             width: 100%!important;
             /*height: 10px;*/
         }
-        
+
         .oldgui_link {
             font-size: 12px;
             font-style: italic;
             cursor: pointer;
         }
-        
+
         a {
             color: #002664;
             text-decoration: none;
         }
-        
+
         a:visited {
             color: #002664;
             text-decoration: none;
@@ -126,7 +126,7 @@ This component contains:
         </style>
         <div id="dynamic-menu-container">
             <div class="menu-container">
-                <img on-click="dashboard" title="Logo" class="main-logo" alt="Logo" src="{{logo_url}}"></img>
+                <img on-click="dashboard" title="" class="main-logo" alt="" src="{{logo_url}}"></img>
             </div>
             <br>
             <template is="dom-if" if="{{show_oldgui_link}}">
@@ -192,7 +192,7 @@ This component contains:
                      */
                     logo_url: {
                         type: String,
-                        value: "/images/logo_esa.png",
+                        value: "",
                         notify: true
                     }
 
@@ -217,7 +217,7 @@ This component contains:
                 owcApp.messageBroker.subscribe('update-configurations', function(eventName, sections) {
                     self.sections = sections;
                     self._loadMenuItems();
-                    self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "./images/logo_esa.png";
+                    self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "";
                     self.resize();
 
                 });
@@ -237,9 +237,9 @@ This component contains:
 
                 });
 
-                owcApp.messageBroker.subscribe('theme-loaded', function() {                    
-                    self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "./images/logo_esa.png";
-                    self.parentPanel.title = (self.owcApp.theme.title) ? self.owcApp.theme.title : "Copernicus Data Hub";
+                owcApp.messageBroker.subscribe('theme-loaded', function() {
+                    self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "";
+                    self.parentPanel.title = (self.owcApp.theme.title) ? self.owcApp.theme.title : "";
                     self.resize();
 
                 });
@@ -263,7 +263,7 @@ This component contains:
                         if (response.status == 200) {
                             self.sections = response.data.sections;
                             self._loadMenuItems();
-                            self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "./images/logo_esa.png";
+                            self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "";
                             self.resize();
                         }
                     });

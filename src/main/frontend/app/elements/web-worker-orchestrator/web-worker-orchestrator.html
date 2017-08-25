@@ -82,9 +82,9 @@ web worker orchestrator
                 var self = this;
 
                 return new Promise(function(resolve, reject) {
-                    console.warn("worker: ", worker);
+                    //console.warn("worker: ", worker);
                     var w = new Worker(worker);
-                    console.log("w: ", w);
+                    //console.log("w: ", w);
                     w.postMessage(input);
                     w.onmessage = function(e) {
                         self.model = event.data;
@@ -123,8 +123,8 @@ web worker orchestrator
             executeWorkers(myObj, webWorkers) {
                 var self = this;
                 self.model = myObj;
-                console.warn("executeWorkers()");
-                console.log("myObj: ", myObj);
+                //console.warn("executeWorkers()");
+                //console.log("myObj: ", myObj);
 
                 var p = new Promise(function(resolve, reject) {
                     self.resolve = resolve;

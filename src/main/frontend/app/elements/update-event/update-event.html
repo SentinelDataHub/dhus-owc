@@ -207,8 +207,8 @@ This component is used for event update by means of proper OData API.<br/>This f
            update(){
               var self = this;
 
-              console.warn("update()");
-              console.log("this.get('model'): ", this.get('model'));
+              //console.warn("update()");
+              //console.log("this.get('model'): ", this.get('model'));
 
               var eventModel = _.clone(this.model);
               eventModel.LocalEvent = (this.localEvent == "true");
@@ -233,7 +233,7 @@ This component is used for event update by means of proper OData API.<br/>This f
                 }
 
 
-              console.log("== eventModel ==", eventModel);
+              //console.log("== eventModel ==", eventModel);
               delete eventModel.__metadata;
 
               // http request

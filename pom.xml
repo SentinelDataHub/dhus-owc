@@ -8,14 +8,14 @@
    <modelVersion>4.0.0</modelVersion>
 
    <properties>
-      <dhus.core>1.0.1-8-osf</dhus.core>
+      <dhus.core>1.0.1-12-osf</dhus.core>
       <tomcat.port>8080</tomcat.port>
    </properties>
 
    <artifactId>dhus-owc-client</artifactId>
    <groupId>fr.gael.dhus</groupId>
    <packaging>jar</packaging>
-   <version>0.15.1-2-osf</version>
+   <version>0.15.1-6-osf</version>
 
    <name>DHuS - OWC Client</name>
 
@@ -223,10 +223,10 @@
    </issueManagement>
 
    <scm>
-      <connection>scm:git:https://github.com/SercoSPA/DHuS</connection>
-      <developerConnection>scm:git:https://github.com/SercoSPA/DHuS</developerConnection>
+      <connection>scm:git:https://github.com/SentinelDataHub/dhus-owc</connection>
+      <developerConnection>scm:git:https://github.com/SentinelDataHub/dhus-owc</developerConnection>
       <tag>HEAD</tag>
-      <url>https://github.com/SercoSPA/DHuS</url>
+      <url>https://github.com/SentinelDataHub/dhus-owc</url>
    </scm>
 
 

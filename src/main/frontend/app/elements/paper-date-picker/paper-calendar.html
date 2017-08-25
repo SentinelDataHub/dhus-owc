@@ -621,11 +621,11 @@
       },
       _dateChanged: function(date, oldValue) {
         if (!this._isValidDate(date)) {
-          console.warn('Invalid date: ' + date);
+          //console.warn('Invalid date: ' + date);
           this.date = date = oldValue;
         }
         if (!this._withinValidRange(date)) {
-          console.warn('Date outside of valid range: ' + date);
+          //console.warn('Date outside of valid range: ' + date);
           this.date = date = oldValue;
         }
         this.currentYear = date.getFullYear();

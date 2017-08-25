@@ -29,7 +29,7 @@
 <link rel="import" href="../adf-list-item/adf-list-item.html">
 <link rel="import" href="../button-list-item/button-list-item.html">
 <!--
-<i>owc-list</i> component is based on Polymer <i>iron-list</i> component and it is used to display a virtual, <i>infinite</i> list. 
+<i>owc-list</i> component is based on Polymer <i>iron-list</i> component and it is used to display a virtual, <i>infinite</i> list.
 
 The template inside the iron-list element represents the DOM to create for each list item.
 The <b><i>items</i></b> property specifies an array of list item data. The alias used within <i>iron-list</i> component is used as data model for <i>button-list-item</i> component, which represents a single list item.
@@ -39,7 +39,7 @@ This component, at present, is used to show:
 <ul>
 <li>list of products</li>
 <li>list of users registered on the DHuS system</li>
-</ul> 
+</ul>
 
 -->
 <dom-module id="owc-list">
@@ -48,12 +48,12 @@ This component, at present, is used to show:
         iron-list {
             background-color: var(--paper-grey-200, #eee);
         }
-        
+
         #ironlist {
             height: 100%;
             overflow: hidden!important;
         }
-        
+
         .item {
             @apply(--layout-horizontal);
             padding: 20px;
@@ -64,7 +64,7 @@ This component, at present, is used to show:
             margin: 16px !important;
             border: solid 1px #ecf0f1;
         }
-        
+
         .title {
             font-size: 14px;
             font-weight: bold;
@@ -72,21 +72,21 @@ This component, at present, is used to show:
             white-space: nowrap;
             overflow: hidden;
         }
-        
+
         .attribute {
             font-size: 12px;
         }
-        
+
         .thumb {
             margin-right: 5px;
         }
-        
+
         .pin-button {
             width: 20px;
             height: 20px;
             cursor: pointer;
         }
-        
+
         .owclist {}
         </style>
         <div id="scrollable">
@@ -130,7 +130,7 @@ This component, at present, is used to show:
              * BeforeRegister method Polymer calls before creating the element.
              * This method is where you shoud define the is property (element's name) and
              * properties  object.
-             *             
+             *
              */
             beforeRegister() {
                 this.is = 'owc-list';
@@ -172,7 +172,7 @@ This component, at present, is used to show:
                     },
 
                     /**
-                     * Array object containing list data model, which is the result of data processing performed by the 
+                     * Array object containing list data model, which is the result of data processing performed by the
                      * <i>list-coder</i> component on the <b>model</b> of the <i>generic-model</i> component
                      *
                      * @type {Array}
@@ -196,7 +196,7 @@ This component, at present, is used to show:
                     },
 
                     /**
-                     * Object containing reference to <i>data-source</i> component. This object can be obtained using proper 
+                     * Object containing reference to <i>data-source</i> component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var datasource  = Polymer.dom(this.root).querySelector('#my-datasource');
@@ -211,7 +211,7 @@ This component, at present, is used to show:
                     },
 
                     /**
-                     * Object containing reference to <i>owc-map</i> component. This object can be obtained using proper 
+                     * Object containing reference to <i>owc-map</i> component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var map  = Polymer.dom(this.root).querySelector('#my-map');
@@ -227,7 +227,7 @@ This component, at present, is used to show:
 
 
                     /**
-                     * Object containing reference to <i>generic-model</i> component. This object can be obtained using proper 
+                     * Object containing reference to <i>generic-model</i> component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var model  = Polymer.dom(this.root).querySelector('#my-model');
@@ -242,7 +242,7 @@ This component, at present, is used to show:
                     },
 
                     /**
-                     * Object containing reference to <i>list-coder</i> component. This object can be obtained using proper 
+                     * Object containing reference to <i>list-coder</i> component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var coder  = Polymer.dom(this.root).querySelector('#my-coder');
@@ -257,12 +257,12 @@ This component, at present, is used to show:
                     },
 
                     /**
-                     * Object containing reference to <i>wms-coder</i> component. This object can be obtained using proper 
+                     * Object containing reference to <i>wms-coder</i> component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var coder  = Polymer.dom(this.root).querySelector('#my-wms-coder');
                      *   </pre>
-                     *               
+                     *
                      * @private
                      * @type {Object}
                      */
@@ -273,12 +273,12 @@ This component, at present, is used to show:
                     },
 
                     /**
-                     * Object containing reference to <i>cart-manager</i> component. This object can be obtained using proper 
+                     * Object containing reference to <i>cart-manager</i> component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var cartmng  = Polymer.dom(this.root).querySelector('#my-cartmng');
                      *   </pre>
-                     *               
+                     *
                      * @private
                      * @type {Object}
                      */
@@ -343,12 +343,12 @@ This component, at present, is used to show:
                     },
 
                     /**
-                     * Object containing reference to list container component. This object can be obtained using proper 
+                     * Object containing reference to list container component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var container  = Polymer.dom(this.root).querySelector('#my-container');
                      *   </pre>
-                     *               
+                     *
                      * @private
                      * @type {Object}
                      */
@@ -358,12 +358,12 @@ This component, at present, is used to show:
                     },
 
                     /**
-                     * Object containing reference to <i>search-combo-container</i> component. This object can be obtained using  
+                     * Object containing reference to <i>search-combo-container</i> component. This object can be obtained using
                      * proper Polymer selection component method, like
                      *   <pre>
                      *   var combo  = Polymer.dom(this.root).querySelector('#my-combo');
                      *   </pre>
-                     *               
+                     *
                      * @private
                      * @type {Object}
                      */
@@ -431,7 +431,7 @@ This component, at present, is used to show:
              * Private method used to update <b>listmodel</b>  property.
              *
              * @private
-             * @param {Object} model: object containg list data model                        
+             * @param {Object} model: object containg list data model
              */
             _setListProperties(model) {
                 var self = this;
@@ -443,7 +443,7 @@ This component, at present, is used to show:
                 self.loadingNewPage = false;
                 self.set('visibleList', self.visibleList);
                 self.notifyPath('visibleList', self.visibleList);
-            }            
+            }
 
             attached() {
                 var self = this;
@@ -459,7 +459,7 @@ This component, at present, is used to show:
                     self.owcApp.messageBroker.subscribe('setNewModel',
 
                         function() {
-                            
+
                             function clone(obj) {
                                 if (null == obj || "object" != typeof obj) return obj;
                                 var copy = obj.constructor();
@@ -511,7 +511,7 @@ This component, at present, is used to show:
 
 
                                     }).catch(function(err) {
-                                        console.log(err);
+                                        //console.log(err);
                                         self._setListProperties(specificModel);
 
                                     });
@@ -643,12 +643,12 @@ This component, at present, is used to show:
              /**
              * This method is used to set <i>data-source</i> component
              *
-             * @param {Object} delegate: object containing reference to <i>data-source</i> component. This object can be 
+             * @param {Object} delegate: object containing reference to <i>data-source</i> component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var datasource  = Polymer.dom(this.root).querySelector('#my-datasource');
              *   </pre>
-             *            
+             *
              */
             setDelegate(delegate) {
                 this.datasource = delegate;
@@ -657,12 +657,12 @@ This component, at present, is used to show:
             /**
              * This method is used to set <i>generic-model</i> component
              *
-             * @param {Object} genericModel: object containing reference to <i>generic-model</i> component. This object can be 
+             * @param {Object} genericModel: object containing reference to <i>generic-model</i> component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var model  = Polymer.dom(this.root).querySelector('#my-model');
              *   </pre>
-             *            
+             *
              */
             setGenericModel(genericModel) {
                 this.genericModel = genericModel;
@@ -671,12 +671,12 @@ This component, at present, is used to show:
             /**
              * This method is used to set list container component
              *
-             * @param {Object} listContainer: object containing reference to list container component. This object can be 
+             * @param {Object} listContainer: object containing reference to list container component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var container  = Polymer.dom(this.root).querySelector('#my-container');
              *   </pre>
-             *            
+             *
              */
             setContainer(listContainer) {
                 this.container = listContainer;
@@ -685,12 +685,12 @@ This component, at present, is used to show:
             /**
              * This method is used to set <i>combo-search-container</i> component
              *
-             * @param {Object} combo: object containing reference to <i>combo-search-container</i> component. This object can be 
+             * @param {Object} combo: object containing reference to <i>combo-search-container</i> component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var combo  = Polymer.dom(this.root).querySelector('#my-combo');
              *   </pre>
-             *            
+             *
              */
             setCombo(combo) {
                 this.combo = combo;
@@ -699,12 +699,12 @@ This component, at present, is used to show:
             /**
              * This method is used to set map component
              *
-             * @param {Object} map: object containing reference to map component. This object can be 
+             * @param {Object} map: object containing reference to map component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var map  = Polymer.dom(this.root).querySelector('#my-map');
              *   </pre>
-             *            
+             *
              */
             setMap(map) {
                 this.map = map;
@@ -714,12 +714,12 @@ This component, at present, is used to show:
             /**
              * This method is used to set <i>list-coder</i> component
              *
-             * @param {Object} listCoder: object containing reference to <i>list-coder</i> component. This object can be 
+             * @param {Object} listCoder: object containing reference to <i>list-coder</i> component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var coder  = Polymer.dom(this.root).querySelector('#my-coder');
              *   </pre>
-             *            
+             *
              */
             setCoder(listCoder) {
                 this.coder = listCoder;
@@ -729,12 +729,12 @@ This component, at present, is used to show:
              * This method is used to set <i>wms-coder</i> component
              *
              * @private
-             * @param {Object} wmsCoder: object containing reference to <i>wms-coder</i> component. This object can be 
+             * @param {Object} wmsCoder: object containing reference to <i>wms-coder</i> component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var wms-coder  = Polymer.dom(this.root).querySelector('#my-wms-coder');
              *   </pre>
-             *            
+             *
              */
             setWmsCoder(wmsCoder) {
                 this.wmsCoder = wmsCoder;
@@ -744,19 +744,19 @@ This component, at present, is used to show:
              * This method is used to set <i>owc-cart-manager</i> component
              *
              * @private
-             * @param {Object} cartManager: object containing reference to <i>owc-cart-manager</i> component. This object can be 
+             * @param {Object} cartManager: object containing reference to <i>owc-cart-manager</i> component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var cartmng  = Polymer.dom(this.root).querySelector('#my-cartmng');
              *   </pre>
-             *            
+             *
              */
             setCartManager(cartManager) {
                 this.cartManager = cartManager;
             }
 
             /**
-             * This method is used to set target component of <i>message-broker</i> notification, in order to grant that only 
+             * This method is used to set target component of <i>message-broker</i> notification, in order to grant that only
              * the components expressing interest in the notification are stimulated by a data model change
              *
              * @param {Object} target: target component of <i>message-broker</i> notification

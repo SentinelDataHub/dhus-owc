@@ -43,15 +43,15 @@ In the context of <b>OWC</b> software, this component is used together with:
 <li><i>calendar-coder</i> component, which is in charge of getting fields useful for component representation from the data model resulting from <i>calendar-semantic-manager</i> component.</li>
 </ul>
 
-HTTP requests performed by this component are based on Solr OpenSearch API. 
+HTTP requests performed by this component are based on Solr OpenSearch API.
 In order to get information needed to draw the calendar of the publication density per day in the last 13 weeks, the component performes 91 HTTP requests based on product sensing start (beginposition Solr index).
 More in detail, the HTTP request gets how many products are sensed between the midnight of a day and the midnight of the nex day.
 An example of the request is reported below.
 <pre>
     /search?q=beginposition:[2017-03-15T00:00:00.000Z TO 2017-03-16T00:00:00.000Z]&format=JSON&rows=0&group=true
-</pre> 
+</pre>
 
-The information related to the number of products sensed in a date is extracted from the JSON object returned by the HTTP request, which is 
+The information related to the number of products sensed in a date is extracted from the JSON object returned by the HTTP request, which is
 <pre>
 response.feed['opensearch:totalResults']
 </pre>
@@ -123,7 +123,7 @@ An example of HTTP response is reported below.
              * BeforeRegister method Polymer calls before creating the element.
              * This method is where you shoud define the is property (element's name) and
              * properties  object.
-             *             
+             *
              */
 
             beforeRegister() {
@@ -175,29 +175,29 @@ An example of HTTP response is reported below.
 
 
             /**
-             * This method is used to set the component (e.g. <i>owc-calendar</i>) devoted to 
+             * This method is used to set the component (e.g. <i>owc-calendar</i>) devoted to
              * show HTTP request data in a calendar of publication density
-             * @param {Object} calendar: object containing reference to calendar component. 
+             * @param {Object} calendar: object containing reference to calendar component.
              * This object can be obtained using properPolymer selection component method, like
              *   <pre>
              *   var calendar  = Polymer.dom(this.root).querySelector('#my-calendar');
              *   </pre>
-             *            
+             *
              */
             setCalendar(calendar) {
                 this._calendar = calendar;
             }
 
             /**
-             * This method is used to set the component (e.g. <i>calendar-coder</i>) which is 
-             * in charge of getting fields useful for component representation from the 
+             * This method is used to set the component (e.g. <i>calendar-coder</i>) which is
+             * in charge of getting fields useful for component representation from the
              * server data model
-             * @param {Object} coder: object containing reference to calendar-coder component. 
+             * @param {Object} coder: object containing reference to calendar-coder component.
              * This object can be obtained using proper Polymer selection component method, like
              *   <pre>
              *   var coder  = Polymer.dom(this.root).querySelector('#my-coder');
              *   </pre>
-             *            
+             *
              */
             setCoder(coder) {
                 this._coder = coder;
@@ -205,29 +205,29 @@ An example of HTTP response is reported below.
 
             /**
              * This method is used to set the <i>calendar-semantic-manager</i> component, which is
-             * in charge of generating a model from server data model useful for calendar 
+             * in charge of generating a model from server data model useful for calendar
              * representation
-             * @param {Object} semanticManager: object containing reference to 
-             * <i>calendar-semantic-manager</i> component. This object can be obtained using 
+             * @param {Object} semanticManager: object containing reference to
+             * <i>calendar-semantic-manager</i> component. This object can be obtained using
              * proper Polymer selection component method, like
              *   <pre>
              *   var semanticmng = Polymer.dom(this.root).querySelector('#my-cal-semantic-mng');
              *   </pre>
-             *            
+             *
              */
             setSemanticManager(semanticManager) {
                 this._semanticManager = semanticManager;
             }
 
             /**
-             * This method is used to set the calendar container component 
+             * This method is used to set the calendar container component
              * @param {Object} container: object containing reference to calendar container
-             * component. This object can be obtained using proper Polymer selection component 
+             * component. This object can be obtained using proper Polymer selection component
              * method, like
              *   <pre>
              *   var container  = Polymer.dom(this.root).querySelector('#my-cal-container');
              *   </pre>
-             *            
+             *
              */
             setContainer(container) {
                 this.delegateContainer = container;
@@ -270,7 +270,7 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method generates url for http ODATA request used to get the list of products 
+             * This method generates url for http ODATA request used to get the list of products
              * sensed in the last quarted
              *
              * @private
@@ -292,7 +292,7 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method generates url for http ODATA count request used to get the list of 
+             * This method generates url for http ODATA count request used to get the list of
              * products sensed in the last quarted
              *
              * @private
@@ -365,13 +365,13 @@ An example of HTTP response is reported below.
 
 
             /**
-             * This method performs http requests used to retrieve products density in the 
+             * This method performs http requests used to retrieve products density in the
              * last quarter.
-             * This method performes 91 HTTP requests based on product sensing start 
+             * This method performes 91 HTTP requests based on product sensing start
              * (beginposition Solr index), storing the result in an array containing the number
              * of product sensed in the last 13 weeks.
              *
-             * @return {Array} products: array containing the number of product sensed in the 
+             * @return {Array} products: array containing the number of product sensed in the
              * last 13 weeks.
              */
             getCalendar() {
@@ -418,13 +418,13 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method performs an ODATA request used to retrieve products density in the 
+             * This method performs an ODATA request used to retrieve products density in the
              * last quarter.
              * This method is deprecated, since OData requests with filter have bad performances.
-             * 
+             *
              * @private
              * @deprecated
-             * @return {Array} products: array containing the number of product sensed in the 
+             * @return {Array} products: array containing the number of product sensed in the
              * last 13 weeks.
              */
             request() {
@@ -449,10 +449,10 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method performs an ODATA request used to retrieve products count in the 
+             * This method performs an ODATA request used to retrieve products count in the
              * last quarter.
              * This method is deprecated, since OData requests with filter have bad performances.
-             * 
+             *
              * @private
              * @deprecated
              * @return {Number} count: number of products in the last 13 weeks.
@@ -515,7 +515,7 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method is used to get the list of last 13 weeks events from server via 
+             * This method is used to get the list of last 13 weeks events from server via
              * OData API
              *
              * This OData API is not available in the current distribution, so this method
@@ -536,14 +536,14 @@ An example of HTTP response is reported below.
                         return self.getEventsListModel(response.data);
 
                     else {
-                      console.log("here");
+                      //console.log("here");
                       //TODO: to complete and manage this part
                           return new Promise(function(resolve, reject) {
                           reject("model_empty");
                       });
                     }
                   }, function(){
-                    console.log("there");
+                    //console.log("there");
                     return new Promise(function(resolve, reject) {
                     reject("model_empty");
                   });
@@ -551,13 +551,13 @@ An example of HTTP response is reported below.
             }
 
             /*
-             * This method gets data model for calendar representation, using the methods 
-             * <i>request()</i> and <i>requestCount()</i>, which are based on HTTP OData requests 
+             * This method gets data model for calendar representation, using the methods
+             * <i>request()</i> and <i>requestCount()</i>, which are based on HTTP OData requests
              * with filter.
              * @param {String} filter: search filters
              *
              * This method is deprecated, since OData requests with filter have bad performances.
-             * 
+             *
              * @private
              * @deprecated
              * @return {null}

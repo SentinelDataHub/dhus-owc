@@ -33,7 +33,7 @@
 <ul>
 <li>list of products</li>
 <li>list of products in user's cart (pinned list)</li>
-</ul> 
+</ul>
 
 This component contains the following sections:
 <ul>
@@ -279,7 +279,7 @@ This component contains the following sections:
                 this.properties = {
 
                     /**
-                     * Object containing list item data model                     
+                     * Object containing list item data model
                      * @type {Object}
                      */
                     model: {
@@ -289,9 +289,9 @@ This component contains the following sections:
 
                     /**
                      * Internal property
-                     * If it is true, it indicates that product quicklook available on a WMS server has to be project on the map 
-                     * if it is false, it indicates that product quicklook available on a WMS server hasn' to be project on the 
-                     *  map                      
+                     * If it is true, it indicates that product quicklook available on a WMS server has to be project on the map
+                     * if it is false, it indicates that product quicklook available on a WMS server hasn' to be project on the
+                     *  map
                      *
                      * @private
                      * @type {Boolean}
@@ -336,12 +336,12 @@ This component contains the following sections:
                     },
 
                     /**
-                     * Object containing reference to <i>cart-manager</i> component. This object can be obtained using proper 
+                     * Object containing reference to <i>cart-manager</i> component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var cartmng  = Polymer.dom(this.root).querySelector('#my-cartmng');
                      *   </pre>
-                     *               
+                     *
                      * @private
                      * @type {Object}
                      */
@@ -385,8 +385,8 @@ This component contains the following sections:
 
                     /**
                      * Internal property
-                     * If it is true, it indicates that product quicklook is available on a WMS server  
-                     * if it is false, it indicates that product quicklook is NOT available on a WMS server                    
+                     * If it is true, it indicates that product quicklook is available on a WMS server
+                     * if it is false, it indicates that product quicklook is NOT available on a WMS server
                      *
                      * @private
                      * @type {Boolean}
@@ -531,7 +531,7 @@ This component contains the following sections:
             }
 
             /**
-             * This method is used to compute the css class for list item background. 
+             * This method is used to compute the css class for list item background.
              * More in the details, the background is grey for offline product (i.e. product not immediatly available for download)
              * and is white for online product (i.e. product which can be downloaded directly from DHuS archive)
              *
@@ -546,7 +546,7 @@ This component contains the following sections:
             }
 
             /**
-             * This method is used to get the list of products contained in the user's cart. This list is used to add a proper 
+             * This method is used to get the list of products contained in the user's cart. This list is used to add a proper
              * style to the star icon <img src="https://cloud.githubusercontent.com/assets/10920750/25841129/37793d32-349f-11e7-8a12-56b9af4098e0.png"></img> shown in the top right-hand corner of list item.
              * If star icon is black coloured, this means that the product is not present in the user cart
              * If star icon is blue coloured, this means that the product is present in the user cart.
@@ -578,7 +578,7 @@ This component contains the following sections:
             /**
              * This callback is used to manage error due to missing product thumbnail. This allows to show a thumbnail placeholder
              * in case of error occurred retrieving thumbnail via proper OData API.
-             *            
+             *
              */
             imageError() {
                 var IMAGE_PLACE_HOLDER_URL = this.owcApp.config.clientUrl + '/images/placeholder.png';
@@ -630,7 +630,7 @@ This component contains the following sections:
                         /*TEST PURPOSE  REMOVE!!!!!*/
 
                     }).catch(function(reason) {
-                        console.log("ERROR ", reason);
+                        //console.log("ERROR ", reason);
                         self.owcApp.toastManager.error("Error during offline product request for download");
 
                     });;
@@ -639,11 +639,11 @@ This component contains the following sections:
             }
 
             /**
-             * This method is  used to project on the map the product quicklook, if a layer for the product is available on a 
+             * This method is  used to project on the map the product quicklook, if a layer for the product is available on a
              * WMS server
              * This functionality is in a prototype stage and at present is not supported by *OWC*
              * @deprecated
-             * @private  
+             * @private
              */
             addLayer() {
                 var self = this;
@@ -666,7 +666,7 @@ This component contains the following sections:
             }
 
             /**
-             * This method is used to show the list of auxiliary data files used to process the product. This action is triggered 
+             * This method is used to show the list of auxiliary data files used to process the product. This action is triggered
              * clicking on the proper icon
              * <img src="https://cloud.githubusercontent.com/assets/10920750/25785334/2db839b4-337e-11e7-96bd-50a1e0900f4d.png"></img>
              */
@@ -680,10 +680,10 @@ This component contains the following sections:
 
             /**
              * This method is used to show the list of auxiliary data files which could be used to process the product.
-             * This auxiliary data files are retrieved from a Data Hub containing auxiliary data product. 
+             * This auxiliary data files are retrieved from a Data Hub containing auxiliary data product.
              * This functionality is in a prototype stage and at present is not supported by *OWC*
              * @deprecated
-             * @private             
+             * @private
              */
             adfSearch() {
                 var list = document.createElement('auxiliary-search-container');
@@ -695,19 +695,19 @@ This component contains the following sections:
 
             /**
              * This method is used to set the component (e.g. <i>owc-list</i>) devoted to show HTTP request data in a list
-             * @param {Object} list: object containing reference to list component. This object can be obtained using proper 
+             * @param {Object} list: object containing reference to list component. This object can be obtained using proper
              * Polymer selection component method, like
              *   <pre>
              *   var list  = Polymer.dom(this.root).querySelector('#my-list');
              *   </pre>
-             *            
+             *
              */
             setList(list) {
                 this.list = list;
             }
 
             /**
-             * This method is used to set target component of <i>message-broker</i> notification, in order to grant that only 
+             * This method is used to set target component of <i>message-broker</i> notification, in order to grant that only
              * the components expressing interest in the notification are stimulated by a data model change
              *
              * @param {Object} target: target component of <i>message-broker</i> notification

@@ -1,23 +1,24 @@
 # USER MANUAL
 
 ## Preface
-This guide is oriented to anyone who wants to use the **OWC** application, the new Graphical User Interface for the DHuS, based on Google Polymer library.<br/>
-This new GUI offers the same functionalities of the traditional one, with additional features devoted mainly to improve application configuration.
-**OWC** development is still ongoing, so there will be both improvements on existing functionalities and new features implementation.<br/>
-Furthermore, the **OWC** project is *Open Source*,  with the goal of creating a community of developers interested in implementing new web components suitable to the dissemination of space products.
-Thanks to modularity and extensibility principles, components implemented by *Open Source* community can be dynamically imported in the OWC application on the basis of the users' needs.
+This guide is oriented to anyone who wants to use the **Open Web Component** (**OWC**) application, the new Graphical User Interface for the DHuS, based on Google Polymer library.<br/>
+This new GUI offers the same functionalities of the traditional one, with additional features devoted mainly to increase the application configurability.
+**OWC** development is a continuous process, so in the next releases there will be both improvements on existing functionalities and new features implementation.<br/>
+As the whole DHuS application, the **OWC** project is *Open Source*,  with the goal of creating a community of developers interested in implementing new web components suitable to the dissemination of EO products.
+Thanks to the modularity and extensibility principles o which OWC is based, components implemented by *Open Source* community can be dynamically imported in  OWC according to the users' needs.
 
 ## Prerequisites and Constraints
-Since **OWC** application is based on Web Components standard, which is not supported yet on all browsers, OWC GUI works only with recent distribution of Google Chrome.
+Since **OWC** application is based on the Web Components standard, currently not supported yet on all browsers, OWC GUI works only with recent distribution of Google Chrome.
 
 ## Application Menu
 **OWC** main page shows the application menu on a configurable background image.
 
 ![main labeled](https://cloud.githubusercontent.com/assets/10920750/25784024/a9fde4dc-3366-11e7-875e-4cfe3486954a.png)
 
-All panels are displayed horizontally on the screen in the order they are requested by end users, clicking on the proper menu icon.<br/>
-This navigation system choice makes it possible to present data efficiently and makes it easier for the user to navigate among components, giving also the chance to compare search results.<br/>
-It is possible to close a panel clicking on the *close icon* on the top right-hand corner of each panel, while the *escape* key allows closing the last panel displayed on the right of the screen.<br/>
+All panels are displayed horizontally on the screen according to the order they are requested by end users (clicking on the proper menu icon).<br/>
+This navigation system choice makes possible to present data efficiently providing to the user an intuitive way to navigate among components.
+<br/>One of the main benefit brought by OWC’s navigation system is the chance to compare search results.<br/>
+It is possible to *close a panel* clicking on the *close icon* on the top right-hand corner of each panel, while the *escape* key allows closing the last panel displayed on the right of the screen.<br/>
 The default configuration of **OWC** application foresees the following menu options:
 - Login panel, which allows users to:
   * perform login (if already registered);
@@ -151,7 +152,8 @@ The *Product list* provides all the products matching the submitted search query
 - a set of available actions, such as:
   - open product details panel, clicking on ![show](https://cloud.githubusercontent.com/assets/10920750/25785356/8c127e66-337e-11e7-9bd0-33f791a94fdb.png) icon reported in list item;
   - download a product, clicking on ![download](https://cloud.githubusercontent.com/assets/10920750/25785352/721f96ec-337e-11e7-827d-ba0fa32135b9.png) icon reported in list item;
-  - open auxiliary list panel, clicking on ![adf](https://cloud.githubusercontent.com/assets/10920750/25785334/2db839b4-337e-11e7-96bd-50a1e0900f4d.png)icon reported in list item;
+  - open the panel containing the list of auxiliary data files used to process a product, clicking on ![adf](https://cloud.githubusercontent.com/assets/10920750/25785334/2db839b4-337e-11e7-96bd-50a1e0900f4d.png) icon reported in list item;
+  - open the panel containing the list of auxiliary data files retrieved from another DHuS instance and useful for product re-processing, clicking on  ![processing_icon](https://user-images.githubusercontent.com/10920750/27180998-f1de3ea4-51d5-11e7-86e0-f75c846cde78.png) icon reported in list item. This action is available only if the feature is enabled. The procedure useful to enable this feature and to configure properly **OWC** application is described in the document available at  http://sentineldatahub.github.io/DataHubSystem/administration.html;
   - add or remove product to/from user cart, clicking on the *star icon* ![staricon](https://cloud.githubusercontent.com/assets/10920750/25841129/37793d32-349f-11e7-8a12-56b9af4098e0.png) shown in list item. If *star icon* is black coloured, this means that the product is not present in the user cart, so, clicking on the icon, the product is added to the user cart. If *star icon* is blue coloured, this means that the product is  present in the user cart, so, clicking on the icon, the product is removed from user cart.
 
 
@@ -170,14 +172,37 @@ This panel contains:
 - product quicklook, if any;
 - list of product metadata, listed in alphabetical order and grouped by category.
 
-#### Auxiliary File list
-*Auxiliary File list* panel is shown clicking on ![adf](https://cloud.githubusercontent.com/assets/10920750/25785334/2db839b4-337e-11e7-96bd-50a1e0900f4d.png) icon reported in list item.
+#### Auxiliary File List
+*Auxiliary File List* panel is shown clicking on ![adf](https://cloud.githubusercontent.com/assets/10920750/25785334/2db839b4-337e-11e7-96bd-50a1e0900f4d.png) icon reported in list item.
 
 ![aux_new](https://user-images.githubusercontent.com/10920750/26936374-d22611b6-4c6e-11e7-8cc3-6a1b42ddaec9.png)
 
 This panel contains the list of Auxiliary Data File used to process a product, obtained by means of product inspection via OData.<br/>
 At present this feature is available only for Sentinel-1 and Sentinel-3 products.
 
+#### Auxiliary File Search
+*Auxiliary File Search* panel is shown clicking on ![processing_icon](https://user-images.githubusercontent.com/10920750/27180998-f1de3ea4-51d5-11e7-86e0-f75c846cde78.png) icon reported in list item.
+
+This icon is visible only if Auxiliary File Search feature is enabled in **OWC** application.
+The procedure useful to enable this feature and to configure properly **OWC** application is described in the document available at  http://sentineldatahub.github.io/DataHubSystem/administration.html
+
+
+![adf_search_list](https://user-images.githubusercontent.com/10920750/27181011-f806524e-51d5-11e7-97a9-ef7717946e42.png)
+
+*Auxiliary File Search* feature is designed to allow retrieving Auxiliary Data Files (**ADF**) which could be used to “re-process” a product, if they are better than the ones originally used.
+<br> Obviously, the usefulness of this feature is related to the availability of a significant dataset of Auxiliary Data Files.
+<br>These files are retrieved from a DHuS instance able to ingest ADF.
+<br> However, please note that it is possible to ingest Auxiliary data files and products in the same DHuS instance.
+
+The comparison between the *Auxiliary File List* and the *Auxiliary File Search* is useful to understand whether it is appropriate to process a product with different Auxiliary Data Files.
+
+![adf_comparison](https://user-images.githubusercontent.com/10920750/27182882-08beb368-51dd-11e7-80f0-638325ba6312.png)
+
+At present this feature is available only for Sentinel-3 Level 1 and Level 2 products, but it is designed to be easily extended to support new product types and missions.
+
+If an user click on the processing ![processing_icon](https://user-images.githubusercontent.com/10920750/27180998-f1de3ea4-51d5-11e7-86e0-f75c846cde78.png) icon of a not supported product type, a notification message is shown on the bottom of the screen.
+
+![operation_not_supported](https://user-images.githubusercontent.com/10920750/27182889-0df059a4-51dd-11e7-93a6-bc6163648cce.png)
 
 ### Map
 *Map* section of *Search Container* shows footprints of the products matching the search query. <br/>
@@ -210,10 +235,10 @@ From this panel it is possible to:
 - remove a single product from cart, clicking on ![star](https://cloud.githubusercontent.com/assets/10920750/25785359/a15a6360-337e-11e7-8e82-d2bccef36e8c.png) icon reported in the top right-hand corner of list item;
 - open product details panel, clicking on ![show](https://cloud.githubusercontent.com/assets/10920750/25785356/8c127e66-337e-11e7-9bd0-33f791a94fdb.png) icon reported in list item;
 - download a single product, clicking on ![download](https://cloud.githubusercontent.com/assets/10920750/25785352/721f96ec-337e-11e7-827d-ba0fa32135b9.png) icon reported in list item;
-- open auxiliary list panel, clicking on ![adf](https://cloud.githubusercontent.com/assets/10920750/25785334/2db839b4-337e-11e7-96bd-50a1e0900f4d.png)
- icon reported in list item.
+- open the panel containing the list of auxiliary data files used to process a product, clicking on ![adf](https://cloud.githubusercontent.com/assets/10920750/25785334/2db839b4-337e-11e7-96bd-50a1e0900f4d.png) icon reported in list item;
+- open the panel containing the list of auxiliary data files retrieved from another DHuS instance and useful for product re-processing, clicking on  ![processing_icon](https://user-images.githubusercontent.com/10920750/27180998-f1de3ea4-51d5-11e7-86e0-f75c846cde78.png) icon reported in list item. This action is available only if the feature is enabled. The procedure useful to enable this feature and to configure properly **OWC** application is described in the document available at http://sentineldatahub.github.io/DataHubSystem/administration.html;
 
-![cart labelled](https://cloud.githubusercontent.com/assets/10920750/25785020/22e71f98-3377-11e7-9b5b-ecbade2dbe23.png)
+![cart2](https://user-images.githubusercontent.com/10920750/27184706-340d9fce-51e3-11e7-8fc2-89e2f74b433b.png)
 ### Saved Searches
 The *Saved Searches Panel* shows the list of user's saved searches. <br/>
 

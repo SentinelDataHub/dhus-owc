@@ -1,11 +1,11 @@
 # USER GUIDE
 
 ## Preface
-This guide is oriented to anyone who wants to use the **OWC** application, the new Graphical User Interface for the DHuS, based on Google Polymer library.<br/>
-This new GUI offers the same functionalities of the traditional one, with additional features devoted mainly to improve application configuration.
-**OWC** development is still ongoing, so there will be both improvements on existing functionalities and new features implementation.<br/>
-Furthermore, the **OWC** project is *Open Source*,  with the goal of creating a community of developers interested in implementing new web components suitable to the dissemination of space products.
-Thanks to modularity and extensibility principles, components implemented by *Open Source* community can be dynamically imported in the OWC application on the basis of the users' needs.
+This guide is oriented to anyone who wants to use the **Open Web Component** (**OWC**) application, the new Graphical User Interface for the DHuS, based on Google Polymer library.<br/>
+This new GUI offers the same functionalities of the traditional one, with additional features devoted mainly to increase the application configurability.
+**OWC** development is a continuous process, so in the next releases there will be both improvements on existing functionalities and new features implementation.<br/>
+As the whole DHuS application, the **OWC** project is *Open Source*,  with the goal of creating a community of developers interested in implementing new web components suitable to the dissemination of EO products.
+Thanks to the modularity and extensibility principles o which OWC is based, components implemented by *Open Source* community can be dynamically imported in  OWC according to the users' needs.
 
 ## Prerequisites and Constraints
 Since **OWC** application is based on Web Components standard, which is not supported yet on all browsers, OWC GUI works only with recent distribution of Google Chrome.

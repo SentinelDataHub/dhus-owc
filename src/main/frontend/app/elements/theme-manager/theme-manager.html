@@ -52,7 +52,6 @@ This component is devoted to manage main theme for OWC application
             beforeRegister() {
                 this.is = 'theme-manager';
                 this.owcApp = document.querySelector('#owc-app');
-
                 this.properties = {
                     /**
                      * Theme model
@@ -64,15 +63,12 @@ This component is devoted to manage main theme for OWC application
                         value: null,
                         notify: true
                     }
-
                 };
-
             }
 
-            
-            /**             
-             * This method is used to convert from hex to rgb. 
-             * 
+            /**
+             * This method is used to convert from hex to rgb.
+             *
              * @param {String} hex color to convert
              * @return {Object} converted rgb color object, composed by r, g and b fields
              */
@@ -92,8 +88,7 @@ This component is devoted to manage main theme for OWC application
             }
 
 
-
-            /**             
+            /**
              *  Called after the element is attached to the document.
              *  Can be called multiple times during the lifetime of an element.
              *  The first 'attached' callback is guaranteed not to fire until after 'ready'
@@ -103,47 +98,97 @@ This component is devoted to manage main theme for OWC application
             attached() {
 
                 var self = this;
-                var ls = localStorage.getItem('theme');
                 var navigationMaanger = document.getElementById('navigation-manager');
-                if (!ls) {
-                    self.owcApp.httpManager.sendRequest('GET', self.owcApp.config.clientUrl + '/conf/theme.json').then(function(response) {
-                        setTimeout(function() {
-                            self.owcApp.theme = (response.status == 200) ? response.data : {};
+
+                this.owcApp.httpManager.sendRequest('GET', this.owcApp.config.baseUrl + '/api/owc/version')
+                    .then(function(response) {
+                        var currentVersion = response.data.value;
+                        var savedVersion = localStorage.getItem("version");
+                        if(savedVersion){
+                          if( currentVersion && (currentVersion != savedVersion)){
+                            localStorage.setItem("version", currentVersion);
+                            // NEW VERSION!
+
+                            // ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ //
+
+                            // ask to user:
+                            if (confirm("New version released ("+currentVersion+"). \n Do you want to load the default theme of this new version?") == true) {
+                              // load new version default theme
+                              self.owcApp.httpManager.sendRequest('GET', self.owcApp.config.clientUrl + '/conf/theme.json').then(function(response) {
+                                  // -> load theme from web
+                                  // -> set new item on local storage
+                                  // -> update styles
+                                  setTimeout(function() {
+                                      self.owcApp.theme = (response.status == 200) ? response.data : {};
+                                      var rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
+                                      localStorage.setItem('theme', JSON.stringify(self.owcApp.theme));
+                                      navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
+
+                                      navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
+                                          self.owcApp.theme.bgimageurl + "\")";
+                                      navigationMaanger.updateStyles();
+                                      alert("Loaded new theme of "+currentVersion+" version.");
+                                  }, 0);
+                              });
+                            } else {
+                                  // keep the old one
+                            }
+
+                            // ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ //
+                          }else{
+                            var ls = localStorage.getItem('theme');
+                            // -> update styles
+                            self.owcApp.theme = JSON.parse(ls);
                             var rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
-                            localStorage.setItem('theme', JSON.stringify(self.owcApp.theme));
                             navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
 
                             navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
                                 self.owcApp.theme.bgimageurl + "\")";
                             navigationMaanger.updateStyles();
-                            self.owcApp.messageBroker.publish('theme-loaded');
-                        }, 0);
+                          }
+                        }else{
+                          localStorage.setItem("version", currentVersion);
+                          self.owcApp.httpManager.sendRequest('GET', self.owcApp.config.clientUrl + '/conf/theme.json').then(function(response) {
+                              setTimeout(function() {
+                                  self.owcApp.theme = (response.status == 200) ? response.data : {};
+                                  var rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
+                                  localStorage.setItem('theme', JSON.stringify(self.owcApp.theme));
+                                  navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
+
+                                  navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
+                                      self.owcApp.theme.bgimageurl + "\")";
+                                  navigationMaanger.updateStyles();
+                              }, 0);
+                          });
+                          // ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~ ~~~~ //
+                        }
+                        // === refresh the theme ===
+                          setTimeout(function() {
+                            var ls = localStorage.getItem('theme');
+                            // -> update styles
+                            self.owcApp.theme = JSON.parse(ls);
+                            var rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
+                            navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
+
+                            navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
+                                self.owcApp.theme.bgimageurl + "\")";
+                            navigationMaanger.updateStyles();
+                          }, 0);
+                        // === === === === === === ==
                     });
-                } else {
-                    self.owcApp.theme = JSON.parse(ls);
-                    var rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
-                    navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
 
-                    navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
-                        self.owcApp.theme.bgimageurl + "\")";
-                    navigationMaanger.updateStyles();
-                    self.owcApp.messageBroker.publish('theme-loaded');
-                }
-
+                //--- subscribe to update-theme event ---//
                 self.owcApp.messageBroker.subscribe('update-theme', function(model) {
                     setTimeout(function() {
                         var rgbColor = self._hexToRgb(model.bgcolor);
-                         navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
-
+                        navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
                         navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
                             model.bgimageurl + "\")";
                         navigationMaanger.updateStyles();
                     }, 0);
-
-
                 });
+                // --- end subscription to update-theme event ---//
             }
-
         };
 
         Polymer(ThemeManager);

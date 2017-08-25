@@ -41,7 +41,7 @@ This component is used for event synchronizer creation or update. This functiona
             overflow-y: hidden !important;
             overflow-x: hidden !important;
         }
-        
+
         .propContainer {
             @apply(--layout-vertical);
             height: var(--createheight, 500px);
@@ -49,30 +49,30 @@ This component is used for event synchronizer creation or update. This functiona
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         .buttonContainer {
             margin-bottom: 0px;
             height: 40px!important;
             width: 98%!important;
             overflow: hidden;
         }
-        
+
         .fieldContainer {
             @apply(--layout-horizontal);
         }
-        
+
         .flexchild {
             @apply(--layout-flex);
         }
-        
+
         .flex2child {
             @apply(--layout-flex-5);
         }
-        
+
         .flex3child {
             @apply(--layout-flex-5);
         }
-        
+
         .panelHeader {
             background: #002664;
             color: white;
@@ -82,7 +82,7 @@ This component is used for event synchronizer creation or update. This functiona
             margin-bottom: 20px;
             text-align: center;
         }
-        
+
         paper-button {
             background: #002664;
             color: white;
@@ -93,11 +93,11 @@ This component is used for event synchronizer creation or update. This functiona
             float: right;
             margin-right: 10px
         }
-        
+
         paper-button[toggles][active].colorful {
             background-color: #002664;
         }
-        
+
         paper-button[toggles][active][raised].colorful {
             background-color: rgba(66, 133, 244, 0.75);
         }
@@ -325,7 +325,7 @@ This component is used for event synchronizer creation or update. This functiona
              */
             save() {
                 var self = this;
-                console.log('save model', self.model);
+                //console.log('save model', self.model);
                 self.checkConfirmPassword();
                 if (self.checkFields) {
                     if (self.model.Id)

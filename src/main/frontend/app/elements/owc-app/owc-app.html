@@ -66,10 +66,9 @@ At application startup, it creates all the components used to manage:
 
         var config = {
 
-            baseUrl: window.location.href.split("dhus")[0] + "dhus",
-            clientUrl: window.location.href.split("dhus")[0] + "dhus/new"
-            //baseUrl: "https://scihub.copernicus.eu/demohub", //debug
-            //clientUrl: "./" //debug
+            baseUrl: "../",
+            clientUrl: "./"
+            
 
         };
 
@@ -131,7 +130,7 @@ At application startup, it creates all the components used to manage:
                 }
                 if (localStorage.owcLanguage) {
                     this.i18nManager.setCurrentLanguage(localStorage.getItem("owcLanguage"));
-                }else{
+                } else{
                     this.i18nManager.setCurrentLanguage('en');
                 }
 
@@ -158,36 +157,42 @@ At application startup, it creates all the components used to manage:
                  * @type {Object}
                  */
                 this.themeManager = new eu.serco.Owc.ThemeManager();
+
                 /**
                  * Authentication manager
                  *
                  * @type {Object}
                  */
                 this.authenticationManager = new eu.serco.Owc.AuthenticationManager();
+
                 /**
                  * Application utilities
                  *
                  * @type {Object}
                  */
                 this.utils = new eu.serco.Owc.OwcUtils();
+
                 /**
                  * Owc Http filter
                  *
                  * @type {Object}
                  */
                 this.httpManager.filter = new eu.serco.Owc.OwcHttpFilter();
+
                 /**
                  * Application config
                  *
                  * @type {Object}
                  */
                 this.applicationConfig = new eu.serco.Owc.OwcAppConfig();
+
                 /**
                  * Owc User Manager
                  *
                  * @type {Object}
                  */
                 this.userManager = new eu.serco.Owc.UserManager();
+
                 /**
                  * Navigation manager
                  *
@@ -228,26 +233,24 @@ At application startup, it creates all the components used to manage:
                 var dynamicMenu = document.createElement('dynamic-main-menu');
                 var self=this;
                 setTimeout(function(){
-                    self.navigationManager.pushComponent(dynamicMenu, "150px", (self.theme.title) ? self.theme.title : 'Copernicus Data Hub', true, true, 1);
-                
+                    self.navigationManager.pushComponent(dynamicMenu, "150px", (self.theme.title) ? self.theme.title : '', true, true, 1);
                 },100);
 
-                this.httpManager.sendRequest('GET', this.config.baseUrl + '/api/owc/version')
-                    .then(function(response) {
-                        var currentVersion = response.data.value;
-                        var savedVersion = localStorage.getItem("version");
-                        if(savedVersion){
-                          if(currentVersion != savedVersion){
-                            localStorage.setItem("version", currentVersion);
-                            alert("refresh");
-                            location.reload(true);
-                          }
-                        }else{
-                          localStorage.setItem("version", currentVersion);
-                          location.reload(true);
-                        }
-
-                    });
+                // this.httpManager.sendRequest('GET', this.config.baseUrl + '/api/owc/version')
+                //     .then(function(response) {
+                //         var currentVersion = response.data.value;
+                //         var savedVersion = localStorage.getItem("version");
+                //         if(savedVersion){
+                //           if(currentVersion != savedVersion){
+                //             //localStorage.setItem("version", currentVersion);
+                //             //location.reload(true);
+                //           }
+                //         }else{
+                //         //  localStorage.setItem("version", currentVersion);
+                //           //location.reload(true);
+                //         }
+                //
+                //     });
 
             }
         };

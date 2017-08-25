@@ -71,14 +71,14 @@ This component is used to manage client-side product processing by means of conf
             */
            process(model, plugin) {
              var self =  this;
-              console.warn("plugins-manager() ");
-              console.log("model: ", model);
-              console.log("plugin: ", plugin);
+              //console.warn("plugins-manager() ");
+              //console.log("model: ", model);
+              //console.log("plugin: ", plugin);
               this.orchestrator.executeWorkers(JSON.stringify(model), plugin.webworkers)
                 .then(function(result){
-                  console.warn("orchestrator result");
-                  console.log("result: ", result);
-                  console.log("plugin.visualizer", plugin.visualizer);
+                  //console.warn("orchestrator result");
+                  //console.log("result: ", result);
+                //  console.log("plugin.visualizer", plugin.visualizer);
                   var visualizer = document.createElement(plugin.visualizer);
                   visualizer.model = result;
                   self.owcApp.navigationManager.pushComponent(visualizer, '500px', plugin.name,false, true,1);

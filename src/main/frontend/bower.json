@@ -2,24 +2,24 @@
   "name": "polymer-starter-kit",
   "private": true,
   "dependencies": {
-    "iron-elements": "PolymerElements/iron-elements#^1.0.0",
-    "neon-elements": "PolymerElements/neon-elements#^1.0.0",
+    "iron-elements": "PolymerElements/iron-elements#1.0.10",
+    "neon-elements": "PolymerElements/neon-elements#1.0.0",
     "page": "visionmedia/page.js#~1.6.4",
-    "paper-elements": "PolymerElements/paper-elements#^1.0.1",
-    "gold-elements": "PolymerElements/gold-elements#^1.0.1",
-    "platinum-elements": "PolymerElements/platinum-elements#^1.1.0",
-    "polymer": "Polymer/polymer#^1.2.0",
+    "paper-elements": "PolymerElements/paper-elements#1.0.7",
+    "gold-elements": "PolymerElements/gold-elements#1.0.1",
+    "platinum-elements": "PolymerElements/platinum-elements#1.1.0",
+    "polymer": "Polymer/polymer#1.8.1",
     "jquery": "2.2.3",
     "underscore": "1.8.3",
     "ol3-bower": "3.4.0",
     "d3": "~3.5.6",
     "momentjs": "2.15.1",
     "spectrum": "1.8.0",
-    "juicy-ace-editor": "Juicy/juicy-ace-editor",
-    "moment-element": "bendavis78/moment-element#^1.1.1"
+    "juicy-ace-editor": "Juicy/juicy-ace-editor#1.2.5",
+    "moment-element": "bendavis78/moment-element#1.1.0"
   },
   "devDependencies": {
-    "web-component-tester": "^4.0.0"
+    "web-component-tester": "4.3.6"
   },
   "ignore": []
 }
