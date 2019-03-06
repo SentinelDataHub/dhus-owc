@@ -26,7 +26,7 @@
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <!--
-This component is used to configure the WMS to be used within OWC 
+This component is used to configure the WMS to be used within OWC
 
 
 @demo demo/index.html
@@ -37,16 +37,16 @@ This component is used to configure the WMS to be used within OWC
         :root {
             --default-primary-color: green;
         }
-        
+
         .section-item {
             padding: 30px;
             margin: 30px;
         }
-        
+
         .remove-section-button {
             float: right;
         }
-        
+
         paper-button {
             background: #002664;
             color: white;
@@ -59,28 +59,28 @@ This component is used to configure the WMS to be used within OWC
             top: 36px;
             margin-right: 10px
         }
-        
+
         paper-button[toggles][active].colorful {
             background-color: #002664;
         }
-        
+
         paper-button[toggles][active][raised].colorful {
             background-color: rgba(66, 133, 244, 0.75);
         }
-        
+
         #wmsSettingsContainer {
             height: var(--settingsheight, 90%);
             width: var(--width, 98%);
             overflow-y: auto;
         }
-        
+
         .buttonContainer {
             margin-bottom: 0px;
             height: 100px!important;
             width: 98%!important;
             overflow: hidden;
         }
-        
+
         .settingsHeader {
             float: left;
             margin-left: 10px;
@@ -100,9 +100,9 @@ This component is used to configure the WMS to be used within OWC
                                 <paper-input value="{{item.name}}" name="name" label="{{i18n('Name')}}" required></paper-input>
                                 <paper-input value="{{item.url}}" name="url" label="{{i18n('Url')}}" required></paper-input>
                                 <paper-input value="{{item.username}}" name="username" label="{{i18n('Username')}}"></paper-input>
-                                <paper-input type="password" value="{{item.password}}" name="password" label="{{i18n('Password')}}"></paper-input>                                
+                                <paper-input type="password" value="{{item.password}}" name="password" label="{{i18n('Password')}}"></paper-input>
                                 <paper-input value="{{item.rule}}" name="rule" label="{{i18n('Rule')}}" required></paper-input>
-                                <paper-tooltip>{{i18n('Please insert a regular expression on product identifier')}}</paper-tooltip>                                
+                                <paper-tooltip>{{i18n('regular_expression_product_identifier')}}</paper-tooltip>                                
                                 <paper-input value="{{item.priority}}" name="priority" label="{{i18n('Priority')}}" hidden>1</paper-input>
                             </form>
                         </div>
@@ -172,7 +172,7 @@ This component is used to configure the WMS to be used within OWC
 
             }
 
-            /**             
+            /**
              *  Called after the element is attached to the document.
              *  Can be called multiple times during the lifetime of an element.
              *  The first 'attached' callback is guaranteed not to fire until after 'ready'
@@ -189,7 +189,7 @@ This component is used to configure the WMS to be used within OWC
                 this.loadSettings();
             }
 
-            /**             
+            /**
              *  This method is used to load wms map server settings from local storage
              *
              * @return {null}
@@ -215,7 +215,7 @@ This component is used to configure the WMS to be used within OWC
 
 
 
-            /**             
+            /**
              *  used to add a wms section in the wms settings panel
              *
              * @return {null}
@@ -233,7 +233,7 @@ This component is used to configure the WMS to be used within OWC
             }
 
 
-            /**             
+            /**
              *  used to remove a layer section from the map settings panel
              *
              * @return {null}
@@ -242,7 +242,7 @@ This component is used to configure the WMS to be used within OWC
                 this.splice('config.servers', event.model.__data__.index, 1);
             }
 
-            /**             
+            /**
              *  used to save wms configuration in browser local storage
              *
              * @return {null}

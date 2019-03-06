@@ -43,15 +43,15 @@ In the context of <b>OWC</b> software, this component is used together with:
 <li><i>calendar-coder</i> component, which is in charge of getting fields useful for component representation from the data model resulting from <i>calendar-semantic-manager</i> component.</li>
 </ul>
 
-HTTP requests performed by this component are based on Solr OpenSearch API. 
+HTTP requests performed by this component are based on Solr OpenSearch API.
 In order to get information needed to draw the calendar of the publication density per day in the last 13 weeks, the component performes 91 HTTP requests based on product sensing start (beginposition Solr index).
 More in detail, the HTTP request gets how many products are sensed between the midnight of a day and the midnight of the nex day.
 An example of the request is reported below.
 <pre>
     /search?q=beginposition:[2017-03-15T00:00:00.000Z TO 2017-03-16T00:00:00.000Z]&format=JSON&rows=0&group=true
-</pre> 
+</pre>
 
-The information related to the number of products sensed in a date is extracted from the JSON object returned by the HTTP request, which is 
+The information related to the number of products sensed in a date is extracted from the JSON object returned by the HTTP request, which is
 <pre>
 response.feed['opensearch:totalResults']
 </pre>
@@ -114,7 +114,7 @@ An example of HTTP response is reported below.
             z-index: 10;
             margin-bottom: 20px;
         }
-        
+
         .chart div {
             font: 10px sans-serif;
             padding: 3px;
@@ -122,74 +122,74 @@ An example of HTTP response is reported below.
             color: white;
             height: 100%;
         }
-        
+
         #wrapper {
             width: 100%;
             height: 100%;
             margin: 0px;
         }
-        
+
         #chart_placeholder {
             font: 10px sans-serif;
             shape-rendering: crispEdges;
             overflow-y: auto;
         }
-        
+
         #calendar-content .month {
             fill: none !important;
             stroke: #000;
             stroke-width: 2px;
         }
-        
+
         #calendar-content .day {
             fill: #fff !important;
             stroke: #ccc !important;
         }
-        
+
         .RdYlGn .q0-11 {
             fill: rgb(165, 0, 38)
         }
-        
+
         .RdYlGn .q1-11 {
             fill: rgb(215, 48, 39)
         }
-        
+
         .RdYlGn .q2-11 {
             fill: rgb(244, 109, 67)
         }
-        
+
         .RdYlGn .q3-11 {
             fill: rgb(253, 174, 97)
         }
-        
+
         .RdYlGn .q4-11 {
             fill: rgb(254, 224, 139)
         }
-        
+
         .RdYlGn .q5-11 {
             fill: rgb(255, 255, 191)
         }
-        
+
         .RdYlGn .q6-11 {
             fill: rgb(217, 239, 139)
         }
-        
+
         .RdYlGn .q7-11 {
             fill: rgb(166, 217, 106)
         }
-        
+
         .RdYlGn .q8-11 {
             fill: rgb(102, 189, 99)
         }
-        
+
         .RdYlGn .q9-11 {
             fill: rgb(26, 152, 80)
         }
-        
+
         .RdYlGn .q10-11 {
             fill: rgb(0, 104, 55)
         }
-        
+
         #calendar-content {
             max-height: calc(100% - 50px);
             overflow-y: auto !important;
@@ -197,7 +197,7 @@ An example of HTTP response is reported below.
             /*position: absolute;*/
             width: 100%;
         }
-        
+
         #calendar-container {
             height: 100%;
             width: 100%;
@@ -205,7 +205,7 @@ An example of HTTP response is reported below.
             padding: 0;
             overflow: auto !important;
         }
-        
+
         #calendar-container header {
             width: 100%;
             height: 120px;
@@ -214,25 +214,25 @@ An example of HTTP response is reported below.
             font-weight: bold;
             padding-top: 20px;
         }
-        
+
         @media screen and (min-width: 993px) and (max-width: 1200px) {
             #calendar-container header {
                 font-size: 16px;
             }
         }
-        
+
         @media screen and (min-width: 769px) and(max-width: 992px) {
             #calendar-container header {
                 font-size: 14px;
             }
         }
-        
+
         @media screen and (max-width: 768px) {
             #calendar-container header {
                 font-size: 14px;
             }
         }
-        
+
         #calendar-header {
             width: 100%;
             text-align: center;
@@ -243,7 +243,7 @@ An example of HTTP response is reported below.
             left: 0;
             right: 0;
         }
-        
+
         #calendar-footer {
             width: 100%;
             height: 50%;
@@ -254,33 +254,33 @@ An example of HTTP response is reported below.
             padding-top: 10px;
             overflow: auto !important;
         }
-        
+
         #calendar-content .calendar-year-label {
             font-size: 20px !important;
             font-weight: bold !important;
         }
-        
+
         .calendar-title {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        
+
         #calendar-content .month-title {
             font-size: 12px !important;
         }
-        
+
         .calendar-date-details {
             max-height: calc(100% - 40px);
             overflow-y: auto;
             margin-top: 40px;
             position: relative;
         }
-        
+
         .calendar-date-details > ul {
             padding-left: 15px;
         }
-        
+
         .calendar-date-details li {
             list-style-type: none;
             margin: 0;
@@ -288,7 +288,7 @@ An example of HTTP response is reported below.
             font-size: 12px;
             font-weight: bold;
         }
-        
+
         .calendar-date-details li::before,
         .calendar-date-details li::after {
             content: '';
@@ -296,7 +296,7 @@ An example of HTTP response is reported below.
             position: absolute;
             right: auto
         }
-        
+
         .calendar-date-details li::before {
             border-left: 1px solid #eaeaea;
             bottom: 50px;
@@ -304,66 +304,66 @@ An example of HTTP response is reported below.
             top: 0;
             width: 1px
         }
-        
+
         .calendar-date-details li::after {
             border-top: 1px solid #eaeaea;
             height: 20px;
             top: 25px;
             width: 35px
         }
-        
+
         .calendar-date-details li > span {
             display: inline-block;
             padding: 5px;
             text-decoration: none
         }
-        
+
         .calendar-date-details li.parent_li > span {
             cursor: pointer
         }
-        
+
         .calendar-date-details > ul > li::before,
         .calendar-date-details > ul > li::after {
             border: 0
         }
-        
+
         .calendar-date-details li:last-child::before {
             height: 30px
         }
-        
+
         .calendar-date-details li > span:hover {
             background: #eaeaea;
         }
-        
+
         .calendar-date-details li.parent_li > span:hover + ul li.li_selected span {
             background: #eaeaea;
         }
-        
+
         .calendar-date-details li > span > a {
             color: #373b50;
             text-decoration: none;
         }
-        
+
         .calendar-date-details li:hover > span:hover > a:hover {
             background: #eaeaea;
             text-decoration: none;
         }
-        
+
         .calendar-date-details li > span > span.glyphicon-folder-close,
         .calendar-date-details li > span > span.glyphicon-folder-open {
             margin-right: 5px;
         }
-        
+
         .calendar-date-details li.li_selected > span,
         .calendar-date-details li.li_selected > span > a {
             background: #eaeaea;
         }
-        
+
         .calendar-date-details li.li_selected > span:hover,
         .calendar-date-details li.li_selected > span:hover > a {
             background: #eaeaea;
         }
-        
+
         .calendar-selected-date {
             height: 20px;
             font-size: 14px;
@@ -371,14 +371,14 @@ An example of HTTP response is reported below.
             padding-bottom: 5px;
             padding-left: 20px;
         }
-        
+
         .calendar-details-description {
             height: 20px;
             font-size: 14px;
             font-weight: bold;
             padding-left: 20px;
         }
-        
+
         paper-radio-button.interval {
             --paper-radio-button-checked-color: var(--paper-grey-900);
             --paper-radio-button-checked-ink-color: var(--paper-grey-900);
@@ -386,7 +386,7 @@ An example of HTTP response is reported below.
             --paper-radio-button-unchecked-ink-color: var(--paper-grey-500);
             --paper-radio-button-label-color: var(--paper-grey-900);
         }
-        
+
         .calendar-info-date {
             font-size: 12px;
             font-style: italic;
@@ -394,62 +394,62 @@ An example of HTTP response is reported below.
             text-align: -webkit-center;
             padding-top: 10px;
         }
-        
+
         .mission-bar {
             max-height: 20px !important;
             background: grey;
             padding-bottom: 0px !important;
             padding-top: 20px;
         }
-        
+
         .mission-button {
             height: 30px;
             margin: auto;
             width: 30px;
         }
-        
+
         .max-product-number-per-date {
             font-size: 14px !important;
             padding: 5px;
         }
-        
+
         .min-product-number-per-date {
             font-size: 14px !important;
             padding: 5px;
         }
-        
+
         .flex-horizontal {
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
             width: 90%;
         }
-        
+
         .flexchild {
             @apply(--layout-flex);
         }
-        
+
         .flex-vertical {
             @apply(--layout-vertical);
             overflow: auto !important;
         }
-        
+
         .flexchild-vertical {
             @apply(--layout-flex);
             overflow: auto !important;
         }
-        
+
         .calendar-info-hide {
             display: none !important;
             cursor: default !important;
         }
-        
+
         .calendar-info-icon {
             padding: 5px;
             cursor: pointer;
             opacity: 1;
             /*opacity: 0.65;*/
         }
-        
+
         .calendar-info-icon:hover {
             opacity: 0.65;
         }
@@ -466,13 +466,13 @@ An example of HTTP response is reported below.
                     {{start}} {{i18n('to')}} {{end}}
                 </div>
                 <div class=" calendar-info-date" hidden="{{!lastupdate}}">
-                    Last Update: {{lastupdate}}
+                     {{i18n('Last Update')}}: {{lastupdate}}
                 </div>
-                <div class="calendar-info-date ">click on a date for more details
+                <div class="calendar-info-date ">{{i18n('click on a date for more details')}}
                 </div>
                 <paper-radio-group selected="90days">
-                    <paper-radio-button id="all-products" name="all" class="interval" data-args="all" on-change="updateCalendar" hidden="{{!isDebug}}">All data</paper-radio-button>
-                    <paper-radio-button id="last-90" name="90days" class="interval" data-args="90" on-change="updateCalendar" hidden="{{!isDebug}}">Last 90 days</paper-radio-button>
+                    <paper-radio-button id="all-products" name="all" class="interval" data-args="all" on-change="updateCalendar" hidden="{{!isDebug}}">{{i18n('All data')}}</paper-radio-button>
+                    <paper-radio-button id="last-90" name="90days" class="interval" data-args="90" on-change="updateCalendar" hidden="{{!isDebug}}">{{i18n('Last 90 days')}}</paper-radio-button>
                 </paper-radio-group>
                 <div class="container flex-horizontal">
                     <div class="min-product-number-per-date">
@@ -529,7 +529,7 @@ An example of HTTP response is reported below.
 
 
                     /**
-                     * Array object containing calendar data model, which is the result of data processing performed by the 
+                     * Array object containing calendar data model, which is the result of data processing performed by the
                      * <i>calendar-coder</i> component on the <b>model</b> of the <i>calendar-semantic-manager</i> component
                      *
                      * @type {Array}
@@ -542,7 +542,7 @@ An example of HTTP response is reported below.
                     },
 
                     /**
-                     * Object containing reference to <i>calendar-datasource</i> component. This object can be obtained using proper 
+                     * Object containing reference to <i>calendar-datasource</i> component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var datasource  = Polymer.dom(this.root).querySelector('#my-cal-ds');
@@ -567,7 +567,7 @@ An example of HTTP response is reported below.
 
                     },
                     /**
-                     * Object containing reference to <i>calendar-coder</i> component. This object can be obtained using proper 
+                     * Object containing reference to <i>calendar-coder</i> component. This object can be obtained using proper
                      * Polymer selection component method, like
                      *   <pre>
                      *   var coder  = Polymer.dom(this.root).querySelector('#my-cal-coder');
@@ -584,8 +584,8 @@ An example of HTTP response is reported below.
 
 
                     /**
-                     * Object containing reference to calendar container component. 
-                     *               
+                     * Object containing reference to calendar container component.
+                     *
                      * @private
                      * @type {Object}
                      */
@@ -702,7 +702,7 @@ An example of HTTP response is reported below.
                     },
 
                     /**
-                     * Property containing products reference mission 
+                     * Property containing products reference mission
                      * This will be used in future to add filters on mission to the calendar of
                      * products distribution density
                      * @private
@@ -759,12 +759,12 @@ An example of HTTP response is reported below.
             /**
              * This method is used to set <i>calendar-datasource</i> component
              *
-             * @param {Object} delegate: object containing reference to <i>calendar-datasource</i> component. This object can be 
+             * @param {Object} delegate: object containing reference to <i>calendar-datasource</i> component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var datasource  = Polymer.dom(this.root).querySelector('#my-cal-datasource');
              *   </pre>
-             *            
+             *
              */
             setDelegate(delegate) {
                 this.datasource = delegate;
@@ -773,9 +773,9 @@ An example of HTTP response is reported below.
             /**
              * This method is used to set generic data model returned by <i>calendar-datasource</i> component
              *
-             * @param {Object} genericModel: object containing data model returned by 
+             * @param {Object} genericModel: object containing data model returned by
              * <i>calendar-datasource</i> component
-             * @return {Object} genericModel           
+             * @return {Object} genericModel
              */
             setGenericModel(genericModel) {
                 this.genericModel = genericModel;
@@ -784,12 +784,12 @@ An example of HTTP response is reported below.
             /**
              * This method is used to set calendar container component
              *
-             * @param {Object} calContainer: object containing reference to calendar container component. This object can be 
+             * @param {Object} calContainer: object containing reference to calendar container component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var container  = Polymer.dom(this.root).querySelector('#my-cal-container');
              *   </pre>
-             *            
+             *
              */
             setContainer(calContainer) {
                 this.container = calContainer;
@@ -798,12 +798,12 @@ An example of HTTP response is reported below.
             /**
              * This method is used to set <i>calendar-coder</i> component
              *
-             * @param {Object} calCoder: object containing reference to <i>calendar-coder</i> component. This object can be 
+             * @param {Object} calCoder: object containing reference to <i>calendar-coder</i> component. This object can be
              * obtained using proper Polymer selection component method, like
              *   <pre>
              *   var coder  = Polymer.dom(this.root).querySelector('#my-ccal-oder');
              *   </pre>
-             *            
+             *
              */
             setCoder(calCoder) {
                 this.coder = calCoder;
@@ -812,7 +812,7 @@ An example of HTTP response is reported below.
             /**
              * This method is used to update calendar of products density
              * This method is deprecated, since based on OData requests with filter, which have bad performances.
-             * 
+             *
              * @private
              * @deprecated
              *
@@ -832,7 +832,7 @@ An example of HTTP response is reported below.
              *
              * @private
              * @param {Object} page: updated list data model
-             *             
+             *
              */
             setNewModel(model) {
                 var self = this;
@@ -877,7 +877,7 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method manages content panel behaviour on panel resize.             
+             * This method manages content panel behaviour on panel resize.
              */
             resize() {
                 var self = this;
@@ -964,8 +964,8 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method sets the bar color of a specific satellite mission. Colour gradation 
-             * is more intense where product are more in quantity in a day, while is less intense 
+             * This method sets the bar color of a specific satellite mission. Colour gradation
+             * is more intense where product are more in quantity in a day, while is less intense
              * where product are less in quantity in a day
              *
              * @param {String} mission: satellite mission string
@@ -985,8 +985,8 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method returns the gradient color, for a specific mission, used to draw the 
-             * bar representing the minimum and the maximum numbers of products sensed in the 
+             * This method returns the gradient color, for a specific mission, used to draw the
+             * bar representing the minimum and the maximum numbers of products sensed in the
              * period of interest
              *
              * @param {Number} d: data value
@@ -1006,11 +1006,11 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method is used to show the component representing the list of products sensed 
-             * in the selected date. 
+             * This method is used to show the component representing the list of products sensed
+             * in the selected date.
              *
              * @param {String} date: item date
-             * @param {Number} productNumber: item product number              
+             * @param {Number} productNumber: item product number
              */
             createDetail(date, productNumber) {
 
@@ -1023,12 +1023,12 @@ An example of HTTP response is reported below.
             }
 
             /**
-             * This method is used to show the component representing the list of events occurred 
-             * in the selected date. 
-             * The OData API used to get events is not available in the current distribution, so 
+             * This method is used to show the component representing the list of events occurred
+             * in the selected date.
+             * The OData API used to get events is not available in the current distribution, so
              * this method is used only in demo instances
              * @param {String} date: item date
-             * @param {Number} productNumber: item product number              
+             * @param {Number} productNumber: item product number
              */
             showEvents(events, date) {
 
@@ -1043,12 +1043,12 @@ An example of HTTP response is reported below.
                 document.getElementById('navigation-manager').pushComponent(eventDetail, '500px', 'News');
             }
 
-            
+
             /**
              * This method is used to draw calendar of products distribution density by means of
-             * d3 library, using data retrieved by <i>calendar-datasource</i>, 
+             * d3 library, using data retrieved by <i>calendar-datasource</i>,
              * <i>calendar-semantic-manager</i> and <i>calendar-coder</i> components
-             *             
+             *
              */
             createCalendar() {
                 var minyear, maxyear;
@@ -1065,12 +1065,12 @@ An example of HTTP response is reported below.
 
             /**
              * This method is used to draw calendar of products distribution density by means of
-             * d3 library, using data retrieved by <i>calendar-datasource</i>, 
+             * d3 library, using data retrieved by <i>calendar-datasource</i>,
              * <i>calendar-semantic-manager</i> and <i>calendar-coder</i> components
-             *  
+             *
              * @param {String} start: start date of the period of interest
              * @param {Strng} end: end date of the period of interest
-             * @param {Strng} element: identifier of the div where svg object will be attached          
+             * @param {Strng} element: identifier of the div where svg object will be attached
              */
             drawCalendar(start, end, element) {
                 if (this.owcApp && this.owcApp.appconfig && this.owcApp.appconfig.debug)
@@ -1310,7 +1310,7 @@ An example of HTTP response is reported below.
             /**
              * Generate and return month path attribute
              *
-             * @param {Date} t0: date             
+             * @param {Date} t0: date
              * @return {String} svg month path object
              */
             monthPath(t0) {
@@ -1330,7 +1330,7 @@ An example of HTTP response is reported below.
             /**
              * This method returns the month string title, from the t0 date
              *
-             * @param {Date} t0: date             
+             * @param {Date} t0: date
              * @return {String}: month title
              */
             monthTitle(t0) {

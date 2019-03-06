@@ -87,7 +87,7 @@ This component is the container for DHuS events list
         </style>
         <div class="container">
             <div class="column-toolbar">
-                 <paper-button raised class="colorful create-button" on-click="createEvent" title="CREATE" hidden$="{{!isEventManager}}">Create</paper-button>
+                 <paper-button raised class="colorful create-button" on-click="createEvent" title="{{i18n('Create')}}" hidden$="{{!isEventManager}}">{{i18n('Create')}}</paper-button>
             </div>
         </div>
         <div class="list-title">
@@ -267,7 +267,7 @@ This component is the container for DHuS events list
                 datasource._pageSize = 25;
 
                 datasource.setOwcQuery(owcquery);
-                datasource.filterAllValue = this.defaultFilter;
+                datasource.filterAllValue = (self.owcApp.userManager.isEventManager()) ? this.defaultFilter : (this.defaultFilter + "%20and%20PublicEvent%20eq%20true");
 
                 // target message broker
                 genModel.setTarget(target);
@@ -297,7 +297,7 @@ This component is the container for DHuS events list
                 var self = this;
                 var owcquery = Polymer.dom(self.root).querySelector('#events-query');
                 var datasource = Polymer.dom(self.root).querySelector('#events-datasource');
-
+                console.log("this.get('query')",this.get('query'));
                 owcquery.setText(this.get('query'));
                 datasource.loadDataFromServer();
 

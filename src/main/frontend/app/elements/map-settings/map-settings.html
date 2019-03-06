@@ -103,7 +103,7 @@ This components allow to add available map layers to map settings
                                 <paper-input value="{{item.title}}" name="title" label="{{i18n('Title')}}" required readonly$="{{isFirst(index)}}"></paper-input>
                                 <div>
                                     <paper-input value="{{item.layer}}" name="layer" label="{{i18n('Layers')}}" required disabled$="{{isFirst(index)}}"></paper-input>
-                                    <paper-tooltip hidden$="{{isFirst(index)}}">Please insert layers name separated by comma (e.g. name1, name2)</paper-tooltip>
+                                    <paper-tooltip hidden$="{{isFirst(index)}}">{{i18n('Please insert layers name separated by comma')}}</paper-tooltip>
                                 </div>
                             </form>
                         </div>

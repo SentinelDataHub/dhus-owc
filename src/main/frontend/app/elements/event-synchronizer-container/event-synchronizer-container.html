@@ -40,7 +40,7 @@ This component is used as container of OData EventSynchronizers list and hosts a
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         paper-button {
             background: #002664;
             color: white;
@@ -51,16 +51,16 @@ This component is used as container of OData EventSynchronizers list and hosts a
             float: right;
             margin-right: 10px
         }
-        
+
         paper-button[toggles][active].colorful {
             background-color: #002664;
         }
-        
+
         paper-button[toggles][active][raised].colorful {
             background-color: rgba(66, 133, 244, 0.75);
         }
         </style>
-        <paper-button raised class="colorful" on-click="createEventSynch" title="CREATE EVENT SYNCHRONIZER">Create Event Synchronizer</paper-button>
+        <paper-button raised class="colorful" on-click="createEventSynch" title="{{i18n('CREATE EVENT SYNCHRONIZER')}}">{{i18n('Create Event Synchronizer')}}</paper-button>
         <div id="event-synchronizer-container">
             <event-synchronizer-list></event-synchronizer-list>
         </div>
@@ -85,7 +85,7 @@ This component is used as container of OData EventSynchronizers list and hosts a
             }
 
             /**
-             *  This method is used to force component resize. 
+             *  This method is used to force component resize.
              *  This allows the menu to fit well to screen size and to manage screen resizing or mobile device
              */
             resize() {

@@ -42,7 +42,7 @@ This component contains the list of user saved searches
             overflow-x: hidden !important;
             width: 100%!important;
         }
-        
+
         .savedsearchContainer {
             @apply(--layout-vertical);
             height: var(--savedsearchesheight, 500px);
@@ -50,7 +50,7 @@ This component contains the list of user saved searches
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         paper-button {
             background: #002664;
             color: white;
@@ -60,19 +60,19 @@ This component contains the list of user saved searches
             font-weight: bold;
             margin-top: 5px;
         }
-        
+
         paper-button[toggles][active].colorful {
             background-color: #002664;
         }
-        
+
         paper-button[toggles][active][raised].colorful {
             background-color: rgba(66, 133, 244, 0.75);
         }
-        
+
         .savedsearchSection {
             padding: 10px;
         }
-        
+
         .savedsearchTitle {
             padding-bottom: 0px;
             font-weight: bold;
@@ -80,7 +80,7 @@ This component contains the list of user saved searches
             padding-left: 10px;
             text-align: center;
         }
-        
+
         paper-material.section-item {
             padding: 20px;
             margin: 10px;
@@ -89,41 +89,41 @@ This component contains the list of user saved searches
             overflow-x: auto;
             @apply(--layout-horizontal);
         }
-        
+
         .savedsearch-mini {
             padding: 5px;
             margin: 10px;
         }
-        
+
         .fieldContainer {
             @apply(--layout-horizontal);
             @apply(--layout-wrap);
         }
-        
+
         .flexchild {
             @apply(--layout-flex);
         }
-        
+
         .flex2child {
             @apply(--layout-flex-3);
         }
-        
+
         .flex3child {
             @apply(--layout-flex-5);
         }
-        
+
         .buttonContainer {
             margin-bottom: 0px;
             height: 40px!important;
             width: 98%!important;
             overflow: hidden;
         }
-        
+
         .right {
             float: right;
             width: 200px;
         }
-        
+
         .containerFlexchild {
             height: 100%;
             width: 50%;
@@ -131,14 +131,14 @@ This component contains the list of user saved searches
             overflow-y: auto;
             border: 1px solid grey;
         }
-        
+
         .componentList {
             margin-left: 5px;
         }
         </style>
         <div id="savedsearchContainer">
             <div class="savedsearchContainer">
-                <div class="savedsearchTitle">Display {{savedsearches.length}} elements</div>
+                <div class="savedsearchTitle">{{i18n("Display elements")}} ({{savedsearches.length}}) </div>
                 <div class="savedsearchSection flexchild">
                     <iron-list id="savedsearcheslist" items="{{savedsearches}}" as="search" style="width: 100%!important">
                         <template>
@@ -198,7 +198,7 @@ This component contains the list of user saved searches
 
             }
 
-            /**             
+            /**
              *  Called after the element is attached to the document.
              *  Can be called multiple times during the lifetime of an element.
              *  The first 'attached' callback is guaranteed not to fire until after 'ready'
@@ -211,14 +211,14 @@ This component contains the list of user saved searches
                 this.resize();
                 var self=this;
                 self.owcApp.messageBroker.subscribe('update-savedsearches', function() {
-                    setTimeout(function() {                       
-                        self.getSavedSearches();                        
+                    setTimeout(function() {
+                        self.getSavedSearches();
                     }, 0);
                 });
             }
 
-            /**             
-             *  Resize callbach handler 
+            /**
+             *  Resize callbach handler
              *
              * @return {null}
              */
@@ -233,7 +233,7 @@ This component contains the list of user saved searches
 
             }
 
-            /**             
+            /**
              *  This method is used to delete all user saved searches
              *
              * @return {null}
@@ -251,8 +251,8 @@ This component contains the list of user saved searches
                 });
             }
 
-            /**             
-             *  This method is used to get the list of user saved searches via dedicated API 
+            /**
+             *  This method is used to get the list of user saved searches via dedicated API
              *
              * @return {null}
              */
@@ -267,8 +267,8 @@ This component contains the list of user saved searches
                     self.owcApp.httpManager.sendRequest(
                         'GET',
                         self.owcApp.config.baseUrl + self.getSavedSearchesUrl.replace(':offset', self.offset).replace(':count', count)
-                    ).then(function(response) {                        
-                        self.savedsearches = response.data;                        
+                    ).then(function(response) {
+                        self.savedsearches = response.data;
 
                     });
 

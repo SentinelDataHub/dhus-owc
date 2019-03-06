@@ -1,0 +1,8 @@
+{
+  "suites": ["./test"],
+  "webserver": {
+    "pathMappings": [
+      {"/elements/owc-eviction-editor/bower_components": "bower_components"}
+    ]
+  }
+}

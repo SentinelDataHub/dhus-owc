@@ -1,27 +1,27 @@
 <!--
   @license
 
- 
+
   Data HUb Service (DHuS) - For Space data distribution.
   Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
   Copyright (C) 2013,2014,2015,2016 GAEL Systems
   Copyright (C) 2013,2014,2015,2016 Serco Spa
-  
+
   This file is part of DHuS software sources.
- 
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
   published by the Free Software Foundation, either version 3 of the
   License, or (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU Affero General Public License for more details.
- 
+
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
- 
+
 
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
@@ -71,16 +71,16 @@ This component is used to allow dynamic menu configuration
         :root {
             --default-primary-color: green;
         }
-        
+
         .section-item {
             padding: 30px;
             margin: 30px;
         }
-        
+
         .remove-section-button {
             float: right;
         }
-        
+
         paper-button {
             background: #002664;
             color: white;
@@ -93,28 +93,28 @@ This component is used to allow dynamic menu configuration
             top: 36px;
             margin-right: 10px
         }
-        
+
         paper-button[toggles][active].colorful {
             background-color: #002664;
         }
-        
+
         paper-button[toggles][active][raised].colorful {
             background-color: rgba(66, 133, 244, 0.75);
         }
-        
+
         #owcSettingsContainer {
             height: var(--settingsheight, 90%);
             width: var(--width, 98%);
             overflow-y: auto;
         }
-        
+
         .buttonContainer {
             margin-bottom: 0px;
             height: 100px!important;
             width: 98%!important;
             overflow: hidden;
         }
-        
+
         .settingsHeader {
             float: left;
             margin-left: 10px;
@@ -135,7 +135,7 @@ This component is used to allow dynamic menu configuration
                                 <paper-input value="{{item.component}}" name="component" label="{{i18n('component name')}}" required></paper-input>
                                 <paper-input value="{{item.width}}" name="width" label="{{i18n('width')}}" required></paper-input>
                                 <paper-input value="{{item.remoteUrl}}" name="remoteUrl" label="{{i18n('remote component url')}}" required></paper-input>
-                                <paper-input value="{{item.icon}}" name="icon" label="Icon" required></paper-input>
+                                <paper-input value="{{item.icon}}" name="icon" label="{{i18n('Icon')}}" required></paper-input>
                                 <paper-input value="{{item.maxInstances}}" name="maxInstances" label="{{i18n('Maximum Instances')}}" prevent-invalid-input allowed-pattern="\d"></paper-input>
                             </form>
                         </div>
@@ -167,7 +167,7 @@ This component is used to allow dynamic menu configuration
                 this.properties = {
 
                     /**
-                     * Sections in the main menu                      
+                     * Sections in the main menu
                      *
                      * @type {Array}
                      */
@@ -206,7 +206,7 @@ This component is used to allow dynamic menu configuration
             }
 
 
-            /**             
+            /**
              *  Called after the element is attached to the document.
              *  Can be called multiple times during the lifetime of an element.
              *  The first 'attached' callback is guaranteed not to fire until after 'ready'
@@ -298,9 +298,9 @@ This component is used to allow dynamic menu configuration
 
             /**
              * Remove section from main menu component
-             * 
-             * @param {Object} event: on-click event            
-             * 
+             *
+             * @param {Object} event: on-click event
+             *
              * @return {null}
              */
             removeSection(event, details, sender) {
@@ -309,7 +309,7 @@ This component is used to allow dynamic menu configuration
 
             /**
              * Handle click on menu options
-             *           
+             *
              * @param {Object} event
              * @return {null}
              */
@@ -327,8 +327,8 @@ This component is used to allow dynamic menu configuration
 
             /**
              * Save main menu configurations on server
-             *           
-             * 
+             *
+             *
              * @return {null}
              */
             save() {

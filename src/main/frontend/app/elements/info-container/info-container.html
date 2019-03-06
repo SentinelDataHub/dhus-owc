@@ -1,27 +1,27 @@
 <!--
   @license
 
- 
+
   Data HUb Service (DHuS) - For Space data distribution.
   Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
   Copyright (C) 2013,2014,2015,2016 GAEL Systems
   Copyright (C) 2013,2014,2015,2016 Serco Spa
-  
+
   This file is part of DHuS software sources.
- 
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
   published by the Free Software Foundation, either version 3 of the
   License, or (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU Affero General Public License for more details.
- 
+
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
- 
+
 
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
@@ -46,23 +46,23 @@ This component is use to show default information box page
             overflow-y: auto !important;
             overflow-x: hidden;
         }
-        
+
         .info-container-title {
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
         }
-        
+
         .flexchild {
             @apply(--layout-flex);
         }
-        
+
         .datahublogo {
             width: 50px;
             height: 50px;
             display: inline-block;
             vertical-align: middle;
         }
-        
+
         .datahubtitle {
             display: inline-table;
             vertical-align: middle !important;
@@ -72,7 +72,7 @@ This component is use to show default information box page
             overflow-y: hidden !important;
             line-height: 50px;
         }
-        
+
         .infos-container {
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
@@ -83,11 +83,11 @@ This component is use to show default information box page
             padding-right: 20px;
             text-align: justify;
         }
-        
+
         .infos-container-margin {
             margin-top: 50px;
         }
-        
+
         .statistics-container {
             @apply(--layout-vertical);
             @apply(--layout-center-justified);
@@ -97,7 +97,7 @@ This component is use to show default information box page
             margin-top: 0px !important;
             overflow-y: hidden !important;
         }
-        
+
         .icon-container {
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
@@ -107,7 +107,7 @@ This component is use to show default information box page
             margin-top: 5px;
             margin: auto;
         }
-        
+
         .icons-container {
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
@@ -116,7 +116,7 @@ This component is use to show default information box page
             margin-top: 5px;
             margin: auto;
         }
-        
+
         .stats-title {
             display: inline-table;
             @apply(--layout-center-justified);
@@ -127,33 +127,33 @@ This component is use to show default information box page
             overflow-y: hidden !important;
             margin: auto;
         }
-        
+
         .info-logos {
             height: 40px;
             width: 60px;
         }
-        
+
         .info-container-content {
             text-align: justify;
             overflow-y: hidden !important;
         }
-        
+
         paper-icon-button.menu-item {
             @apply(--layout-center-justified);
             margin-left: 0px;
             width: 70px;
             height: 70px;
         }
-        
+
         paper-icon-button.menu-item:hover {
             background: var(--paper-light-blue-50);
             border-radius: 50%;
         }
-        
+
         hr {
             width: 90%;
         }
-        
+
         #info-container {
             height: var(--menuheight, 500px);
             width: var(--menuwidth, 300px);
@@ -162,7 +162,7 @@ This component is use to show default information box page
             width: 100%!important;
             /*height: 10px;*/
         }
-        
+
         #dashboard-maincontainer-title {
             height: 70px!important;
             overflow-y: hidden !important;
@@ -180,7 +180,8 @@ This component is use to show default information box page
             </div>
             <div class="flexchild">
                 <div class="infos-container infos-container-margin info-container-content">
-                    The {{title}} is a web based system designed to provide EO data users with distributed mirror archives and bulk dissemination capabilities for the Sentinels products.
+                    <span>The {{title}} is a web based system designed to provide EO data users with distributed mirror archives and bulk dissemination capabilities for the Sentinels products.</span>
+                    <span>{{i18n('info_1_traslation')}}</span>
                 </div>
                 <div class="infos-container" hidden="true">
                     <a href="" on-click="goLink">Terms of {{title}} portal and Data supply conditions</a>
@@ -188,7 +189,8 @@ This component is use to show default information box page
                 <br>
                 <br>
                 <div class="infos-container info-container-content">
-                    Data Hub System {{version}} developed by a Serco and GAEL Systems consortium under a contract with the European Space Agency - Funded by the EU and ESA
+                    <span>Data Hub System {{version}} developed by a Serco and GAEL Systems consortium under a contract with the European Space Agency - Funded by the EU and ESA</span>
+                    <span>{{i18n('info_2_traslation')}}</span>
                 </div>
             </div>
             <div class="icons-container">
@@ -207,7 +209,7 @@ This component is use to show default information box page
         class InfoContainer extends HTMLElement {
 
             /**
-             * class constructor             
+             * class constructor
              */
             constructor() {
                 super();
@@ -298,7 +300,7 @@ This component is use to show default information box page
             }
 
 
-            /**             
+            /**
              *  Called after the element is attached to the document.
              *  Can be called multiple times during the lifetime of an element.
              *  The first 'attached' callback is guaranteed not to fire until after 'ready'
@@ -331,9 +333,12 @@ This component is use to show default information box page
                     self.resize();
 
                 });
+                if(self.owcApp.appconfig.translated_info){
+                  this.showTranslatedInfo = self.owcApp.appconfig.translated_info
+                }
             }
 
-            /**             
+            /**
              * This method is called to force component resize
              *
              * @return {null}
@@ -346,7 +351,7 @@ This component is use to show default information box page
                 self.updateStyles();
             }
 
-            /**             
+            /**
              * This method is used to push OWC Calendar component
              *
              * @return {null}
@@ -361,7 +366,7 @@ This component is use to show default information box page
 
             }
 
-            /**             
+            /**
              * This method is used to push OWC Timeline component
              *
              * @return {null}

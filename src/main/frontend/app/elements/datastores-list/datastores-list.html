@@ -1,0 +1,205 @@
+<!--
+  @license
+
+
+  Data HUb Service (DHuS) - For Space data distribution.
+  Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
+  Copyright (C) 2013,2014,2015,2016 GAEL Systems
+  Copyright (C) 2013,2014,2015,2016 Serco Spa
+
+  This file is part of DHuS software sources.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<!--
+This component contains the list of the configured DataStores of the DHuS. 
+
+
+@demo demo/index.html
+-->
+<dom-module id="datastores-list">
+    <template>
+        <style type="text/css">
+        .ds-number {
+            font-size: 15px;
+            text-align: center;
+            padding: 3px;
+            opacity: 0.95;
+            font-weight: bold;
+        }
+        
+        .dsContainer {
+            background-color: #ecf0f1;
+        }
+        </style>
+        <div class="dsContainer">
+            <div class="ds-number" hidden="{{!noDS}}">
+                {{i18n('Your Data Stores list is empty')}}
+            </div>
+            <div class="ds-number" hidden="{{noDS}}">
+                {{i18n('Your Data Stores list contains')}} {{dsCount}} {{i18n('data stores')}}.
+            </div>
+            <iron-list id="ironlist" items="{{dsModel}}" as="ds" style="width: 100%!important">
+                <template>
+                    <datastore-item parent="{{that}}" model="{{ds}}"></datastore-item>
+                </template>
+            </iron-list>
+        </div>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+        class DataStoresList {
+
+            /* --- POLYMER LIFECYCLE METHODS --- */
+
+            /**
+             * BeforeRegister method Polymer calls before creating the element.
+             * This method is where you shoud define the is property (element's name) and
+             * properties  object.
+             *
+             * @return {null}
+             */
+            beforeRegister() {
+                this.is = 'datastores-list';
+                this._url = "/odata/v2/DataStores";
+                this._jsonParameter = "$format=json";
+                this._requestHeaders = {
+                    'Content-Type': 'application/atom+xml',
+                    'Accept': 'application/json'
+                };
+                this.options = {
+                    headers: [{
+                        name: "Accept",
+                        value: "application/json"
+                    }]
+
+                };
+                this.owcApp = document.querySelector('#owc-app');
+
+
+                this.properties = {
+
+                    /**
+                     * Data Store list model
+                     *
+                     * @type {Object}
+                     */
+                    dsModel: {
+                        type: Array,
+                        value: null
+                    },
+
+                    /**
+                     * Data Store list count
+                     *
+                     * @type {Object}
+                     */
+                    dsCount: {
+                        type: Number,
+                        value: 0
+                    },
+
+                    /**
+                     * This flag indicates if OData data stores list is empty or not
+                     * @type {Object}
+                     */
+                    noDS: {
+                        type: Boolean,
+                        value: true
+                    }
+                };
+
+            }
+
+            /**
+             *  Called after the element is attached to the document.
+             *  Can be called multiple times during the lifetime of an element.
+             *  The first 'attached' callback is guaranteed not to fire until after 'ready'
+             *           
+             */
+            attached() {
+                var self = this;
+                self.request().then(function(response) {
+                    self.dsModel = response;
+
+                    self.set('dsModel', response);
+                    self.notifyPath('dsModel', response);
+                    self.dsCount = response.length;
+                    if (self.dsCount > 0) {
+                        self.noDS = false;
+                    }
+                    var event = document.createEvent('Event');
+                    event.initEvent('resize', true, true);
+                    document.dispatchEvent(event);
+
+                });
+
+                self.owcApp.messageBroker.subscribe('updateDS',
+                    function() {
+                        self.request().then(function(response) {
+                            self.dsModel = response;
+                            self.set('dsModel', response);
+                            self.notifyPath('dsModel', response);
+                            self.dsCount = response.length;
+                            if (self.dsCount > 0) {
+                                self.noDS = false;
+                            }
+                            var event = document.createEvent('Event');
+                            event.initEvent('resize', true, true);
+                            document.dispatchEvent(event);
+
+                        });
+                    });
+            }
+
+
+            /**
+             * Create and send http request to retrieve the list of the configured Data Stores
+             *
+             * @return {null}
+             */
+            request() {
+
+                var self = this;
+                var model = [];
+                return self.owcApp.httpManager.sendRequest(
+                    'GET',
+                    self.owcApp.config.baseUrl + self._url + '?' + self._jsonParameter, self.options
+                ).then(function(response) {
+                    if (response.status == 200) {                        
+                        var dsModel = (response.data) ? response.data.value : [];
+                        for (var i = 0, len = dsModel.length; i < len; i++) {
+                            var entry = dsModel[i];
+                            entry.type = dsModel[i]['@odata.type'];
+                            model.push(dsModel[i]);                           
+                        }
+                        return model;
+                    } else
+                        return new Promise(function(resolve, reject) {
+                            reject("model_empty");
+                        });
+                });
+            }
+            
+        };
+
+        Polymer(DataStoresList);
+
+    })();
+    </script>
+</dom-module>

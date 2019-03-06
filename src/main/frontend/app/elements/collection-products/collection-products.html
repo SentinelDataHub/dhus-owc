@@ -1,0 +1,606 @@
+<!--
+  @license
+
+
+  Data HUb Service (DHuS) - For Space data distribution.
+  Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
+  Copyright (C) 2013,2014,2015,2016 GAEL Systems
+  Copyright (C) 2013,2014,2015,2016 Serco Spa
+
+  This file is part of DHuS software sources.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<!--
+This component is used to associate products to a collection when creating/updating a collection
+
+
+@demo demo/index.html
+-->
+<dom-module id="collection-products">
+    <template>
+        <style>
+        .collectionProducts {
+            padding: 10px;
+        }
+        
+        .productTitle {
+            padding-bottom: 0px;
+            font-weight: bold;
+        }
+        
+        .container {
+            @apply(--layout-horizontal);
+            @apply(--layout-wrap);
+        }
+        
+        .flex6child {
+            @apply(--layout-flex-6);
+        }
+        
+        .flexchild {
+            @apply(--layout-flex);
+        }
+        
+        paper-material.section-item {
+            padding: 20px;
+            margin: 10px;
+            max-height: 350px;
+            overflow: auto;
+        }
+        
+        paper-checkbox {
+            font-size: 14px;
+            --paper-checkbox-checked-color: var(--paper-indigo-900);
+        }
+        
+        .search-check-box {
+            margin-top: 40px;
+        }
+        
+        .coll-product-footer {
+            font-size: 14px;
+        }
+        
+        .page-selector-input {
+            width: 40px !important;
+            cursor: pointer;
+            margin: 0px;
+            border: 1px solid #9A9A9A !important;
+            display: inline;
+        }
+        
+        .disabled-button {
+            opacity: 0.4;
+            cursor: default;
+        }
+        
+        .pagination-button {
+            margin-right: 2.5px;
+            margin-left: 2.5px;
+            display: inline;
+            cursor: pointer;
+        }
+        
+        .coll-product-list-checkbox {
+            width: 30px;
+        }
+        
+        .page-selector {
+            width: 50px;
+        }
+        
+        .page-input {
+            width: 50px;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .dropdown-content {
+            text-align: center;
+        }
+        
+        paper-input.search-input {
+            --paper-input-container-label: {
+                font-size: 12px;
+            }
+            ;
+            --paper-input-container-input: {
+                font-size: 12px;
+            }
+            ;
+        }
+        
+        #ironlist {
+            overflow-y: hidden !important;
+        }
+        </style>
+        <div class="collectionProducts">
+            <div class="productTitle container">
+                <paper-checkbox class="flex6child search-check-box" model="{{selectedAll}}" checked="{{selectedAll}}" on-change="checkUncheckAll" hidden$="{{!hasProducts}}">{{i18n("Display")}} {{visualizedProductsFrom}} {{i18n("to")}} {{visualizedProductsTo}} {{i18n("of")}} {{productsCount}} {{i18n("products")}}</paper-checkbox>
+                <paper-input class=" flex6child search-input" label="{{i18n('Search')}}" value="{{filter}}">
+                    <paper-icon-button suffix on-click="search" icon="search"></paper-icon-button>
+                </paper-input>
+            </div>
+            <div class="listtitle" style="color: #373b50; font-weight: bold; margin-left:5px;" hidden$="{{hasProducts}}">{{i18n("No products found")}}.</div>
+            <paper-material class="section-item">
+                <div>
+                    <iron-list id="ironlist" items="{{products}}" as="item" style="width: 100%!important">
+                        <template>
+                            <paper-checkbox model="{{item}}" data-args="{{item}}" checked="{{item.checked}}" on-click="addRemoveProduct">{{item.identifier}}</paper-checkbox>
+                        </template>
+                    </iron-list>
+                </div>
+            </paper-material>
+            <div class="coll-product-toolbar" hidden$="{{!hasProducts}}">
+                <div style="height:20px;">
+                    <span id="coll-product-per-page-label" class="coll-product-footer">{{i18n("Products per page")}}:</span>
+                    <paper-dropdown-menu class="page-selector" value="{{productsPerPage}}" required on-iron-select="updateValue" id="coll-product-pagination">
+                        <paper-menu attr-for-selected="value" selected="{{productsPerPage}}" class="dropdown-content">
+                            
+                            <paper-item value="25">25</paper-item>
+                            <paper-item value="50">50</paper-item>
+                            <paper-item value="75">75</paper-item>
+                            <paper-item value="100">100</paper-item>
+                            <paper-item value="125">125</paper-item>
+                            <paper-item value="150">150</paper-item>
+                        </paper-menu>
+                    </paper-dropdown-menu>
+                    <span id="goToFirstPage" on-click="gotoFirstPage">
+                            &lt;&lt;
+                        </span>
+                    <span id="goToPreviousPage" on-click="gotoPreviousPage">
+                            &lt;
+                        </span>
+                    <span id="coll-page-label-id" class="coll-product-footer">{{i18n("page")}}:</span>
+                    <paper-input class=" page-input" type="number" value="{{currentPage}}" on-change="managePageSelector">
+                    </paper-input>
+                    <span class="coll-product-footer">{{i18n("of")}} {{pageCount}}</span>
+                    <span id="goToNextPage" on-click="gotoNextPage">
+                            &gt;
+                        </span>
+                    <span id="goToLastPage" on-click="gotoLastPage">
+                            &gt;&gt;
+                        </span>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+        class CollectionProducts {
+
+            /* --- POLYMER LIFECYCLE METHODS --- */
+
+            /**
+             * BeforeRegister method Polymer calls before creating the element.
+             * This method is where you shoud define the is property (element's name) and
+             * properties  object.
+             *
+             * @return {null}
+             */
+            beforeRegister() {
+                this.is = 'collection-products';
+                this.owcApp = document.querySelector('#owc-app');
+                this.pageCount = 0;
+                this.currentPage = 0;
+                this.offset = 0;
+                this.filter = "*";
+                this.addedIds = [];
+                this.removedIds = [];
+                this.productSearchUrl = "/api/owc/products?filter=:filter&offset=:offset&limit=:limit";
+                this.productCountSearchUrl = "/api/owc/products/count?filter=:filter";
+                this.properties = {
+
+
+
+                    /**
+                     * Products list
+                     *
+                     * @type {Object}
+                     */
+                    products: {
+                        type: Array,
+                        value: [{
+                            "identifier": "",
+                            "uuid": "",
+                            "id": 0,
+                            "checked": false
+                        }],
+                        notify: true
+                    },
+                    /**
+                     * property representing the products count
+                     *
+                     * @type {Number}
+                     */
+                    productsCount: {
+                        type: Number,
+                        value: 0
+                    },
+
+                    /**
+                     * property representing the visualized products offset
+                     *
+                     * @type {Number}
+                     */
+                    visualizedProductsFrom: {
+                        type: Number,
+                        value: 0
+                    },
+
+                    /**
+                     * property representing the visualized products limit
+                     *
+                     * @type {Number}
+                     */
+                    visualizedProductsTo: {
+                        type: Number,
+                        value: 0
+                    },
+
+                    /**
+                     * property representing the number of products per page
+                     *
+                     * @type {Number}
+                     */
+                    productsPerPage: {
+                        type: Number,
+                        value: 25
+                    },
+
+                    /**
+                     * property representing the collection object
+                     *
+                     * @type {Object}
+                     */
+                    collection: {
+                        type: Object,
+                        value: {}
+                    },
+
+                    /**
+                     * property used to check if productsPerPage is changed or not
+                     *
+                     * @type {Boolean}
+                     */
+                    productsPerPagePristine: {
+                        type: Boolean,
+                        value: true
+                    },
+
+                    /**
+                     * property used to check if there are products in the archive or not
+                     *
+                     * @type {Boolean}
+                     */
+                    hasProducts: {
+                        type: Boolean,
+                        value: false
+                    }
+
+                };
+            }
+
+            /**
+             *  Called after the element is attached to the document.
+             *  Can be called multiple times during the lifetime of an element.
+             *  The first 'attached' callback is guaranteed not to fire until after 'ready'
+             *
+             * @return {null}
+             */
+            attached() {
+                var self = this;
+                setTimeout(function() {
+                    self.goToPage(1, true);
+                }, 100)
+
+            }
+
+            /**
+             *  This method is used to get the filtered and paginated list of the products contained in the archive
+             *
+             * @return {Object} products
+             */
+            goToPage(pageNumber, free) {
+                var listFilter = "*";
+                var _list = [];
+                var _products = [];
+                var self = this;
+                this.products.splice(0, this.products.length);
+                if ((pageNumber <= this.pageCount && pageNumber > 0) || free) {
+
+                    this.currentPage = pageNumber;
+                    this.offset = (pageNumber * this.productsPerPage) - this.productsPerPage;
+
+                    if (this.filter.trim() != "") {
+                        listFilter = this.filter;
+                    }
+                    return self.owcApp.httpManager.sendRequest(
+                        'GET',
+                        self.owcApp.config.baseUrl + self.productCountSearchUrl.replace(':filter', listFilter)
+                    ).then(function(response) {
+                        if (response.status == 200) {
+
+                            self.productsCount = response.data;
+                            self.hasProducts = (self.productsCount > 0) ? true : false;
+                            return self.owcApp.httpManager.sendRequest(
+                                'GET',
+                                self.owcApp.config.baseUrl + self.productSearchUrl.replace(':filter', listFilter).replace(':offset', self.offset).replace(':limit', self.productsPerPage)
+                            ).then(function(response) {
+                                if (response.status == 200) {
+                                    _list = response.data;
+                                    for (var i = 0; i < _list.length; i++) {
+                                        _products.push({
+                                            "identifier": _list[i].identifier,
+                                            "id": _list[i].id,
+                                            "uuid": _list[i].uuid,
+                                            "checked": self.isChecked(_list[i])
+                                        });
+                                    }
+                                    self.products = _products;
+                                    self.addedIds = [];
+                                    self.removedIds = [];
+                                    self.refreshCounters();
+                                    self.currentPageCache = pageNumber;
+                                    self.currentPage = pageNumber;
+                                    if (self.collection && self.collection.productIds && self.collection.productIds.length == self.productsCount) {
+                                        self.selectedAll = true;
+                                    } else {
+                                        self.selectedAll = false;
+                                    }
+                                    self.set('selectedAll', self.selectedAll);
+                                    self.notifyPath('selectedAll', self.selectedAll);
+                                    self.set('products', self.products);
+                                    self.notifyPath('products', self.products);
+                                    self.updateArrowsStyle();
+                                } else
+                                    return new Promise(function(resolve, reject) {
+                                        reject("model_empty");
+                                    });
+                            });
+
+                        } else
+                            return new Promise(function(resolve, reject) {
+                                reject("model_empty");
+                            });
+                    });
+                }
+
+            }
+
+            /**
+             *  This method is used to recompute the following properties:
+             *  - pageCount
+             *  - visualizedProductsFrom
+             *  - visualizedProductsTo
+             *
+             */
+            refreshCounters() {
+
+                this.pageCount = Math.floor(this.productsCount / this.productsPerPage) + ((this.productsCount % this.productsPerPage) ? 1 : 0);
+                this.visualizedProductsFrom = (this.productsCount) ? this.offset + 1 : 0;
+                this.visualizedProductsTo =
+                    (((this.productsCount) ?
+                        (this.currentPage * this.productsPerPage) : 1) > this.productsCount) ? this.productsCount : ((this.productsCount) ? (this.currentPage * this.productsPerPage) : 1);
+            };
+
+            /**
+             *  This method is triggered when the user select a different page size to call the <b>goToPage</b> method
+             *             
+             */
+            updateValue() {
+                if (this.productsPerPagePristine) {
+                    this.productsPerPagePristine = false;
+                    return;
+                }
+                this.goToPage(1, true);
+
+            };
+
+            /**
+             *  This method is triggered when the user inputs a different page number to call the <b>goToPage</b> method
+             *             
+             */
+            managePageSelector() {
+                var newValue = parseInt(this.currentPage);
+                if (isNaN(newValue) || !(/^\d+$/.test(this.currentPage))) {
+                    this.currentPage = this.currentPageCache;
+
+                    return;
+                }
+                if (newValue <= 0) {
+                    this.currentPage = this.currentPageCache;
+
+                    return;
+                }
+                if (newValue > this.pageCount) {
+                    this.currentPage = this.currentPageCache;
+
+                    return;
+                }
+                this.goToPage(this.currentPage, true);
+            };
+
+            /**
+             *  This method is used to update the list of the added and/or removed products of the collection 
+             *             
+             */
+            addRemoveProduct(e) {
+                var product = e.model.get('item');
+                if (!this.collection) {
+                    this.collection = {};
+                    this.collection.productIds = [];
+                }
+                if (this.isChecked(product)) {
+                    var index = this.collection.productIds.indexOf(product.id);
+                    if (index >= 0)
+                        this.collection.productIds.splice(index, 1);
+                    index = this.addedIds.indexOf(product.id);
+                    if (index >= 0)
+                        this.addedIds.splice(index, 1);
+                    this.removedIds.push(product.id);
+                } else {
+                    this.addedIds.push(product.id);
+                    if (!this.collection.productIds)
+                        this.collection.productIds = [];
+                    this.collection.productIds.push(product.id);
+                    var index = this.removedIds.indexOf(product.id);
+                    if (index >= 0)
+                        this.removedIds.splice(index, 1);
+
+                }
+            };
+
+            /**
+             *  This method is triggered when the user clicks on the search button in order to add a filter to the products'search
+             *             
+             */
+            search() {
+                this.goToPage(1, true);
+            }
+
+            /**
+             *  This method is used to get the first <b>productsPerPage</b> products
+             *             
+             */
+            gotoFirstPage() {
+                this.goToPage(1, false);
+            };
+
+            /**
+             *  This method is used to get the previous <b>productsPerPage</b> products (if any)
+             *             
+             */
+            gotoPreviousPage() {
+                this.goToPage(this.currentPageCache - 1, false);
+            };
+
+            /**
+             *  This method is used to get the next <b>productsPerPage</b> products (if any)
+             *             
+             */
+            gotoNextPage() {
+                this.goToPage(this.currentPageCache + 1, false);
+            };
+
+            /**
+             *  This method is used to get the last <b>productsPerPage</b> products
+             *             
+             */
+            gotoLastPage() {
+                this.goToPage(this.pageCount, false);
+            };
+
+            /**
+             *  This method is used to enable or disable the arrows buttons on the basis of the value of <b>currentPage</b>, 
+             *  <b>pageCount</b> and <b>productsCount</b>
+             *             
+             */
+            updateArrowsStyle() {
+                this.$.goToFirstPage.classList.remove("disabled-button", "pagination-button");
+                this.$.goToPreviousPage.classList.remove("disabled-button", "pagination-button");
+                this.$.goToLastPage.classList.remove("disabled-button", "pagination-button");
+                this.$.goToNextPage.classList.remove("disabled-button", "pagination-button");
+                this.$.goToFirstPage.classList.add("pagination-button");
+                this.$.goToPreviousPage.classList.add("pagination-button");
+                this.$.goToNextPage.classList.add("pagination-button");
+                this.$.goToLastPage.classList.add("pagination-button");
+                if (this.productsCount == 0 || this.currentPage == 1) {
+                    this.$.goToFirstPage.classList.add("disabled-button");
+                    this.$.goToPreviousPage.classList.add("disabled-button");
+                }
+
+                if (this.productsCount == 0 || this.currentPage == this.pageCount || this.pageCount == 1 || this.pageCount == 0) {
+                    this.$.goToNextPage.classList.add("disabled-button");
+                    this.$.goToLastPage.classList.add("disabled-button");
+                }
+
+
+            }
+
+            /**
+             *  This method is used to update the list of the products to be added/removed to/from the collection
+             *             
+             */
+            checkUncheckAll() {
+                var self = this;
+                var _products = [];
+                if (!this.collection) {
+                    this.collection = {};
+                }
+                this.selectedAll = !this.selectedAll;
+                this.set('selectedAll', this.selectedAll);
+                this.notifyPath('selectedAll', this.selectedAll);
+
+                this.collection.productIds = [];
+                this.addedIds = [];
+                this.removedIds = [];
+                var listFilter = "*";
+                this.selectedAll = !this.selectedAll;
+                if (this.filter && this.filter.trim() != "") {
+                    listFilter = this.filter;
+                }
+                return self.owcApp.httpManager.sendRequest(
+                    'GET',
+                    self.owcApp.config.baseUrl + self.productSearchUrl.replace(':filter', listFilter).replace(':offset', 0).replace(':limit', self.productsCount)
+                ).then(function(response) {
+                    var productList = response.data;
+                    if (self.selectedAll) {
+                        for (var i = 0; i < productList.length; i++) {
+                            self.collection.productIds.push(productList[i].id);
+                            self.addedIds.push(productList[i].id);
+                        }
+                    } else {
+                        for (var i = 0; i < productList.length; i++) {
+                            self.removedIds.push(productList[i].id);
+                        }
+                    }
+                    for (var i = 0; i < self.products.length; i++) {
+                        _products.push({
+                            "identifier": self.products[i].identifier,
+                            "id": self.products[i].id,
+                            "uuid": self.products[i].uuid,
+                            "checked": self.isChecked(self.products[i])
+                        });
+                    }
+                    self.products = _products;
+                    self.set('products', self.products);
+                    self.notifyPath('products', self.products);
+                });
+            };
+
+            /**
+             *  This method is used to update the checked status of a product to be added/removed to/from the collection
+             *             
+             */
+            isChecked(item) {
+                if (this.collection && this.collection.productIds && _.indexOf(this.collection.productIds, item.id) >= 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+
+        };
+
+        Polymer(CollectionProducts);
+
+    })();
+    </script>
+</dom-module>

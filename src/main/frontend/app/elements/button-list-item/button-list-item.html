@@ -55,49 +55,53 @@ This component contains the following sections:
 <dom-module id="button-list-item">
     <!-- VIEW  CODE HERE -->
     <template>
-        <style>
+        <style is="custom-style">
+        :host {
+            min-width: 285px;
+        }
+        
         .button-color {
             color: blue;
         }
-
+        
         .item.button-list-item {
             width: auto!important;
         }
-
+        
         .container {
             @apply(--layout-horizontal);
             @apply(--layout-wrap);
             height: var(--container-height, 120px !important);
         }
-
+        
         .containerbis {
             @apply(--layout-horizontal);
             @apply(--layout-wrap);
             height: auto!important);
         }
-
+        
         .flexchild {
             text-align: left;
             /*top:50px!important;*/
             @apply(--layout-flex-4);
             margin-top: 40px;
         }
-
+        
         .flex2child {
             @apply(--layout-flex-10);
             @apply(--layout-horizontal);
             @apply(--layout-self-end);
         }
-
+        
         .flex3child {
             @apply(--layout-flex-12);
             @apply(--layout-vertical);
         }
-
+        
         iron-list {
             background-color: var(--paper-grey-200, #eee);
         }
-
+        
         .item {
             @apply(--layout-horizontal);
             @apply(--layout-wrap);
@@ -111,12 +115,15 @@ This component contains the following sections:
             margin-top: 5px !important;
             margin-bottom: 5px !important;
             border: solid 1px #ecf0f1;
+            background-color: var(--itembackground, #fff);
+            box-shadow: var(--itemshadow, none);
+            /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);*/
         }
-
+        
         .item-complete {
             height: 130px;
         }
-
+        
         .title {
             font-size: 14px;
             font-weight: bold;
@@ -124,14 +131,14 @@ This component contains the following sections:
             white-space: nowrap;
             overflow: hidden;
         }
-
+        
         .attribute {
             font-size: 12px!important;
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
         }
-
+        
         .thumb {
             margin-right: 5px;
             max-width: 65px;
@@ -139,60 +146,60 @@ This component contains the following sections:
             /*width: 60px;
       height: 60px;*/
         }
-
+        
         .owc-list-item {
             /*margin-top: 5px !important;*/
             margin-right: 10px!important;
         }
-
+        
         .item.button-list-item.button-list-item {}
-
+        
         .owc-list-item-thumb {
             position: absolute;
             top: var(--owc-list-item-thumb-top, 50px);
             left: var(--owc-list-item-thumb-left, 20px);
             display: inline-block;
         }
-
+        
         .owc-list-item-title {
             position: absolute;
             top: var(--owc-list-item-title-top, 12px);
             left: var(--owc-list-item-title-left, 20px);
             width: var(--owc-list-item-title-width, calc(100% - 50px));
         }
-
+        
         .owc-list-item-attributes-container {
             position: absolute;
             top: var(--owc-list-item-attributes-container-top, 60px);
             left: 100px;
             width: 100%;
         }
-
+        
         .owc-list-item-attribute {
             width: calc(100% - 140px);
         }
-
+        
         .owc-list-item-buttons {
             position: absolute;
             bottom: 5px;
             right: 15px
         }
-
+        
         .star {
             position: absolute;
             top: 23px;
             right: 15px;
         }
-
+        
         .checked {
             color: blue;
         }
-
+        
         paper-icon-button {
             height: 37px;
             width: 37px;
         }
-
+        
         .offline {
             position: absolute;
             top: 35px;
@@ -206,16 +213,16 @@ This component contains the following sections:
             overflow: hidden;
             text-align: right;
         }
-
+        
         .item-offline {
             background-color: lightgrey;
         }
-
+        
         .adf-list-item {
             padding: 20px;
         }
         </style>
-        <div class$="{{computeCssClass(model.isOnline)}}" id="{{model.uuid}}" hidden="{{!model.showAdf}}">
+        <div class$="{{computeCssClass(model.isOnline)}}" id="{{model.uuid}}" hidden="{{!model.showAdf}}" on-click="selectFootprint">
             <div>
                 <paper-icon-button icon="star" class="star" on-click="pinnedList" title="Add Product to Cart" hidden="{{pinned}}"></paper-icon-button>
                 <paper-icon-button icon="star" class="star checked" on-click="pinnedList" title="Remove Product from Cart" hidden="{{!pinned}}"></paper-icon-button>
@@ -237,8 +244,9 @@ This component contains the following sections:
                 </div>
             </div>
             <div class="owc-list-item-buttons" hidden="{{!model.showAdf}}">
-                <!-- <span hidden="{{iscart}}"><paper-icon-button icon="maps:satellite" on-click="addLayer" disabled="{{!layerEnabled}}" hidden="{{model.status }}"></paper-icon-button> -->
-                <!-- <paper-icon-button icon="maps:satellite" on-click="addLayer" disabled="{{!layerEnabled}}" hidden="{{!model.status}}" class="button-color"></paper-icon-button></span> -->
+                <paper-icon-button icon="fullscreen-exit" on-click="zoomTo" title="Zoom to product" hidden$="{{!show_zoom}}"></paper-icon-button>
+                <!-- deleteProduct -->
+                <paper-icon-button icon="delete" on-click="deleteProduct" title="DeleteProduct" hidden$="{{!isDataManager}}"></paper-icon-button>
                 <paper-icon-button icon="visibility" on-click="details" title="View Product Details"></paper-icon-button>
                 <paper-icon-button icon="file-download" on-click="download" title="Download Product"></paper-icon-button>
                 <paper-icon-button icon="list" on-click="adfList" title="Show Auxiliary Data File List" hidden="{{!model.showAdf}}"></paper-icon-button>
@@ -275,6 +283,7 @@ This component contains the following sections:
             beforeRegister() {
                 this.is = 'button-list-item';
                 this.owcApp = document.querySelector('#owc-app');
+                this.LIST_ITEM_HEIGHT = 142;
 
                 this.properties = {
 
@@ -285,6 +294,17 @@ This component contains the following sections:
                     model: {
                         type: Object,
                         value: {}
+                    },
+
+                    /**
+                     * check if user has data manager role
+                     *
+                     * @type {Boolean}
+                     */
+                    isDataManager: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
                     },
 
                     /**
@@ -408,6 +428,13 @@ This component contains the following sections:
                         value: true,
                         notify: false
                     },
+
+                    show_zoom: {
+                        type: Boolean,
+                        value: true,
+                        notify: true,
+                        computed: '_computeShowZoom(iscart, iscalendar)'
+                    }
                 };
             }
 
@@ -419,11 +446,67 @@ This component contains the following sections:
              */
             created() {
                 this.navigationManager = document.getElementById('navigation-manager');
+            }
 
+            deleteProduct() {
+
+                var self = this;
+                var deletionCause = null;
+
+                //console.warn("deleteProduct()");
+                //console.log("self.model: ", self.model);
+                //console.log("self.get('parent'): ", self.get('parent'));
+
+                var outcome = confirm("Delete the product?");
+                if (!outcome)
+                    return;
+
+                var deleted_product = {
+                    "show_deletion_cause": true,
+                    "causes": ["Invalid: bad geometry", "Invalid: reprocessed"],
+                    "default_cause": "Invalid"
+                };
+
+                var cause = prompt("Please enter a deletion cause. \n" +
+                    "Valid causes are: \"" + deleted_product.causes +
+                    "\". \nClick on 'Cancel' if you don't want to insert any cause.", "");
+
+                if (cause != null && cause.length > 0) {
+                    if (deleted_product.causes.indexOf(cause) >= 0) {
+                        deletionCause = cause;
+                    } else {
+                        deletionCause = deleted_product.default_cause;
+                    }
+                }
+
+                //console.log("deletionCause: ", deletionCause);
+
+                var queryString = (deletionCause) ? "?cause=" + deletionCause : "";
+                var url = self.owcApp.config.baseUrl + "/odata/v1/Products('" + self.model.uuid + "')" + queryString;
+                //console.log("url: ", url);
+
+
+
+
+
+                self.owcApp.httpManager.sendRequest(
+                    'DELETE',
+                    url
+                ).then(function(response) {
+                    if (response.status >= 200 && response.status < 300) {
+                        self.owcApp.toastManager.info(self.i18n("Product removed"));
+                        self.owcApp.messageBroker.publish('reloadList');
+                    } else {
+                        self.owcApp.toastManager.error(self.i18n("Remove product failed"));
+                    }
+                }, function() {
+                    self.owcApp.toastManager.error(self.i18n("Remove product failed"));
+                });
             }
 
             attached() {
                 var self = this;
+                this.isDataManager = this.owcApp.userManager.isDataManager();
                 self.pinned = false;
                 self.set('pinned', self.pinned);
                 self.notifyPath('pinned', self.pinned);
@@ -432,6 +515,7 @@ This component contains the following sections:
                 self.layerEnabled = false;
                 self.set('layerEnabled', self.layerEnabled);
                 self.notifyPath('layerEnabled', self.layerEnabled);
+
                 if (_.contains(self.cart, self.model.id)) {
                     self.pinned = true;
                 }
@@ -486,6 +570,9 @@ This component contains the following sections:
                             }
                             self.set('layerEnabled', self.layerEnabled);
                             self.notifyPath('layerEnabled', self.layerEnabled);
+                            self.customStyle['--itembackground'] = 'rgb(255,255,255)';
+                            self.customStyle['--itemshadow'] = 'none';
+                            self.updateStyles();
                         }, 0);
 
                     }, self.target);
@@ -526,9 +613,57 @@ This component contains the following sections:
 
                 }, self.target);
 
+                self.owcApp.messageBroker.subscribe('select-product', function(eventName, product) {
+                    setTimeout(function() {
+                        var id = (product) ? product.identifier : -1;
+                        if (self.model.identifier == id) {
+                          self.setSelection(product);
+                          var listSelector = '._'+self.target;                             
+                          var itemPosition = self.LIST_ITEM_HEIGHT * self.index;
+                          $(document.querySelector(listSelector).parentNode).scrollTop($(self).position().top);
+                        } else {
+                          self.customStyle['--itembackground'] = 'rgb(255,255,255)';
+                          self.customStyle['--itemshadow'] = 'none';
+                          self.model.selected = false;
+                          self.updateStyles();
+                        }
+                    }, 0);
 
+                }, self.target);
+
+                self.owcApp.messageBroker.subscribe('select-footprint', function(eventName, product) {
+
+                    setTimeout(function() {
+                        var id = product.identifier;
+                        if (self.model.identifier == id) {
+                          self.customStyle['--itembackground'] = (self.model.selected) ? 'darkgrey !important' : 'rgb(255,255,255)';
+                          self.customStyle['--itemshadow'] = (self.model.selected) ? '0 4px 8px rgba(0, 0, 0, 0.5)' : 'none';
+                          self.updateStyles();
+                        } else {
+                          self.model.selected = false;
+                          self.customStyle['--itembackground'] = 'rgb(255,255,255)';
+                          self.customStyle['--itemshadow'] = 'none';
+                          self.updateStyles();
+                        }
+                    }, 0);
+
+                }, self.target);
 
             }
+
+            setSelection(product) {
+                var self = this;
+                self.model.selected = product.selected;
+                self.set('model.selected', self.model.selected);
+                self.notifyPath('model.selected', self.model.selected);
+                self.customStyle['--itembackground'] = (self.model.selected) ? 'darkgrey !important' : 'rgb(255,255,255)';
+                self.customStyle['--itemshadow'] = (self.model.selected) ? '0 4px 8px rgba(0, 0, 0, 0.5)' : 'none';
+                self.updateStyles();
+                self.computeCssClass(self.model);
+                
+
+            }
+            
 
             /**
              * This method is used to compute the css class for list item background.
@@ -542,6 +677,8 @@ This component contains the following sections:
                 var cssclass = "item item-complete owc-list-item ";
                 if (!this.model.isOnline)
                     cssclass += "item-offline";
+                if (this.model.selected)
+                    cssclass += "item-selected";
                 return cssclass;
             }
 
@@ -584,6 +721,8 @@ This component contains the following sections:
                 var IMAGE_PLACE_HOLDER_URL = this.owcApp.config.clientUrl + '/images/placeholder.png';
                 Polymer.dom(this.root).querySelector("#image").src = IMAGE_PLACE_HOLDER_URL;
             }
+
+
 
             /**
              * This method is used to download a product. Product download is triggered clicking on the proper download icon
@@ -662,6 +801,9 @@ This component contains the following sections:
                 var product = document.createElement('product-details');
                 product.productuuid = this.model.uuid;
                 product.productname = this.model.identifier;
+                product.isOnline = this.model.isOnline;
+                product.pinned = this.model.pinned;
+                product.cartmngr = this.cartmngr;
                 this.navigationManager.pushComponent(product, '500px', 'Product Details');
             }
 
@@ -715,6 +857,35 @@ This component contains the following sections:
              */
             setTarget(target) {
                 this.target = target;
+            }
+
+
+            /**
+             * This method is used to trigger the zoom to the selected product on the map component
+             *             
+             */
+            zoomTo() {
+                this.owcApp.messageBroker.publish('zoom-to', this.model, this.target);
+            }
+
+            _computeShowZoom(iscart, iscalendar) {
+                return !iscart && !iscalendar;
+            }
+
+            /**
+             * This method is used to trigger the footprint selection on the map component when an user select an item
+             * from the product list.
+             *             
+             */
+            selectFootprint(e) {
+                if(e.target && e.target.className && e.target.className.indexOf("owc-list-item") == -1) {
+                  return;
+                }
+                this.model.selected = !this.model.selected;
+                this.customStyle['--itembackground'] = (this.model.selected) ? 'darkgrey !important' : 'rgb(255,255,255)';
+                this.customStyle['--itemshadow'] = (this.model.selected) ? '0 4px 8px rgba(0, 0, 0, 0.5)' : 'none';
+                this.updateStyles();
+                this.owcApp.messageBroker.publish('select-footprint', this.model, this.target);
             }
 
         };

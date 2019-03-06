@@ -107,42 +107,42 @@ This component is used for event synchronizer creation or update. This functiona
                 <div class="panelHeader">Event Synchronizer Properties</div>
                 <form is="iron-form" method="get" action="/" id="basic">
                     <div class="fieldContainer">
-                        <paper-input class="flexchild" value="{{model.Label}}" name="label" label="Label" required></paper-input>
+                        <paper-input class="flexchild" value="{{model.Label}}" name="label" label="{{i18n('Label')}}" required></paper-input>
                     </div>
                     <div class="fieldContainer">
-                        <paper-input class="flexchild" value="{{model.ServiceUrl}}" label="Service Url" required></paper-input>
+                        <paper-input class="flexchild" value="{{model.ServiceUrl}}" label="{{i18n('Service Url')}}" required></paper-input>
                     </div>
                     <div class="fieldContainer">
-                        <paper-input class="flexchild" value="{{model.ServiceLogin}}" label="Service Login Username" required></paper-input>
+                        <paper-input class="flexchild" value="{{model.ServiceLogin}}" label="{{i18n('Service Login Username')}}" required></paper-input>
                     </div>
                     <div class="fieldContainer">
-                        <paper-input class="flex2child" type="password" value="{{model.ServicePassword}}" error-message="Password doesn't match or is invalid" invalid="{{isPasswordInvalid}}" on-change="checkConfirmPassword" label="Service Password" required></paper-input>
+                        <paper-input class="flex2child" type="password" value="{{model.ServicePassword}}" error-message="Password doesn't match or is invalid" invalid="{{isPasswordInvalid}}" on-change="checkConfirmPassword" label="{{i18n('Service Password')}}" required></paper-input>
                         <div class="flexchild"></div>
-                        <paper-input class="flex2child" type="password" value="{{confirmPassword}}" error-message="Password doesn't match or is invalid" invalid="{{isPasswordInvalid}}" on-change="checkConfirmPassword" label="Confirm Password" required></paper-input>
+                        <paper-input class="flex2child" type="password" value="{{confirmPassword}}" error-message="Password doesn't match or is invalid" invalid="{{isPasswordInvalid}}" on-change="checkConfirmPassword" label="{{i18n('Confirm Password')}}" required></paper-input>
                     </div>
                     <div class="fieldContainer">
-                        <paper-input class="flex2child" value="{{model.Schedule}}" label="Schedule" required></paper-input>
+                        <paper-input class="flex2child" value="{{model.Schedule}}" label="{{i18n('Schedule')}}" required></paper-input>
                         <div class="flexchild"></div>
-                        <paper-dropdown-menu class="flex2child" label="Request" value="{{model.Request}}" required>
+                        <paper-dropdown-menu class="flex2child" label="{{i18n('Request')}}" value="{{model.Request}}" required>
                             <paper-menu attr-for-selected="value" selected="{{model.Request}}" class="dropdown-content">
-                                <paper-item value="Request" disabled>Request</paper-item>
-                                <paper-item value="start">start</paper-item>
-                                <paper-item value="stop">stop</paper-item>
+                                <paper-item value="Request" disabled>{{i18n('Request')}}</paper-item>
+                                <paper-item value="start">{{i18n('start')}}</paper-item>
+                                <paper-item value="stop">{{i18n('stop')}}</paper-item>
                             </paper-menu>
                         </paper-dropdown-menu>
                     </div>
                     <div class="fieldContainer">
-                        <paper-input class="flexchild" value="{{model.FilterParam}}" label="Filter Param"></paper-input>
+                        <paper-input class="flexchild" value="{{model.FilterParam}}" label="{{i18n('Filter Param')}}"></paper-input>
                     </div>
                     <div class="fieldContainer">
-                        <paper-input class="flexchild" value="{{model.CreationDate}}" label="Creation Date"></paper-input>
+                        <paper-input class="flexchild" value="{{model.CreationDate}}" label="{{i18n('Creation Date')}}"></paper-input>
                     </div>
                     <br>
                     <br>
                 </form>
             </div>
             <div class="buttonContainer">
-                <paper-button raised on-click="save" title="Save">Save</paper-button>
+                <paper-button raised on-click="save" title="{{i18n('Save')}}">{{i18n('Save')}}</paper-button>
             </div>
         </div>
     </template>

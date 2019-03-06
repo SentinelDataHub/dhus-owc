@@ -25,6 +25,8 @@
 
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
 <!-- DEMO TEST -->
 <link rel="import" href="../authentication-manager/demo/test-container.html">
 <link rel="import" href="../message-broker/demo/test-container.html">
@@ -54,11 +56,13 @@ At application startup, it creates all the components used to manage:
             height: 100%;
         }
         </style>
+        <app-location route="{{route}}" ></app-location>
+        <app-route route="{{route}}" pattern="/?r=:code" active="{{active}}"></app-route>
         <navigation-manager id="navigation-manager"></navigation-manager>
         <toast-manager id="toast-manager"></toast-manager>
         <message-broker id="message-broker"></message-broker>
     </template>
-    document.getElementById("#owc-app");
+
     <!-- MODEL-CONTROLLER CODE -->
     <script>
     'use strict';
@@ -66,8 +70,10 @@ At application startup, it creates all the components used to manage:
 
         var config = {
 
-            baseUrl: "../",
-            clientUrl: "./"
+            baseUrl: "../", 
+            clientUrl: "./" 
+
+
         };
 
         'use strict';
@@ -92,6 +98,7 @@ At application startup, it creates all the components used to manage:
             beforeRegister() {
                 var self = this;
                 this.is = 'owc-app';
+                this.pattern = {};
                 this.config = config;
                 this.appconfig = {};
                 this.theme = {};
@@ -131,8 +138,6 @@ At application startup, it creates all the components used to manage:
                 } else{
                     this.i18nManager.setCurrentLanguage('en');
                 }
-
-
 
                 /**
                  * Message exchange between components manager
@@ -229,26 +234,19 @@ At application startup, it creates all the components used to manage:
              */
             _init() {
                 var dynamicMenu = document.createElement('dynamic-main-menu');
-                var self=this;
-                setTimeout(function(){
-                    self.navigationManager.pushComponent(dynamicMenu, "150px", (self.theme.title) ? self.theme.title : '', true, true, 1);
-                },100);
+                var self = this;
+                self.httpManager.sendRequest('GET', self.config.clientUrl + '/conf/theme.json').then(function(response) {
+                  self.theme = (response.status == 200) ? response.data : {};
+                  setTimeout(function(){
+                      self.navigationManager.pushComponent(dynamicMenu, "150px", (self.theme.title) ? self.theme.title : '', true, true, 1, true);
+                      if(self.route && self.route.__queryParams && self.route.__queryParams.hasOwnProperty('r') ) {
+                        var resetPwd = document.createElement('reset-password');
+                        resetPwd.setCode(self.route.__queryParams.r);
+                        self.navigationManager.pushComponent(resetPwd, "500px", 'Reset Password', true, true, 1, true);
+                      }
+                  },0);
+                });
 
-                // this.httpManager.sendRequest('GET', this.config.baseUrl + '/api/owc/version')
-                //     .then(function(response) {
-                //         var currentVersion = response.data.value;
-                //         var savedVersion = localStorage.getItem("version");
-                //         if(savedVersion){
-                //           if(currentVersion != savedVersion){
-                //             //localStorage.setItem("version", currentVersion);
-                //             //location.reload(true);
-                //           }
-                //         }else{
-                //         //  localStorage.setItem("version", currentVersion);
-                //           //location.reload(true);
-                //         }
-                //
-                //     });
 
             }
         };

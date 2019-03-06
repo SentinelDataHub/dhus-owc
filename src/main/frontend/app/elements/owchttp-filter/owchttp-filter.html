@@ -103,6 +103,15 @@ The current white list follows:
                 }, {
                     url: /.*api\/stub\/signup/g,
                     method: "POST"
+                }, {
+                    url: /.*api\/owc\/forgotpassword/g,
+                    method: "POST"
+                }, {
+                    url: /.*api\/stub\/resetpwd/g,
+                    method: "POST"
+                }, {
+                    url: /.*\/conf\/supported_languages.json/g,
+                    method: "GET"
                 }];
 
             }
@@ -120,7 +129,7 @@ The current white list follows:
                 var response = {};
                 for (var i = 0; i < self.exceptions.length; i++) {
                     var match = url.match(self.exceptions[i].url);
-                    if (match && method == self.exceptions[i].method) {
+                    if (match && method == self.exceptions[i].method) {                      
                         return {
                             status: true,
                             code: "",
@@ -130,7 +139,7 @@ The current white list follows:
                                 options: options
                             }
                         };
-                    }
+                    }                    
                 }
 
                 if (!self.owcApp.authenticationManager.isLogged()) {

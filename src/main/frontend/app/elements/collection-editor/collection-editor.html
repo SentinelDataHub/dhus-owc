@@ -1,0 +1,180 @@
+<!--
+  @license
+
+
+  Data HUb Service (DHuS) - For Space data distribution.
+  Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
+  Copyright (C) 2013,2014,2015,2016 GAEL Systems
+  Copyright (C) 2013,2014,2015,2016 Serco Spa
+
+  This file is part of DHuS software sources.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!--
+@demo demo/index.html
+-->
+
+<dom-module id="collection-editor">
+
+<template>
+
+  <style>
+
+    #collection-editor-container{
+      height: 100% ;
+      width:  100%;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    .uploadSection {
+        border-bottom: solid 1px;
+        padding: 10px;
+    }
+
+    paper-button {
+        background: #002664;
+        color: white;
+        padding: 5px 5px;
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        float: right;
+        margin-right: 10px
+    }
+
+    paper-button[toggles][active].colorful {
+        background-color: #002664;
+    }
+
+    paper-button[toggles][active][raised].colorful {
+        background-color: rgba(66, 133, 244, 0.75);
+    }
+
+  </style>
+  <paper-button raised class="colorful" on-click="updateCollection" title="{{i18n('Update')}}">{{i18n('Update')}}</paper-button>
+<div id="collection-editor-container">
+  <div class="form-section">
+      <div>
+          <paper-input value="{{model.name}}" name="name" label="{{i18n('Name')}}" always-float-label autofocus required error-message="{{i18n('Name empty')}}" invalid="{{isNameEmpty}}">{{model.name}}</paper-input>
+      </div>
+      <div>
+          <paper-input value="{{model.description}}" label="{{i18n('Description')}}" always-float-label>{{model.description}}</paper-input>
+      </div>
+      <div>        
+        <collection-products collection="{{model}}"></collection-products>
+      </div>
+</div>
+  </div>
+</template>
+
+<script>
+    (function() {
+       'use strict';
+       class CollectionEditor {
+
+                /* --- POLYMER LIFECYCLE METHODS --- */
+
+            /**
+             * BeforeRegister method Polymer calls before creating the element.
+             * This method is where you shoud define the is property (element's name) and
+             * properties  object.
+             *
+             * @return {null}
+             */
+           beforeRegister() {
+               this.is = 'collection-editor';
+               this.owcApp = document.querySelector('#owc-app');
+
+               this.properties = {
+                   /**
+                    * Synchronizer editor model
+                    *
+                    * @type {Object}
+                    */
+                   model: {
+                       type: Object,
+                       value: {},
+                       notify: true
+                   }
+               };
+           }
+
+           /**
+            * Set collection
+            *
+            * @param {Object} model:
+            * @return {null}
+            */
+           setModel(model) {
+               var self = this;
+               self.set('model', {});
+               self.set('model', model);
+               self.notifyPath('model', model);
+           }
+
+           collectionUrl(uuid){
+             var url_template =  "/api/stub/admin/collections/:uuid";
+             return url_template.replace(":uuid", uuid);
+           }
+
+           /**
+
+              * Update collection
+              *
+              * @param {Object} model:
+              * @return {null}
+
+            */
+           updateCollection(){
+             var self = this;
+
+             var uuid = this.get('model').uuid;
+             var model = this.get('model');
+             var details = Polymer.dom(self.root).querySelector('collection-products');
+             model.addedIds = details.addedIds;
+             model.removedIds = details.removedIds;
+             var options = {
+               body: JSON.stringify(model),
+               headers: [{
+                   name: "Accept",
+                   value: "application/json"
+               }, {
+                   name: "Content-Type",
+                   value: "application/json"
+               }]
+             };
+             var url = self.owcApp.config.baseUrl + this.collectionUrl(uuid);
+             self.owcApp.httpManager.sendRequest('PUT', self.owcApp.config.baseUrl + this.collectionUrl(uuid), options)
+              .then(function(response) {
+                 self.owcApp.toastManager.info(self.i18n("Collection updated"));
+                 self.owcApp.messageBroker.publish('updateCollection');
+                 self.parentPanel.closePanel();
+             }, function() {
+              self.owcApp.toastManager.error(self.i18n("Error updating collection"));
+             });
+           }
+       };
+      Polymer(CollectionEditor);
+
+    })();
+  </script>
+
+</dom-module>

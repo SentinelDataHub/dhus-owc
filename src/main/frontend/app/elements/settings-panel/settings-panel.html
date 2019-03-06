@@ -79,7 +79,7 @@ Panel to set language and open main menu
         .settingsTitle {
             padding-bottom: 0px;
             font-weight: bold;
-            font-size: 25px;
+            font-size: 22px;
         }
 
         .settings-item{
@@ -95,42 +95,37 @@ Panel to set language and open main menu
         <div id="settingsContainer">
           <div class="settingsSection">
               <div class="settingsTitle">{{i18n("Client configuration")}}</div>
+
               <div style="display:block">
+
                 <paper-dropdown-menu style="display:inline-block;width:150px;" always-float-label="true" id="language" style="font-size: 26px!important;" label="{{i18n('language')}}" placeholder="{{currentLanguage}}">
                     <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
-                        <paper-item value="it">it</paper-item>
+                        <template is="dom-repeat" items="{{languages}}">
+                            <paper-item value="{{item}}">{{item}}</paper-item>
+                        </template>
+                        <!-- <paper-item value="it">it</paper-item>
                         <paper-item value="en">en</paper-item>
-                        <paper-item value="fr">fr</paper-item>
+                        <paper-item value="fr">fr</paper-item> -->
                     </paper-listbox>
                 </paper-dropdown-menu>
                 <paper-icon-button style="width: 33px;display:inline-block;" suffix on-click="setLanguage" icon="save" alt="Save" title="Save"></paper-icon-button>
-              </div>
-              <a class="settings-item" hidden$="{{!isDataManager}}" on-click="mainMenu" title="{{i18n('main menu')}}">{{i18n('main menu')}}</a>
 
-              <!-- <paper-button hidden$="{{!isDataManager}}" raised class="colorful" on-click="mainMenu" title="{{i18n('main menu')}}">{{i18n("main menu")}}</paper-button> -->
-              <!-- <br/> -->
+              </div>
+
+              <a class="settings-item" hidden$="{{!isDataManager}}" on-click="mainMenu" title="{{i18n('main menu')}}">{{i18n('main menu')}}</a>
               <a class="settings-item" hidden$="{{!isLogged}}" raised class="colorful" on-click="listSettings" title="{{i18n('List Settings')}}">{{i18n("List Settings")}}</a>
-              <!-- <br/> -->
               <a class="settings-item" raised class="colorful" on-click="mapSettings" title="{{i18n('Map Settings')}}">{{i18n("Map Settings")}}</a>
-              <!-- <br/> -->
-              <!-- <a class="settings-item" hidden$="{{!isLogged}}"raised class="colorful" on-click="wmsSettings" title="{{i18n('wms settings')}}">{{i18n("Wms settings")}}</a> -->
-              <!-- <br/> -->
               <a class="settings-item" raised class="colorful" on-click="theme" title="{{i18n('Theme')}}">{{i18n("Theme")}}</a>
-              <!-- <br/> -->
 
           </div>
 
           <div class="settingsSection">
-              <div class="settingsTitle">{{i18n("Data management")}}</div>
-
-              <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="upload" title="{{i18n('Upload')}}">{{i18n("Upload")}}</a>
-
-              <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="odataSynch" title="Product Synchronizers">Product Synchronizers</a>
-
-              <!-- <a class="settings-item" hidden$="{{!isEventManager}}" raised class="colorful" on-click="eventSynch" title="Event Synchronizers">Event Synchronizers</a> -->
-
-              <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="eviction" title="Eviction Manager">Eviction Manager</a>
-
+              <div class="settingsTitle"  hidden$="{{!isDataManager}}">{{i18n("Data management")}}</div>
+              <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="collections" title="{{i18n('Collections')}}">{{i18n("Collections")}}</a>
+              <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="upload" title="{{i18n('Upload')}}">{{i18n("Upload")}}</a> 
+              <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="odataSynch" title="{{i18n('Product Synchronizers')}}">{{i18n('Product Synchronizers')}}</a>
+              <a class="settings-item" hidden$="{{!showEventSynch}}" raised class="colorful" on-click="eventSynch" title="Event Synchronizers">Event Synchronizers</a>
+              <a class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="eviction" title="{{i18n('Eviction Manager')}}">{{i18n('Eviction Manager')}}</a> 
               <a
                 class="settings-item"
                 hidden$="{{!isDataManager}}"
@@ -145,25 +140,33 @@ Panel to set language and open main menu
                 on-click="localArchive"
                 class="settings-item"
                 title="{{i18n('Local Archive')}}">{{i18n("Local Archive")}}</a>
+
+                <a
+                class="settings-item"
+                hidden$="{{!isDataManager}}"
+                raised class="colorful"
+                on-click="dataStore"
+                class="settings-item"
+                title="{{i18n('Data Stores')}}">{{i18n("Data Stores")}}</a>
           </div>
 
           <div class="settingsSection">
-              <div class="settingsTitle">{{i18n("System")}}</div>
+              <div class="settingsTitle"  hidden$="{{!isSystemManager}}" >{{i18n("System")}}</div>
               <a  class="settings-item"
-                hidden$="{{!isDataManager}}"
+                hidden$="{{!isSystemManager}}"
                 raised class="colorful"
                 on-click="mailConfiguration"
                 class="settings-item"
                 title="{{i18n('Mail Configuration')}}">{{i18n("Mail")}}</a>
 
               <a  class="settings-item"
-                hidden$="{{!isDataManager}}"
+                hidden$="{{!isSystemManager}}"
                 raised class="colorful"
                 on-click="rootConfiguration"
                 class="settings-item"
                 title="{{i18n('Root Account')}}">{{i18n("Root Account")}}</a>
 
-              <a  class="settings-item" hidden$="{{!isDataManager}}" raised class="colorful" on-click="users" title="{{i18n('Users')}}">{{i18n("Users")}}</a>
+              <a  class="settings-item" hidden$="{{!isSystemManager}}" raised class="colorful" on-click="users" title="{{i18n('Users')}}">{{i18n("Users")}}</a>
 
 
           </div>
@@ -200,6 +203,17 @@ Panel to set language and open main menu
                     },
 
                     /**
+                     * check if user has system manager role
+                     *
+                     * @type {Boolean}
+                     */
+                    isSystemManager: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+
+                    /**
                      * check if user has event manager role
                      *
                      * @type {Boolean}
@@ -218,6 +232,39 @@ Panel to set language and open main menu
                     isLogged: {
                         type: Boolean,
                         value: false,
+                        notify: true
+                    },
+
+                    /**
+                     * check if events management is enabled
+                     *
+                     * @type {Boolean}
+                     */
+                    showEvents: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    }, 
+
+                    /**
+                     * check if event synchronizer link is to be shown or not
+                     *
+                     * @type {Boolean}
+                     */
+                    showEventSynch: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+
+                    /**
+                     * contains the list of the default supported languages
+                     *
+                     * @type {Array}
+                     */
+                    languages: {
+                        type: Array,
+                        value: ["en","fr","it"],
                         notify: true
                     }
                 };
@@ -253,11 +300,17 @@ Panel to set language and open main menu
                 this.owcApp = document.querySelector('#owc-app');
                 var self = this;
                 this.isDataManager = this.owcApp.userManager.isDataManager();
+                this.isSystemManager = this.owcApp.userManager.isSystemManager();
                 this.isEventManager = this.owcApp.userManager.isEventManager();
                 this.isLogged = this.owcApp.userManager.isLogged();
+                self.showEvents = self.owcApp.appconfig.show_events;
+                self.showEventSynch = self.isEventManager && self.showEvents;
                 self.set('isDataManager', this.isDataManager);
+                self.set('isSystemManager', this.isSystemManager);
                 self.set('isEventManager', this.isEventManager);
                 self.set('self.isLogged', this.isLogged);
+                self.set('showEvents', self.showEvents);
+                self.set('showEventSynch', self.showEventSynch);                
 
                 self.currentLanguage = self.owcApp.i18nManager.currentLanguage;
                 window.addEventListener("resize", function() {
@@ -266,29 +319,68 @@ Panel to set language and open main menu
                 this.owcApp.messageBroker.subscribe('logged-in', function(eventName) {
                     setTimeout(function() {
                         self.isDataManager = self.owcApp.userManager.isDataManager();
+                        self.isSystemManager = self.owcApp.userManager.isSystemManager();
                         self.isEventManager = self.owcApp.userManager.isEventManager();
                         self.isLogged = self.owcApp.userManager.isLogged();
+                        self.showEvents = self.owcApp.appconfig.show_events;
+                        self.showEventSynch = self.isEventManager && self.showEvents;
                         self.set('self.isLogged', self.isLogged);
                         self.set('isDataManager', self.isDataManager);
+                        self.set('isSystemManager', self.isSystemManager);
                         self.set('isEventManager', self.isEventManager);
+                        self.set('showEvents', self.showEvents);
+                        self.set('showEventSynch', self.showEventSynch);
+
                     }, 0);
                 });
                 this.owcApp.messageBroker.subscribe('logged-out', function() {
                     setTimeout(function() {
                         self.isDataManager = self.owcApp.userManager.isDataManager();
+                        self.isSystemManager = self.owcApp.userManager.isSystemManager();
                         self.isEventManager = self.owcApp.userManager.isEventManager();
                         self.isLogged = self.owcApp.userManager.isLogged();
+                        self.showEvents = self.owcApp.appconfig.show_events;
+                        self.showEventSynch = self.isEventManager && self.showEvents;
                         self.set('self.isLogged', self.isLogged);
-                        self.set('isDataManager', self.isDataManager);
+                        self.set('isSystemManager', self.isSystemManager);
                         self.set('isEventManager', self.isEventManager);
+                        self.set('showEvents', self.showEvents);
+                        self.set('showEventSynch', self.showEventSynch);
                     }, 0);
                 });
 
                 this.isDataManager = this.owcApp.userManager.isDataManager();
+                this.isSystemManager = this.owcApp.userManager.isSystemManager();
                 this.isEventManager = this.owcApp.userManager.isEventManager();
+                self.showEvents = self.owcApp.appconfig.show_events;
+                self.showEventSynch = self.isEventManager && self.showEvents;
                 self.set('isDataManager', this.isDataManager);
+                self.set('isSystemManager', this.isSystemManager);
                 self.set('isEventManager', this.isEventManager);
+                self.set('showEvents', self.showEvents);
+                self.set('showEventSynch', self.showEventSynch);
+                self.owcApp.httpManager.sendRequest('GET', self.owcApp.config.clientUrl + '/conf/supported_languages.json')
+                    .then(function(response) {
+                        if(response.status == 200 && response.data && response.data.languages){
+                            self.languages = response.data.languages;
 
+                        }
+                    });
+
+            }
+
+            /**
+             *   Load language from server
+             *
+             * @param {?Object} paramExample: method parameter sample
+             * @return {null}
+             */
+            _getSupportedLanguages() {
+                var self = this;
+                return self.owcApp.httpManager.sendRequest(
+                    'GET',
+                    self.owcApp.config.clientUrl + '/conf/supported_languages.json'
+                );
             }
 
             /**
@@ -299,7 +391,6 @@ Panel to set language and open main menu
             mailConfiguration(){
               var mail = document.createElement('admin-system-mail-configuration');
               this.navigationManager.pushComponent(mail, '500px', 'Mail configuration',false, true,1);
-
             }
 
             /**
@@ -330,6 +421,16 @@ Panel to set language and open main menu
             localArchive(){
               var archive = document.createElement('admin-system-local-archive');
               this.navigationManager.pushComponent(archive, '500px', 'Local archive',false, true,1);
+            }
+
+            /**
+             *   Open data stores panel
+             *
+             * @return {null}
+             */
+            dataStore(){
+              var ds = document.createElement('datastores-container');
+              this.navigationManager.pushComponent(ds, '500px', 'Data Stores',false, true,1);
             }
 
             /**
@@ -368,6 +469,16 @@ Panel to set language and open main menu
             upload() {
                 var uploadContainer = document.createElement('upload-container');
                 this.navigationManager.pushComponent(uploadContainer, '650px', 'Upload Management', false, true, 1);
+            }
+
+            /**
+             *   Collections
+             *
+             * @return {null}
+             */
+            collections() {
+                var collectionListContainer = document.createElement('collection-list-container');
+                this.navigationManager.pushComponent(collectionListContainer, '400px', 'Collections', false, true, 1);
             }
 
             /**
@@ -489,7 +600,7 @@ Panel to set language and open main menu
 
                 self.customStyle['--settingsheight'] = parseInt(self.parentPanel.getSize().height) + "px";
                 self.updateStyles();
-                self.customStyle['--settingswidth'] = parseInt(self.parentPanel.getSize().width) + "px";
+                self.customStyle['--settingswidth'] = parseInt(self.parentPanel.getSize().width -5) + "px";
                 self.updateStyles();
 
             }
@@ -502,6 +613,16 @@ Panel to set language and open main menu
             isDataManager() {
                 this.isDataManager = this.owcApp.userManager.isDataManager();
             }
+
+            /**
+             *  Check if there are system manager rights
+             *
+             * @return {Boolean} true if logged user has system manager rights, false otherwise
+             */
+            isSystemManager() {
+                this.isSystemManager = this.owcApp.userManager.isSystemManager();
+            }
+
 
             /**
              *  Check if there are event manager rights

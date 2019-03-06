@@ -38,10 +38,10 @@ This component is devoted to manage the genric model provided by the Calendar Se
     </template>
     <!-- MODEL-CONTROLLER CODE -->
     <script>
-    (function() {
-        'use strict';
-        class CalendarCoder {
-            constructor() {}
+        (function () {
+            'use strict';
+            class CalendarCoder {
+                constructor() { }
                 /**
                  * BeforeRegister method Polymer calls before creating the element.
                  * This method is where you shoud define the is property (element's name) and
@@ -49,24 +49,24 @@ This component is devoted to manage the genric model provided by the Calendar Se
                  *
                  * @return {null}
                  */
-            beforeRegister() {
-                this.is = 'calendar-coder';
-                this.properties = {};
-            }
+                beforeRegister() {
+                    this.is = 'calendar-coder';
+                    this.properties = {};
+                }
 
-            /**           
-             * This method extracts specific data model from generic model
-             *
-             * @return {Object}
-             */
-            extractSpecificModel(genericModel) {
+                /**           
+                 * This method extracts specific data model from generic model
+                 *
+                 * @return {Object}
+                 */
+                extractSpecificModel(genericModel) {
 
-                return genericModel;
-            }
-        };
+                    return genericModel;
+                }
+            };
 
-        Polymer(CalendarCoder);
+            Polymer(CalendarCoder);
 
-    })();
+        })();
     </script>
 </dom-module>

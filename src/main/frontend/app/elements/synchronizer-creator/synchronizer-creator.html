@@ -90,38 +90,38 @@ synchronizer creator
         }
         </style>
         <div class="container">
-            <div class="panelHeader">Synchronizer Properties</div>
+            <div class="panelHeader">{{i18n('Synchronizer Properties')}}</div>
             <form is="iron-form" method="get" action="/" id="basic">
                 <div class="fieldContainer">
-                    <paper-input class="flex2child" value="{{model.label}}" name="label" label="Label" required></paper-input>
+                    <paper-input class="flex2child" value="{{model.label}}" name="label" label="{{i18n('Label')}}" required></paper-input>
                     <div class="flexchild"></div>
-                    <paper-input class="flex2child" value="{{model.serviceUrl}}" label="Service Url" required></paper-input>
+                    <paper-input class="flex2child" value="{{model.serviceUrl}}" label="{{i18n('Service Url')}}" required></paper-input>
                 </div>
                 <div class="fieldContainer">
-                    <paper-input class="flex2child" value="{{model.serviceLoginUsername}}" label="Service Login Username" required></paper-input>
+                    <paper-input class="flex2child" value="{{model.serviceLoginUsername}}" label="{{i18n('Service Login Username')}}" required></paper-input>
                     <div class="flexchild"></div>
                     <div class="flex2child"></div>
                 </div>
                 <div class="fieldContainer">
-                    <paper-input class="flex2child" type="password" value="{{model.serviceLoginPassword}}" error-message="Password doesn't match or is invalid" label="Service LogIn Password" required on-change="checkConfirmPassword"></paper-input>
+                    <paper-input class="flex2child" type="password" value="{{model.serviceLoginPassword}}" error-message="{{i18n('Password doesn\'t match or is invalid')}}" label="{{i18n('Service LogIn Password')}}" required on-change="checkConfirmPassword"></paper-input>
                     <div class="flexchild"></div>
-                    <paper-input class="flex2child" type="password" value="{{model.confirmPassword}}" error-message="Password doesn't match or is invalid" invalid="{{isPasswordInvalid}}" on-change="checkConfirmPassword" label="Service LogIn Confirm Password" required></paper-input>
+                    <paper-input class="flex2child" type="password" value="{{model.confirmPassword}}" error-message="{{i18n('Password doesn\'t match or is invalid')}}" invalid="{{isPasswordInvalid}}" on-change="checkConfirmPassword" label="{{i18n('Service LogIn Confirm Password')}}" required></paper-input>
                 </div>
                 <div class="fieldContainer">
-                    <paper-input class="flex2child" value="{{model.schedule}}" label="Schedule" required></paper-input>
+                    <paper-input class="flex2child" value="{{model.schedule}}" label="{{i18n('Schedule')}}" required></paper-input>
                     <div class="flexchild"></div>
-                    <paper-input class="flex2child" value="{{model.remoteIncoming}}" label="Remote Incoming"></paper-input>
+                    <paper-input class="flex2child" value="{{model.remoteIncoming}}" label="{{i18n('Remote Incoming')}}"></paper-input>
                 </div>
                 <div class="fieldContainer">
-                    <paper-dropdown-menu class="flex2child" label="Request" value="{{model.request}}" required>
+                    <paper-dropdown-menu class="flex2child" label="{{i18n('Request')}}" value="{{model.request}}" required>
                         <paper-menu selected="2" class="dropdown-content">
-                            <paper-item value="Request" disabled>Request</paper-item>
+                            <paper-item value="Request" disabled>{{i18n('Request')}}</paper-item>
                             <paper-item value="start">start</paper-item>
                             <paper-item value="stop">stop</paper-item>
                         </paper-menu>
                     </paper-dropdown-menu>
                     <div class="flexchild"></div>
-                    <paper-dropdown-menu class="flex2child" label="Target Collection" value="{{model.collections}}">
+                    <paper-dropdown-menu class="flex2child" label="{{i18n('Target Collection')}}" value="{{model.collections}}">
                         <paper-menu class="dropdown-content">
                             <template is="dom-repeat" items="{{collections}}">
                                 <paper-item>{{item}}</paper-item>
@@ -130,25 +130,25 @@ synchronizer creator
                     </paper-dropdown-menu>
                 </div>
                 <div class="fieldContainer">
-                    <paper-input class="flex2child" value="{{model.pageSize}}" label="Page Size"></paper-input>
+                    <paper-input class="flex2child" value="{{model.pageSize}}" label="{{i18n('Page Size')}}"></paper-input>
                     <div class="flexchild"></div>
                     <div class="flex2child"></div>
                 </div>
                 <div class="fieldContainer">
-                    <paper-input class="flex2child" value="{{model.copyProduct}}" label="Copy Product"></paper-input>
+                    <paper-input class="flex2child" value="{{model.copyProduct}}" label="{{i18n('Copy Product')}}"></paper-input>
                     <div class="flexchild"></div>
-                    <paper-input class="flex2child" value="{{model.filterParam}}" label="Filter Param"></paper-input>
+                    <paper-input class="flex2child" value="{{model.filterParam}}" label="{{i18n('Filter Param')}}"></paper-input>
                 </div>
                 <div class="fieldContainer">
-                    <paper-input class="flex2child" value="{{model.sourceCollection}}" label="Source Collection"></paper-input>
+                    <paper-input class="flex2child" value="{{model.sourceCollection}}" label="{{i18n('Source Collection')}}"></paper-input>
                     <div class="flexchild"></div>
-                    <paper-input class="flex2child" value="{{model.lastCreationDate}}" label="Last Creation Date"></paper-input>
+                    <paper-input class="flex2child" value="{{model.lastCreationDate}}" label="{{i18n('Last Creation Date')}}"></paper-input>
                 </div>
                 <br>
                 <br>
-                <paper-button class="flex2child" raised on-click="reset" title="Reset Form">Reset</paper-button>
+                <paper-button class="flex2child" raised on-click="reset" title="{{i18n('Reset Form')}}">{{i18n('Reset')}}</paper-button>
                 <div class="flexchild"></div>
-                <paper-button class="flex2child" raised on-click="submitForm" title="Save">Save</paper-button>
+                <paper-button class="flex2child" raised on-click="submitForm" title="{{i18n('save')}}">{{i18n('save')}}</paper-button>
                 <div class="output"></div>
             </form>
         </div>
@@ -277,7 +277,7 @@ synchronizer creator
                             reject("model_empty");
                         });
                 }).catch(function(error) {
-                    self.owcApp.toastManager.error("Synchronizer Creation Failed");
+                    self.owcApp.toastManager.error(self.i18n("Synchronizer Creation Failed"));
                 });;
             }
 
@@ -401,11 +401,11 @@ synchronizer creator
                     if (response.status >= 200 && response.status < 300) {
                         self.parentPanel.closePanel();
                         self.owcApp.messageBroker.publish('updateSynch');
-                        self.owcApp.toastManager.info("Synchronizer Creation Done");
+                        self.owcApp.toastManager.info(self.i18n("Synchronizer Creation Done"));
                         return true;
                     } else
                     //TODO: to complete and manage this part
-                        self.owcApp.toastManager.error("Synchronizer Creation Failed");
+                        self.owcApp.toastManager.error(self.i18n("Synchronizer Creation Failed"));
                     return new Promise(function(resolve, reject) {
                         reject("error");
                     });

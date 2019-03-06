@@ -120,18 +120,25 @@ This component is devoted to manage main theme for OWC application
                                   // -> update styles
                                   setTimeout(function() {
                                       self.owcApp.theme = (response.status == 200) ? response.data : {};
-                                      var rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
+                                      var rgbColor = {r:0,g:0,b:0};
+                                      if(self.owcApp && self.owcApp.theme && self.owcApp.theme.bgcolor)
+                                        rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
                                       localStorage.setItem('theme', JSON.stringify(self.owcApp.theme));
                                       navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
 
+                                      var bgimageurl = "";
+                                      if(self.owcApp && self.owcApp.theme && self.owcApp.theme.bgimageurl)
+                                        bgimageurl = self.owcApp.theme.bgimageurl;
+
                                       navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
-                                          self.owcApp.theme.bgimageurl + "\")";
+                                          bgimageurl + "\")";
                                       navigationMaanger.updateStyles();
                                       alert("Loaded new theme of "+currentVersion+" version.");
                                   }, 0);
                               });
                             } else {
                                   // keep the old one
+
                             }
 
                             // ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ //
@@ -139,11 +146,15 @@ This component is devoted to manage main theme for OWC application
                             var ls = localStorage.getItem('theme');
                             // -> update styles
                             self.owcApp.theme = JSON.parse(ls);
-                            var rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
+                            var rgbColor = {r:0,g:0,b:0};
+                            if(self.owcApp && self.owcApp.theme && self.owcApp.theme.bgcolor)
+                              rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
                             navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
-
+                            var bgimageurl = "";
+                            if(self.owcApp && self.owcApp.theme && self.owcApp.theme.bgimageurl)
+                              bgimageurl = self.owcApp.theme.bgimageurl;
                             navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
-                                self.owcApp.theme.bgimageurl + "\")";
+                                bgimageurl + "\")";
                             navigationMaanger.updateStyles();
                           }
                         }else{
@@ -151,12 +162,16 @@ This component is devoted to manage main theme for OWC application
                           self.owcApp.httpManager.sendRequest('GET', self.owcApp.config.clientUrl + '/conf/theme.json').then(function(response) {
                               setTimeout(function() {
                                   self.owcApp.theme = (response.status == 200) ? response.data : {};
-                                  var rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
+                                  var rgbColor = {r:0,g:0,b:0};
+                                  if(self.owcApp && self.owcApp.theme && self.owcApp.theme.bgcolor)
+                                    rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
                                   localStorage.setItem('theme', JSON.stringify(self.owcApp.theme));
                                   navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
-
+                                  var bgimageurl = "";
+                                  if(self.owcApp && self.owcApp.theme && self.owcApp.theme.bgimageurl)
+                                    bgimageurl = self.owcApp.theme.bgimageurl;
                                   navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
-                                      self.owcApp.theme.bgimageurl + "\")";
+                                      bgimageurl + "\")";
                                   navigationMaanger.updateStyles();
                               }, 0);
                           });
@@ -167,11 +182,15 @@ This component is devoted to manage main theme for OWC application
                             var ls = localStorage.getItem('theme');
                             // -> update styles
                             self.owcApp.theme = JSON.parse(ls);
-                            var rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
+                            var rgbColor = {r:0,g:0,b:0};
+                            if(self.owcApp && self.owcApp.theme && self.owcApp.theme.bgcolor)
+                              rgbColor = self._hexToRgb(self.owcApp.theme.bgcolor);
                             navigationMaanger.customStyle['--theme-background-color'] = 'rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.94) !important';
-
+                            var bgimageurl = "";
+                            if(self.owcApp && self.owcApp.theme && self.owcApp.theme.bgimageurl)
+                              bgimageurl = self.owcApp.theme.bgimageurl;
                             navigationMaanger.customStyle['--theme-background-image'] = "url(\"" +
-                                self.owcApp.theme.bgimageurl + "\")";
+                                bgimageurl + "\")";
                             navigationMaanger.updateStyles();
                           }, 0);
                         // === === === === === === ==

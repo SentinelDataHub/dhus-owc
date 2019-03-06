@@ -84,10 +84,17 @@ If the key is not present the method translate returns the key.
 
  - Add a new dictionary in the dictionary folders: [https://github.com/SentinelDataHub/DataHubSystem/tree/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/lang](https://github.com/SentinelDataHub/DataHubSystem/tree/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/lang), with the key values strings
 
- - To add the new language in the settings page: [https://github.com/SentinelDataHub/DataHubSystem/blob/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/elements/settings-panel/settings-panel.html#L90 ](https://github.com/SentinelDataHub/DataHubSystem/blob/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/elements/settings-panel/settings-panel.html#L90 )
+- Add a new language entry in the supported_languages.json file, in order to update the list of the supported languages in the settings page. The supported_languages.json file is available at [https://github.com/SentinelDataHub/DataHubSystem/tree/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/conf](https://github.com/SentinelDataHub/DataHubSystem/tree/9d29f32e2faaa1fae66005001f0525e05ceb17a7/client/owc-client/src/main/frontend/app/conf).
 
+An example of the supported_languages.json file is reported below:
 
+<pre>
+{
+    "languages": ["en","ew","fr","it"]
+}
 
+</pre>
+ 
 -->
 <dom-module id="i18n-manager">
     <script>

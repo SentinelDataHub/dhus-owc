@@ -39,7 +39,7 @@
 
       <security:intercept-url pattern="/signup" access="permitAll"/>
       <security:intercept-url pattern="/version" access="permitAll"/>
-      <security:intercept-url pattern="/forgotpwd" access="permitAll"/>
+      <security:intercept-url pattern="/forgotpassword" access="permitAll"/>
       <security:intercept-url pattern="/usercode" access="permitAll"/>
       <security:intercept-url pattern="/resetpwd" access="permitAll"/>
       <security:intercept-url pattern="/settings/menu" method="GET" access="permitAll"/>

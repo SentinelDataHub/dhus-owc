@@ -1,0 +1,728 @@
+<!--
+  @license
+
+
+  Data HUb Service (DHuS) - For Space data distribution.
+  Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
+  Copyright (C) 2013,2014,2015,2016 GAEL Systems
+  Copyright (C) 2013,2014,2015,2016 Serco Spa
+
+  This file is part of DHuS software sources.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-fit-behavior/iron-fit-behavior.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/super-splitter/super-splitter.html">
+<link rel="import" href="../owc-search-container/owc-search-container.html">
+<!--
+This component contains a search panel, a list panel and a map panel. Search results are shown in both list and map panels.
+All panels are collapsable/expandable.
+
+
+@demo demo/index.html
+-->
+<dom-module id="owc-combo-component">
+    <style is="custom-style" include="iron-flex iron-flex-alignment">
+    .child {
+        background-color: white !important;
+        margin-bottom: 0px;
+        border-style: solid;
+        border-color: #EEEEEE;
+        border-width: 2px;
+        overflow-y: scroll;
+    }
+    
+    .container {
+        @apply(--layout-horizontal);
+        height: 100%;
+    }
+    
+    .vContainer {
+        @apply(--layout-vertical);
+        height: 100%;
+    }
+    
+    .flexchild {
+        @apply(--layout-flex);
+    }
+    
+    .searchContainer {
+        overflow-x: hidden;
+        overflow-y: hidden;
+        font-size: 15px;
+        font-weight: bold;
+    }
+    
+    .flex4child {
+        @apply(--layout-flex-4);
+    }
+    
+    .flex8child {
+        @apply(--layout-flex-8);
+    }
+    
+    .flex3child {
+        @apply(--layout-flex-3);
+    }
+    
+    .flexchild {
+        @apply(--layout-flex);
+    }
+    
+    .flex9child {
+        @apply(--layout-flex-9);
+    }
+    
+    .products-number {
+        font-size: 15px;
+        text-align: center;
+        padding: 3px;
+        opacity: 0.95;
+        font-weight: bold;
+        background-color: #ecf0f1;
+    }
+    
+    .resultsContainer {
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+    
+    .show-panel-icon {
+        width: 10px;
+    }
+    
+    #list-container-main-container {
+        height: var(--listheight, 100%);
+        width: var(--listwidth, 100%);
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+    
+    .listContainer {
+        width: var(--listwidth, 350px);
+    }
+    
+    #leftContainer {}
+    
+    .listHeader {
+        overflow-y: hidden;
+        overflow-x: hidden;
+    }
+    
+    #comboSplitter {
+        width: 5px !important;
+    }
+    
+    #query {
+        display: block;
+        min-height: 40px;
+        width: calc(100% - 8px);
+        align-self: center;
+        font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        resize: vertical;
+        overflow-y: auto;
+    }
+    
+    #advanced-search-toggle {
+        width: 100%;
+        text-align: right;
+    }
+    
+    #advanced-search-label {
+        padding-right: 15px;
+        font-size: 12px;
+        color: #002664;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    
+    .toggle-button {
+        transform: rotate(90deg);
+        margin-left: 20px;
+        height: 20px;
+        width: 20px;
+    }
+    
+    paper-icon-button::shadow #icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    #mapContainer {
+        height: calc(100% - 35px);
+    }
+    </style>
+    <template>
+        <semantic-manager id="semantic-manager"></semantic-manager>
+        <owc-query id="owc-query"></owc-query>
+        <generic-model id="generic-model"></generic-model>
+        <div class="vContainer">
+            <div class="searchContainer ">
+                <owc-search-container id="owc-search-container"></owc-search-container>
+            </div>
+            <!-- <div id="advanced-search-toggle"><div id="advanced-search-label" on-click="toggleAdvancedSearch">{{advancedSearchToggleLabel}}</div></div>
+
+            <div class="resultsContainer flex container" hidden$="{{!advancedSearchToggle}}" style="z-index:9999;  position: relative; width: 100%; height: 100%;">
+              <advanced-search-component></advanced-search-component>
+            </div> -->
+            <div class="resultsContainer flex container">
+                <div id="leftContainer" class="listContainer">
+                    <paper-icon-button id="showList" class="toggle-button" icon="unfold-more" on-click="showList" hidden title="Show Search Results"></paper-icon-button>
+                    <iron-collapse id="listContainer" horizontal="true" opened="false">
+                        <div style="width:100%">
+                            <paper-icon-button id="hideList" class="toggle-button" icon="unfold-less" on-click="toggleList" title="Hide Search Results" disabled$="{{mapHidden}}"></paper-icon-button>
+                            <div class="listHeader">
+                                <div id="queryDone">
+                                    <textarea class="child" id="query" disabled>{{query}}</textarea>
+                                </div>
+                                <div id="productNumber" class="products-number"> <span hidden$="{{!compute(count)}}">display {{start}} to  {{end}} of {{count}} <span hidden="{{oneProduct}}">{{i18n('products')}}</span> <span hidden="{{!oneProduct}}">{{i18n('product')}} </span> </span><span hidden$="{{compute(count)}}">{{i18n('No products found')}} </span>
+                                </div>
+                            </div>
+                            <div id="list-container-main-container">
+                                <owc-list id="list" class$="{{computeCssSelector()}}"></owc-list>
+                                <list-coder id="list-coder"></list-coder>
+                                <wms-coder id="wms-coder"></wms-coder>
+                                <owc-cart-manager id="owc-cart-manager"></owc-cart-manager>
+                                <data-source id="datasource"></data-source>
+                            </div>
+                        </div>
+                    </iron-collapse>
+                </div>
+                <!-- <anchor-component id="owc-anchor"></anchor-component> -->
+                <super-splitter id="comboSplitter" direction="left" min-size="40px"></super-splitter>
+                <div id="rightContainer" class="flex">
+                    <paper-icon-button id="showMap" class="toggle-button" icon="unfold-more" on-click="showMap" hidden title="Show Map"></paper-icon-button>
+                    <iron-collapse id="mapContainer" horizontal="true" opened="true">
+                        <!-- <div> -->
+                        <paper-icon-button id="hideMap" class="toggle-button" icon="unfold-less" on-click="toggleMap" title="Hide Map" disabled$="{{listHidden}}"></paper-icon-button>
+                        <owc-map id="owc-map">
+                        </owc-map>
+                        <!-- </div> -->
+                    </iron-collapse>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+        class OwcComboComponent {
+
+            /* --- POLYMER LIFECYCLE METHODS --- */
+
+            /**
+             * BeforeRegister method Polymer calls before creating the element.
+             * This method is where you shoud define the is property (element's name) and
+             * properties  object.
+             *
+             * @return {null}
+             */
+            beforeRegister() {
+                this.is = 'owc-combo-component';
+                this.owcApp = document.querySelector('#owc-app');
+                this.LIST_TOOLBAR_HEIGHT = 115;
+                this.target;
+
+                this.properties = {
+                    /**
+                     * Owc Map instance
+                     *
+                     * @type {Object}
+                     */
+                    owcMap: {
+                        type: Object,
+                        value: null
+                    },
+
+                    /**
+                     *
+                     *
+                     * @type {Object}
+                     */
+                    advancedSearchToggleLabel: {
+                        type: String,
+                        value: "Show advanced search"
+                    },
+
+                    /**
+                     *
+                     *
+                     * @type {Object}
+                     */
+                    advancedSearchToggle: {
+                        type: Boolean,
+                        value: false
+                    },
+
+
+
+                    /**
+                     * check if the product list is hidden or shown in the combo container
+                     *
+                     * @type {Boolean}
+                     */
+                    listHidden: {
+                        type: Boolean,
+                        value: true
+                    },
+
+                    /**
+                     * check if the map is hidden or shown in the combo container
+                     *
+                     * @type {Boolean}
+                     */
+                    mapHidden: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    /**
+                     * check if the map is hidden or shown in the combo container
+                     *
+                     * @type {Boolean}
+                     */
+                    defaultListWidth: {
+                        type: Number,
+                        value: 350
+                    },
+
+                    /**
+                     * check if the map is hidden or shown in the combo container
+                     *
+                     * @type {Boolean}
+                     */
+                    hiddenListWidth: {
+                        type: Number,
+                        value: 40
+                    },
+
+                    /**
+                     * Owc Search instance
+                     *
+                     * @type {Object}
+                     */
+                    owcSearch: {
+                        type: Object,
+                        value: null
+                    },
+                    /**
+                     * Query to perform search
+                     *
+                     * @type {String}
+                     */
+                    query: {
+                        type: String,
+                        value: ""
+                    },
+                    /**
+                     * Number of products
+                     *
+                     * @type {Number}
+                     */
+                    count: {
+                        type: Number,
+                        value: null
+                    },
+                    /**
+                     * Start index for results
+                     *
+                     * @type {Number}
+                     */
+                    start: {
+                        type: Number,
+                        value: null
+                    },
+                    /**
+                     * End index for results
+                     *
+                     * @type {Number}
+                     */
+                    end: {
+                        type: Number,
+                        value: null
+                    },
+                    /**
+                     * Only one product found
+                     *
+                     * @type {Boolean}
+                     */
+                    oneProduct: {
+                        type: Boolean,
+                        value: true
+                    },
+                    /**
+                     * Width of map panel
+                     *
+                     * @type {Number}
+                     */
+                    mapWidth: {
+                        type: Number,
+                        value: null
+                    },
+                    /**
+                     * Width of list panel
+                     *
+                     * @type {Number}
+                     */
+                    listWidth: {
+                        type: Number,
+                        value: null
+                    },
+                    /**
+                     * Width of search panel
+                     *
+                     * @type {Number}
+                     */
+                    searchWidth: {
+                        type: Number,
+                        value: null
+                    },
+                    /**
+                     * Number of products in one page
+                     *
+                     * @type {Number}
+                     */
+                    pageSize: {
+                        type: Number,
+                        value: null
+                    },
+
+                    isExternal: {
+                        type: Boolean,
+                        value: false
+                    },
+                };
+            }
+
+            /**
+             *  This method set start and end index of products list result
+             * @param{Number} start: start index
+             * @param{Number} end: end index
+             * @return {null}
+             */
+
+            setProductsRange(start, end) {
+                this.start = start;
+                this.end = end;
+            }
+
+
+
+
+            /**
+             * @return {null}
+             */
+
+            toggleAdvancedSearch() {
+                this.advancedSearchToggle = !this.advancedSearchToggle;
+                if (this.advancedSearchToggle) {
+                    this.advancedSearchToggleLabel = "Hide advanced search";
+                } else {
+                    this.advancedSearchToggleLabel = "Show advanced search";
+                }
+            }
+
+
+
+            /**
+             *  This method sets the number of products in one page
+             * @param {Number} pageSize: number of products in one page
+             * @return {null}
+             */
+            setPageSize(pageSize) {
+                this.pageSize = pageSize;
+            }
+
+            created() {
+                this.target = this.owcApp.utils.generateUUID();                
+            }
+
+            /**
+             *  Called after the element is attached to the document.
+             *  Can be called multiple times during the lifetime of an element.
+             *  The first 'attached' callback is guaranteed not to fire until after 'ready'
+             *
+             * @return {null}
+             */
+            attached() {
+                $(window).trigger('resize');
+
+                var self = this,
+                    target = self.target,
+                    owcsearch = Polymer.dom(self.root).querySelector('#owc-search-container'),
+                    owcquery = Polymer.dom(self.root).querySelector('#owc-query'),
+                    list = Polymer.dom(self.root).querySelector('#list'),
+                    datasource = Polymer.dom(self.root).querySelector('#datasource'),
+                    semanticManager = Polymer.dom(self.root).querySelector('#semantic-manager'),
+                    genericModel = Polymer.dom(self.root).querySelector('#generic-model'),
+                    listCoder = Polymer.dom(self.root).querySelector('#list-coder'),
+                    mapCoder = Polymer.dom(self.root).querySelector('#map-coder'),
+                    anchor = Polymer.dom(self.root).querySelector('#owc-anchor'),
+                    listContainer = Polymer.dom(self.root).querySelector('#list-container-main-container'),
+                    wmsCoder = Polymer.dom(self.root).querySelector('#wms-coder'),
+                    cartManager = Polymer.dom(self.root).querySelector('#owc-cart-manager');
+
+
+                self.owcMap = Polymer.dom(self.root).querySelector('#owc-map');
+                //self.computeCssSelector();
+                //self.updateStyles();
+                // semantic-manager
+                semanticManager.init();
+                genericModel.setTarget(target);
+                // owc-search
+                owcsearch.setCombo(self);
+                if (self.query != "") {
+                    owcquery.text = self.query;
+                }
+                owcsearch.setOwcQuery(owcquery);
+                owcsearch.setDataSource(datasource);
+                owcsearch.setGenericModel(genericModel);
+                owcsearch.setOwcList(list);
+                owcsearch.setAnchor(anchor);
+                list.setDelegate(datasource);
+                list.setContainer(listContainer);
+                list.setCombo(this);
+                list.setGenericModel(genericModel);
+                list.setCoder(listCoder);
+                list.setTarget(target);
+                list.setMap(self.owcMap);
+                list.setWmsCoder(wmsCoder);
+                list.setCartManager(cartManager);
+                datasource.setCombo(self);
+                datasource.setSearchComponent(owcsearch);
+                datasource.setList(list);
+                datasource.setListSemanticManager(semanticManager);
+                datasource.setListContainer(this); // the combo is the list container?
+                datasource.setOwcQuery(owcquery);
+                datasource.setGenericModel(genericModel);
+
+                owcsearch.setOwcMap(self.owcMap);
+                self.owcMap.init();
+                self.owcMap.setGenericModel(genericModel);
+                self.owcMap.setOwcQuery(owcquery);
+                self.owcMap.setDelegate(datasource);
+                self.owcMap.setMap(target);
+                self.owcMap.setTarget(target);
+                self.owcMap.setCombo(self);
+                this.query = owcquery.text;
+                self.toggleList();
+                if (self.isExternal) {
+                    owcsearch.search();
+                }
+                setTimeout(function() {
+
+                    self.resize();
+                }, 0);
+            }
+
+            /**
+             *  This method is called to update the map size on page resize
+             *
+             * @return {null}
+             */
+            resizeMap() {
+                //console.warn("resizeMap() ");
+                var self = this;
+                //var owcMap = Polymer.dom(this.root).querySelector('#owc-map');
+                // setTimeout(function() {
+                //     if (self.owcMap.map != null)
+                //         self.owcMap.map.map.updateSize();
+                // }, 300);
+
+                setTimeout(function() {
+                    if (self.owcMap.map != null)
+                        self.owcMap.map.map.updateSize();
+                }, 0);
+
+            }
+
+
+            /**
+             *  This method shows the map panell
+             *
+             * @return {null}
+             */
+            showMap() {
+                var self = this;
+                this.$.mapContainer.toggle();
+                this.$.showMap.setAttribute("hidden", "true");
+                this.$.hideMap.removeAttribute("hidden");
+                this.$.rightContainer.classList.add("flex");
+                this.$.leftContainer.classList.remove("flex");
+                this.$.leftContainer.classList.add("listContainer");
+                this.mapHidden = false;
+                this.$.comboSplitter.locked = false;
+                this.resize();
+            }
+
+            /**
+             *  This method shows the search results panel
+             *
+             * @return {null}
+             */
+            showList() {
+                var self = this;
+                this.$.listContainer.toggle();
+                this.$.showList.setAttribute("hidden", "true");
+                this.$.hideList.removeAttribute("hidden");
+                this.$.leftContainer.classList.add("listContainer");
+                this.$.leftContainer.classList.remove("flex");
+                this.listHidden = false;
+                this.$.comboSplitter.locked = false;
+                $("#leftContainer").width(this.defaultListWidth);
+                // this.customStyle['--listwidth'] = this.defaultListWidth;
+                // this.updateStyles();
+                this.resize();
+
+            }
+
+            /**
+             *  This method hides the map panel
+             *
+             * @return {null}
+             */
+            toggleMap() {
+                this.$.mapContainer.toggle();
+                this.$.showMap.removeAttribute("hidden");
+                this.$.hideMap.setAttribute("hidden", "true");
+                this.$.rightContainer.classList.remove("flex");
+                this.$.leftContainer.classList.remove("listContainer");
+                this.$.leftContainer.classList.add("flex");
+                this.mapHidden = true;
+                this.$.comboSplitter.locked = true;
+            }
+
+            /**
+             *  This method hides the list panel
+             *
+             * @return {null}
+             */
+            toggleList() {
+                this.$.listContainer.toggle();
+                this.$.showList.removeAttribute("hidden");
+                this.$.hideList.setAttribute("hidden", "true");
+                this.$.leftContainer.classList.remove("flex");
+                this.$.leftContainer.classList.remove("listContainer");
+                this.listHidden = true;
+                // this.customStyle['--listwidth'] = "40px";
+                // this.updateStyles();
+                $("#leftContainer").width(this.hiddenListWidth);
+                this.$.comboSplitter.locked = true;
+                this.resize();
+            }
+
+            /**
+             *  This method is called to update the map size on page resize
+             *
+             * @return {null}
+             */
+            // resizeMap() {
+            //     var self = this;
+            //     //var owcMap = Polymer.dom(this.root).querySelector('#owc-map');
+            //     setTimeout(function() {
+            //         if (self.owcMap.map != null)
+            //             self.owcMap.map.map.updateSize();
+            //     }, 300);
+
+            // }
+
+            /**
+             *  This method sets the query to perform search
+             * @param {String} query: the query to perform search
+             * @return {null}
+             */
+            setQuery(query) {
+                this.query = query;
+            }
+
+            /**
+             *  This method sets the NewQuery to perform search
+             * @param {String} newQuery: the NewQuery to perform search
+             * @return {null}
+             */
+            setNewQuery(newQuery) {
+                this.newQuery = newQuery;
+            }
+
+            /**
+             *  This method sets the numer of products found
+             * @param {Number} count: the numer of products found
+             * @return {null}
+             */
+            setCount(count) {
+                this.count = count;
+            }
+
+            /**
+             *  This method sets the oneProduct property
+             * @param {Boolean} oneProduct: true if only one product was found
+             * @return {null}
+             */
+            setOneProduct(oneProduct) {
+                this.oneProduct = oneProduct;
+            }
+
+            /**
+             *  This method updates the size of internal panels on page rezize
+             *
+             * @return {null}
+             */
+            resize() {
+                this.customStyle['--mapheight'] = parseInt(this.parentPanel.getSize().height) + "px";
+                this.updateStyles();
+                this.customStyle['--mapwidth'] = parseInt(this.parentPanel.getSize().width) + "px";
+                this.updateStyles();
+                this.customStyle['--listheight'] = parseInt(this.parentPanel.getSize().height - $("#queryDone").height() - $("#productNumber").height() - this.LIST_TOOLBAR_HEIGHT) + "px";
+                this.updateStyles();
+                this.customStyle['--listwidth'] = parseInt($("#listContainer").width) + "px";
+                this.customStyle['--querywidth'] = parseInt($("#listContainer").width) + "px";
+                this.updateStyles();
+                this.resizeMap();
+                //Polymer.dom(self.root).querySelector('#owc-map').resize();
+            }
+
+            /**
+             *  This method returns true if the number of product is greater than zero
+             *
+             * @return {null}
+             */
+            compute() {
+                var isVisible = (this.count > 0) ? true : false;
+                return isVisible;
+            }
+
+            setIsExternal(isExternal) {
+                this.isExternal = isExternal;
+            }
+
+            computeCssSelector() {
+                //console.log("computeCssSelector - target is ", this.target);
+                return "_" + this.target;
+
+            }
+
+
+        };
+
+        Polymer(OwcComboComponent);
+
+    })();
+    </script>
+</dom-module>

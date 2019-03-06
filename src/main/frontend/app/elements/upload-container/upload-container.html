@@ -45,7 +45,7 @@ This is the main component for DHuS administrator functionality related to Files
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         paper-button {
             background: #002664;
             color: white;
@@ -55,57 +55,57 @@ This is the main component for DHuS administrator functionality related to Files
             font-weight: bold;
             margin-top: 5px;
         }
-        
+
         paper-button[toggles][active].colorful {
             background-color: #002664;
         }
-        
+
         paper-button[toggles][active][raised].colorful {
             background-color: rgba(66, 133, 244, 0.75);
         }
-        
+
         .uploadSection {
             border-bottom: solid 1px;
             padding: 10px;
         }
-        
+
         .uploadTitle {
             padding-bottom: 0px;
             font-weight: bold;
         }
-        
+
         paper-material.section-item {
             padding: 20px;
             margin: 10px;
             max-height: 200px;
             overflow: auto;
         }
-        
+
         paper-checkbox {
             font-size: 16px;
             --paper-checkbox-checked-color: var(--paper-indigo-900);
         }
-        
+
         .fieldContainer {
             @apply(--layout-horizontal);
         }
-        
+
         .flexchild {
             @apply(--layout-flex);
         }
-        
+
         .flex2child {
             @apply(--layout-flex-5);
         }
-        
+
         .flex3child {
             @apply(--layout-flex-5);
         }
-        
+
         paper-checkbox.showpwd {
             font-size: 12px !important;
         }
-        
+
         .next-filescanner-box {
             background-color: #C8C8C8;
             margin: 10px;
@@ -115,24 +115,24 @@ This is the main component for DHuS administrator functionality related to Files
             word-break: break-word;
             white-space: normal;
         }
-        
+
         .buttonContainer {
             margin-bottom: 0px;
             height: 40px!important;
             width: 98%!important;
             overflow: hidden;
         }
-        
+
         .left {
             float: left;
             width: 120px;
         }
-        
+
         .right {
             float: right;
             width: 120px;
         }
-        
+
         .fs-number {
             font-size: 15px;
             text-align: center;
@@ -140,23 +140,23 @@ This is the main component for DHuS administrator functionality related to Files
             opacity: 0.95;
             font-weight: bold;
         }
-        
+
         .fsContainer {
             background-color: #ecf0f1;
         }
-        
+
         paper-textarea {
             --paper-input-container-input: {
                 background-color: #b0b0b0;
             }
             ;
         }
-        
+
         #upload-file-info {
             font-size: 16px;
             margin-top: 10px
         }
-        
+
         paper-input.upload-file {
             --paper-input-container-input: {
                 background: #002664;
@@ -187,22 +187,22 @@ This is the main component for DHuS administrator functionality related to Files
             <div class="uploadSection">
                 <div class="uploadTitle">{{i18n("File Scanners")}}</div>
                 <div>
-                    <paper-input value="{{scanner.url}}" name="Url to scan" label="Url to scan" always-float-label autofocus required error-message="Url empty" invalid="{{isUrlEmpty}}">{{scanner.url}}</paper-input>
+                    <paper-input value="{{scanner.Url}}" name="Url to scan" label="{{i18n('Url to scan')}}" always-float-label autofocus required error-message="{{i18n('Url empty')}}" invalid="{{isUrlEmpty}}" on-change="checkUrl">{{scanner.Url}}</paper-input>
                 </div>
                 <div>
-                    <paper-input value="{{scanner.username}}" label="Username" always-float-label>{{scanner.username}}</paper-input>
+                    <paper-input value="{{scanner.Username}}" label="{{i18n('Username')}}" always-float-label>{{scanner.Username}}</paper-input>
                 </div>
                 <div>
                 </div>
                 <div class="fieldContainer">
-                    <paper-input class="flexchild" type="{{pwdType}}" value="{{scanner.password}}" label="Password" placeholder="*********" always-float-label>{{scanner.password}}</paper-input>
+                    <paper-input class="flexchild" type="{{pwdType}}" value="{{scanner.Password}}" label="{{i18n('Password')}}" placeholder="*********" always-float-label>{{scanner.Password}}</paper-input>
                     <paper-checkbox class="showpwd" id="upload-show-pwd" on-change="uploadPwdType">{{i18n("Show")}}</paper-checkbox>
                 </div>
                 <div>
-                    <paper-input value="{{scanner.pattern}}" label="Pattern" always-float-label>{{scanner.pattern}}</paper-input>
+                    <paper-input value="{{scanner.Pattern}}" label="{{i18n('Pattern')}}" always-float-label>{{scanner.Pattern}}</paper-input>
                 </div>
                 <div>
-                    <paper-textarea label="Scanning Information" always-float-label rows="5" max-rows="5" readonly="true" value="{{scanner.statusMessage}}">{{scanner.statusMessage}}</paper-textarea>
+                    <paper-textarea label="{{i18n('Scanning Information')}}" always-float-label rows="5" max-rows="5" readonly="true" value="{{scanner.StatusMessage}}">{{scanner.StatusMessage}}</paper-textarea>
                 </div>
                 <template is="dom-if" if="{{nextFileScannerDate}}">
                     <div class="next-filescanner-box">
@@ -224,7 +224,7 @@ This is the main component for DHuS administrator functionality related to Files
                     </div>
                     <iron-list id="filescannerlist" items="{{filescanners}}" as="fs" style="width: 100%!important">
                         <template>
-                            <filescanner-item parent="{{that}}" model="{{fs}}" data-args="fs.url" on-click="getFSInfo"></filescanner-item>
+                            <filescanner-item parent="{{that}}" model="{{fs}}" data-args="fs.Url" on-click="getFSInfo"></filescanner-item>
                         </template>
                     </iron-list>
                 </div>
@@ -256,10 +256,22 @@ This is the main component for DHuS administrator functionality related to Files
              */
             beforeRegister() {
                 this.is = 'upload-container';
-                this.filescannerRequestUrl = "/api/stub/admin/filescanners";
-                this.filescannerUpdateRequestUrl = "/api/stub/admin/filescanners/:fsid";
+                this.filescannerRequestUrl = "/odata/v1/Scanners?$expand=Collections";
+                this.filescannerCreateUrl = "/odata/v1/Scanners";
+                this.filescannerUpdateRequestUrl = "/odata/v1/Scanners(:fsidL)";
+                this.fsCollectionUpdateUrl= "/odata/v1/Scanners(:fsidL)/$links/Collections";
+                this.fsCollectionDeleteUrl= "/odata/v1/Scanners(:fsidL)/$links/Collections(':collName')";
                 this.nextFilescannerDateUrl = "/api/stub/admin/filescanners/next";
                 this.uploadUrl = "/api/upload";
+                this.options = {
+                    headers: [{
+                        name: "Content-Type",
+                        value: "application/json"
+                      }, {
+                        name: "Accept",
+                        value: "application/json"
+                      }]
+                };
 
                 this.properties = {
 
@@ -329,7 +341,7 @@ This is the main component for DHuS administrator functionality related to Files
 
             }
 
-            /**             
+            /**
              *  Called after the element is attached to the document.
              *  Can be called multiple times during the lifetime of an element.
              *  The first 'attached' callback is guaranteed not to fire until after 'ready'
@@ -357,8 +369,8 @@ This is the main component for DHuS administrator functionality related to Files
                 self.clearScanner();
             }
 
-            /**             
-             *  Resize callbach handler 
+            /**
+             *  Resize callbach handler
              *
              * @return {null}
              */
@@ -372,7 +384,23 @@ This is the main component for DHuS administrator functionality related to Files
 
             }
 
-            /**             
+            /**
+             * This method is used to check if Url field is not empty.
+             *
+             * @return {boolean}: true if field is filled, false otherwise
+             */
+            checkUrl() {
+                var check = true;
+                if (!this.scanner.Url || this.scanner.Url.trim() == '') {
+                    this.isUrlEmpty = true;
+                    return false;
+                } else {
+                    this.isUrlEmpty = false;
+                    return true;
+                }
+            }
+
+            /**
              *  Generate and perform collections list http request
              *
              * @return {null}
@@ -381,7 +409,7 @@ This is the main component for DHuS administrator functionality related to Files
                 var self = this;
                 var collectionsUrl = "/odata/v1/Collections";
                 var jsonParameter = "$format=json";
-                self.options = {
+                var options = {
                     headers: [{
                         name: "Content-Type",
                         value: "application/atom+xml"
@@ -393,7 +421,7 @@ This is the main component for DHuS administrator functionality related to Files
 
                 return self.owcApp.httpManager.sendRequest(
                     'GET',
-                    self.owcApp.config.baseUrl + collectionsUrl + '?' + jsonParameter, self.options
+                    self.owcApp.config.baseUrl + collectionsUrl + '?' + jsonParameter, options
                 ).then(function(response) {
                     if (response.status == 200) {
                         var collectionModel = response.data.d.results;
@@ -413,7 +441,7 @@ This is the main component for DHuS administrator functionality related to Files
                 });
             }
 
-            /**             
+            /**
              *  Generate and perform http request to get next File Scanner scheduled date
              *
              * @return {null}
@@ -424,63 +452,113 @@ This is the main component for DHuS administrator functionality related to Files
                     'GET',
                     self.owcApp.config.baseUrl + self.nextFilescannerDateUrl
                 ).then(function(response) {
-                    self.nextFileScannerDate = response.data;
+                    if (response && response.status == 200) {
+                        var date = new Date(response.data.date);
+                        self.nextFileScannerDate = moment(date).utc().format('DD-MM-YYYY HH:mm:ss UTC');
+                    } else {
+                        self.nextFileScannerDate = "N/A";
+                    }
                 });
 
             }
 
-            /**             
+            generateModel(isNew) {
+                var model = {};
+                model.Url = this.scanner.Url;
+                if (this.scanner.Username && this.scanner.Username != '')
+                    model.Username = this.scanner.Username;
+                if (this.scanner.Password && this.scanner.Password != '')
+                    model.Password = this.scanner.Password;
+                if (this.scanner.Pattern && this.scanner.Pattern != '')
+                    model.Pattern = this.scanner.Pattern;
+                if (isNew) {
+                    model.Active = false;
+                } else {
+
+                    model.Id = this.scanner.Id
+                }
+                return model;
+            };
+
+            generateCollectionsModel() {
+                var model = [];
+                var idCollections = this.getSelectedCollections();
+                for (var i = 0; i < idCollections.length; i++) {
+                    model.push({ "uri": "odata/v1/Collections('" + idCollections[i] + "')" });
+                }
+                return model;
+            };
+
+            updateList(updated) {
+                for (var i = 0; i < this.filescanners.length; i++) {
+                    if (updated) {
+                        if (i == this.filescanners.x_state)
+                            this.filescanners[i].toggle = true;
+                        else
+                            this.filescanners[i].toggle = false;
+                        this.filescanners[i].toggleHover = false;
+
+                    } else {
+                        this.filescanners[i].toggle = false;
+                        this.filescanners[i].toggleHover = false;
+                        this.filescanners.x_state = -1;
+                    }
+
+                    if (this.filescanners[i].Active == true) {
+                        this.filescanners[i].styleColor = "color: blue;";
+                    } else {
+                        this.filescanners[i].styleColor = "color: darkgray;";
+                    }
+
+                    if (this.filescanners[i].Status == 'ok') {
+                        this.filescanners[i].classicon = 'check';
+                    } else if (this.filescanners[i].Status == 'error') {
+                        this.filescanners[i].classicon = 'clear';
+                    } else if (this.filescanners[i].Status == 'added') {
+                        this.filescanners[i].classicon = 'help';
+                    } else if (this.filescanners[i].Status == 'running') {
+                        this.filescanners[i].classicon = 'file-upload';
+                    } else {
+                        this.filescanners[i].classicon = 'help';
+                    }
+                }
+            }
+
+            /**
              *  Generate and perform http request to get configured File Scanners list
-             *             
+             *
              * @return {null}
              */
             getFileScanners() {
                 var self = this;
                 return self.owcApp.httpManager.sendRequest(
                     'GET',
-                    self.owcApp.config.baseUrl + self.filescannerRequestUrl
+                    self.owcApp.config.baseUrl + self.filescannerRequestUrl,
+                    self.options
                 ).then(function(response) {
-                    self.filescanners = response.data;
-                    for (var i = 0; i < self.filescanners.length; i++) {
-                        self.filescanners[i].toggle = false;
-                        self.filescanners[i].toggleHover = false;
-                        self.filescanners.x_state = -1;
-                        if (self.filescanners[i].active == true) {
-                            self.filescanners[i].styleColor = "color: #002664;";
-                        } else {
-                            self.filescanners[i].styleColor = "color: darkgray;";
-                        } 
 
-                    }
-                    for (var i = 0; i < self.filescanners.length; i++) {
-                        if (self.filescanners[i].status == 'ok') {
-                            self.filescanners[i].classicon = 'check';
-                        } else if (self.filescanners[i].status == 'error') {
-                            self.filescanners[i].classicon = 'clear';
-                        } else if (self.filescanners[i].status == 'added') {
-                            self.filescanners[i].classicon = 'help';
-                        } else if (self.filescanners[i].status == 'running') {
-                            self.filescanners[i].classicon = 'file-upload';
-                        } else {
-                            self.filescanners[i].classicon = 'help';
-                        }
-
-                    }
+                    if (response && response.data && response.data.d)
+                        self.filescanners = response.data.d.results;
+                    self.updateList();
                     self.owcApp.messageBroker.publish('update-fsitem');
                 });
 
             }
 
-            /**             
+            /**
              *  This method is used to clean file scanner object on de-selection from list
              *
              * @return {null}
              */
             clearScanner() {
                 this.scanner = {};
+                this.scanner.Url="";
+                this.scanner.Username="";
+                this.scanner.Password="";
+                this.scanner.Pattern="";
             }
 
-            /**             
+            /**
              *  This method is used to refresh upload page
              *
              * @return {null}
@@ -493,13 +571,14 @@ This is the main component for DHuS administrator functionality related to Files
             }
 
 
-            /**             
+            /**
              *  This method is used to set selected collections for selected filescanner
              *
-             * @param {Array}: selected, i.e. the list of selected collection 
+             * @param {Array}: selected, i.e. the list of selected collection
              * @return {null}
              */
             setSelectedCollections(selected) {
+
 
                 var newColl = [];
                 for (var i = 0; i < this.collections.length; i++) {
@@ -518,7 +597,7 @@ This is the main component for DHuS administrator functionality related to Files
                             "checked": false
                         });
                     }
-                }                
+                }
                 this.set('collections', []);
                 this.notifyPath('collections', []);
                 this.set('collections', newColl);
@@ -527,10 +606,10 @@ This is the main component for DHuS administrator functionality related to Files
 
             }
 
-            /**             
+            /**
              *  This method is used to set selected collections for selected filescanner
-             *             
-             * @return {Array}: list of selected collections 
+             *
+             * @return {Array}: list of selected collections
              */
             getSelectedCollections() {
                 var selected = [];
@@ -542,7 +621,7 @@ This is the main component for DHuS administrator functionality related to Files
                 return selected;
             }
 
-            /**             
+            /**
              *  This method is used to reset collection selection
              *
              * @return {null}
@@ -563,8 +642,8 @@ This is the main component for DHuS administrator functionality related to Files
             }
 
 
-            /**             
-             *  This method is used to update password input type, i.e. : 
+            /**
+             *  This method is used to update password input type, i.e. :
              *  - type="text" if the "Show" checkbox is checked
              *  - type="password" if the "Show" checkbox is NOT checked
              *
@@ -581,63 +660,88 @@ This is the main component for DHuS administrator functionality related to Files
 
             }
 
-            /**             
+            getFSCollections(model) {
+                var fsCollections = [];
+                for (var i = 0; i < model.length; i++) {
+                    fsCollections.push(model[i].Name);
+                }
+                return fsCollections;
+            }
+
+            /**
              *  This method is used to update scanner object with the file scanner selected from the list
              *
              * @param {Object} onclick event
              * @return {null}
              */
             getFSInfo(event) {
-                    var currentScanner = {};
-                    
-                    var list = document.querySelectorAll('filescanner-item');
-                    
-                    for(var i=0; i<list.length; i++) {
-                      list[i].setToggle(false);
-                      list[i].updateSelection(); 
-                    }
-                                       
-                    if (event && event.model) {
-                        currentScanner = event.model.fs;
-                        if (currentScanner && this.scanner && currentScanner.id == this.scanner.id) {
-                            this.scanner = this.clearScanner();
-                            this.enableAdd = true;
-                            this.clearSelectedCollections(); 
-                            event.model._nodes[0].setToggle(false);
-                            event.model._nodes[0].updateSelection();                                                      
-                        } else {
-                            this.scanner = currentScanner;
-                            this.enableAdd = false;
-                           
-                            this.setSelectedCollections(this.scanner.collections);  
-                            event.model._nodes[0].setToggle(true); 
-                            event.model._nodes[0].updateSelection();                            
-                        }
-                    } else {
+                this.isUrlEmpty = false;
+                var currentScanner = {};
+                var list = document.querySelectorAll('filescanner-item');
+                for(var i=0; i<list.length; i++) {
+                  list[i].setToggle(false);
+                  list[i].updateSelection();
+                }
+
+                if (event && event.model) {
+                    currentScanner = event.model.fs;
+                    if (currentScanner && this.scanner && currentScanner.Id == this.scanner.Id) {
+                        this.clearScanner();
                         this.enableAdd = true;
                         this.clearSelectedCollections();
-                    }                    
-                  
-
+                        event.model._nodes[0].setToggle(false);
+                        event.model._nodes[0].updateSelection();
+                    } else {
+                        this.scanner = currentScanner;
+                        this.scanner.collections = (currentScanner.Collections && currentScanner.Collections.results) ? this.getFSCollections(currentScanner.Collections.results) : []
+                        this.enableAdd = false;
+                        this.setSelectedCollections(this.scanner.collections);
+                        event.model._nodes[0].setToggle(true);
+                        event.model._nodes[0].updateSelection();
+                    }
+                } else {
+                    this.enableAdd = true;
+                    this.clearSelectedCollections();
                 }
-                //self.owcApp.toastManager.info("Synchronizer Deleted");
 
-            /**             
+            }
+
+            addCollectionsToFS(fsid,model) {
+                var self = this;
+                self.options.body = JSON.stringify(model);
+                return this.owcApp.httpManager.sendRequest(
+                    'POST',
+                    self.owcApp.config.baseUrl + self.fsCollectionUpdateUrl.replace(':fsid', fsid),
+                    self.options
+                ).then(function(response) {
+                    return response;
+                }, function(response) {
+                    return response;
+                });
+            }
+
+            removeCollectionsToFS(fsid,collName) {
+                var self = this;
+                return this.owcApp.httpManager.sendRequest(
+                    'DELETE',
+                    self.owcApp.config.baseUrl + self.fsCollectionDeleteUrl.replace(':fsid', fsid).replace(":collName",collName)
+                ).then(function(response) {
+                    return response;
+                }, function(response) {
+                    return response;
+                });
+            }
+
+            /**
              *  This method is used to create a new File Scanner
              *
              * @return {null}
              */
             addFileScanner() {
                 var self = this;
-                var idCollections = this.getSelectedCollections();
-                var model = {
-                    url: self.scanner.url,
-                    username: self.scanner.username,
-                    password: self.scanner.password,
-                    pattern: self.scanner.pattern,
-                    collections: idCollections,
-                    active: false
-                };
+                if(!this.checkUrl()) return;
+                var model = this.generateModel(true);
+                var collectionModel = this.generateCollectionsModel();
                 var options = {
                     headers: [{
                         name: "Content-Type",
@@ -648,38 +752,50 @@ This is the main component for DHuS administrator functionality related to Files
                     }]
                 };
                 options.body = JSON.stringify(model);
-                
+
                 return self.owcApp.httpManager.sendRequest(
                     'POST',
-                    self.owcApp.config.baseUrl + self.filescannerRequestUrl, options
+                    self.owcApp.config.baseUrl + self.filescannerCreateUrl, options
                 ).then(function(response) {
-                    if (response.status >= 200 && response.status < 300) {
-                        self.owcApp.toastManager.info(self.i18n("File Scanner added"));
-                        self.refresh();
-                    } else {
-                        self.owcApp.toastManager.error(self.i18n("Error in adding File Scanner"));
-                    }
+                    var responseStatus = parseInt(response.status);
+                        if (responseStatus >= 200 && responseStatus < 300) {
+                            if (collectionModel && collectionModel.length > 0) {
+
+                                var promises = [];
+                                for (var i = 0; i < collectionModel.length; i++) {
+                                    promises.push(self.addCollectionsToFS(response.data.d.Id, collectionModel[i]).then(function(result){}));
+                                }
+                                Promise.all(promises).then(function() {
+
+                                    self.owcApp.toastManager.info(self.i18n("File Scanner added"));
+                                    self.refresh();
+
+                                }, function() {
+                                    self.owcApp.toastManager.error(self.i18n("File scanner added, but error occurred associating the collection to the file scanner."));
+                                });
+                            } else {
+                                self.owcApp.toastManager.info(self.i18n("File Scanner added"));
+                                self.refresh();
+                            }
+
+                        } else {
+                            self.owcApp.toastManager.error(self.i18n("Error adding File Scanner"));
+                        }
                 }, function() {
-                    self.owcApp.toastManager.error(self.i18n("Error in adding File Scanner"));
+                    self.owcApp.toastManager.error(self.i18n("Error adding File Scanner"));
                 });
             }
 
-            /**             
+            /**
              *  This method is used to update an existing File Scanner
              *
              * @return {null}
              */
             saveFileScanner() {
                 var self = this;
-                var idCollections = this.getSelectedCollections();
-                var model = {
-                    url: self.scanner.url,
-                    username: self.scanner.username,
-                    password: self.scanner.password,
-                    pattern: self.scanner.pattern,
-                    collections: idCollections,
-                    id: self.scanner.id
-                };
+                if(!this.checkUrl()) return;
+                var model = this.generateModel();
+                var collectionModel = this.generateCollectionsModel();
                 var options = {
                     headers: [{
                         name: "Content-Type",
@@ -692,17 +808,56 @@ This is the main component for DHuS administrator functionality related to Files
                 options.body = JSON.stringify(model);
                 return self.owcApp.httpManager.sendRequest(
                     'PUT',
-                    self.owcApp.config.baseUrl + self.filescannerUpdateRequestUrl.replace(":fsid", model.id),
+                    self.owcApp.config.baseUrl + self.filescannerUpdateRequestUrl.replace(":fsid", model.Id),
                     options
                 ).then(function(response) {
-                    if (response.status >= 200 && response.status < 300) {
+                    /*if (response.status >= 200 && response.status < 300) {
                         self.owcApp.toastManager.info(self.i18n("File Scanner updated"));
                         self.refresh();
                     } else {
                         self.owcApp.toastManager.error(self.i18n("Error in updating File Scanner"));
+                    }*/
+                    var responseStatus = parseInt(response.status);
+                    if (responseStatus >= 200 && responseStatus < 300) {
+                        if ((collectionModel && collectionModel.length > 0) || self.scanner.collections.length > 0) {
+
+                            var promises = [];
+                            for (var j = 0; j < self.scanner.collections.length; j++) {
+                                promises.push(self.removeCollectionsToFS(model.Id, self.scanner.collections[j]).then(function(result){}));
+                            }
+                            for (var i = 0; i < collectionModel.length; i++) {
+                                promises.push(self.addCollectionsToFS(model.Id, collectionModel[i]).then(function(result){}));
+                            }
+                            Promise.all(promises).then(function() {
+
+                                self.owcApp.toastManager.info(self.i18n("File scanner updated"));
+                                self.refresh();
+
+                            }, function() {
+                                self.owcApp.toastManager.error(self.i18n("File scanner updated, but error occurred associating the collection to the file scanner."));
+                            });
+
+
+                        } else {
+                            self.owcApp.toastManager.info(self.i18n("File scanner updated"));
+                            self.refresh();
+                        }
+                    } else {
+                        if(responseStatus == 409) {
+                           self.owcApp.toastManager.error("Error updating file scanner: " + response.data.error.message.value, 5000);
+
+                        } else {
+                            self.owcApp.toastManager.error(self.i18n("Error updating File Scanner"));
+                        }
+
                     }
-                }, function() {
-                    self.owcApp.toastManager.error(self.i18n("Error in updating File Scanner"));
+                }, function(response) {
+                    if (response.status == 409) {
+                        self.owcApp.toastManager.error("Error updating file scanner: " + response.data.error.message.value, 5000);
+                    } else {
+                        self.owcApp.toastManager.error(self.i18n("Error updating File Scanner"));
+                    }
+
                 });
             }
 
@@ -714,8 +869,8 @@ This is the main component for DHuS administrator functionality related to Files
             // Content-Length:4063236
             // Content-Type:multipart/form-data; boundary=----WebKitFormBoundaryKwZ0RA0AOD1x7GpA
 
-            /**             
-             *  This method is used to upload 
+            /**
+             *  This method is used to upload
              *
              * @return {null}
              **/

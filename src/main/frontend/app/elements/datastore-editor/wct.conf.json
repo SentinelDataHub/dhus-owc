@@ -1,0 +1,8 @@
+{
+  "suites": ["./test"],
+  "webserver": {
+    "pathMappings": [
+      {"/elements/datastore-editor/bower_components": "bower_components"}
+    ]
+  }
+}

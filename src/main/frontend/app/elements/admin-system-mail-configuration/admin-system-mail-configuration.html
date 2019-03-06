@@ -101,7 +101,7 @@ Admin Panel to configure mail
                   <form is="iron-form">
                       <paper-input value="{{model.mailServerSmtp}}" name="smtp" label="{{i18n('SMTP Server')}}" required></paper-input>
                       <paper-input value="{{model.mailServerPort}}" name="port" label="{{i18n('Port')}}" required></paper-input>
-                      <paper-checkbox checked="{{model.mailServerTls}}" name="tls" label="{{i18n('tls')}}">{{i18n('TLS')}}</paper-checkbox>
+                      <paper-checkbox checked="{{model.mailServerTls}}" name="tls" label="{{i18n('TLS')}}">{{i18n('TLS')}}</paper-checkbox>
                       <paper-input type="email" value="{{model.mailServerUser}}" name="port" label="{{i18n('Username')}}" required></paper-input>
                       <paper-input type="password" value="{{model.mailServerPassword}}" name="password" label="{{i18n('Password')}}" required></paper-input>
 
@@ -109,15 +109,15 @@ Admin Panel to configure mail
                       <paper-input value="{{model.mailServerFromName}}" name="expeditor-name" label="{{i18n('Expeditor Name')}}" required></paper-input>
                       <paper-input type="email" value="{{model.mailServerReplyTo}}" name="reply-to" label="{{i18n('Reply to')}}" required></paper-input>
 
-                      <p>Mail user when:</p>
+                      <p>{{i18n('Mail user when')}}:</p>
                       <paper-checkbox checked="{{model.mailWhenCreate}}" name="creating-account" label="{{i18n('creating account')}}">{{i18n('creating account')}}</paper-checkbox>
                       <br/>
-                      <paper-checkbox checked="{{model.mailWhenUpdate}}" name="adminitrator-updates-his-account" label="{{i18n('administrator updates his account')}}">{{i18n('administrator updated his account')}}</paper-checkbox>
+                      <paper-checkbox checked="{{model.mailWhenUpdate}}" name="adminitrator-updates-his-account" label="{{i18n('administrator updated his account')}}">{{i18n('administrator updated his account')}}</paper-checkbox>
                       <br/>
                       <paper-checkbox checked="{{model.mailWhenDelete}}" name="deleting-account" label="{{i18n('deleting account')}}">{{i18n('deleting account')}}</paper-checkbox>
 
                       <br/>
-                      <h3>Support</h3>
+                      <h3>{{i18n('Support')}}</h3>
                       <paper-input type="email" value="{{model.supportMail}}" name="mail" label="{{i18n('Mail')}}" required></paper-input>
                       <paper-input value="{{model.supportName}}" name="name" label="{{i18n('Name')}}" required></paper-input>
                       <paper-input type="email" value="{{model.registrationMail}}" name="registration-mail" label="{{i18n('Registration mail')}}" required></paper-input>

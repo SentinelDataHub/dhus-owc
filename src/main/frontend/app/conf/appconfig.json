@@ -7,23 +7,25 @@
     "show_timeline": false,
     "max_instances_per_panel": 3,
     "show_signup": true,
+    "show_forgotpwd": true,
+    "show_editprofile": true,
+    "superuser": "root",
     "t_and_c_link": "https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/TermsConditions",
     "show_oldgui_link": true,
     "oldgui_link": "../",
     "oldgui_label": "go to classic view",
     "default_layer": {
-        "Road": {
-            "sources": [{
-                "class": "OSM",
-                "params": {
-                  "url" : "http://tile2.opencyclemap.org/transport/{z}/{x}/{y}.png",
-                    "wrapX": false
-                }
-            }],
-            "title": "Road",
-            "type": "base",
-            "visible": ":visible"
-        }
+      "Road": {
+        "sources": [{
+          "class": "OSM",
+          "params": {
+            "wrapX": false
+          }
+        }],
+        "title": "Road",
+        "type": "base",
+        "visible": true
+      }
     },
     "wms_layer_template": {
         ":title": {
@@ -100,5 +102,16 @@
         "priority": "1"
     }],
     "page_size": 25,
-    "odataContentLengthUrl": "/odata/v1/Products(%27:uuid%27)/ContentLength/$value"
+    "odataContentLengthUrl": "/odata/v1/Products(%27:uuid%27)/ContentLength/$value",
+    "dstypes": [{
+        "name":"HFS Data Store",
+        "value": "#OData.DHuS.HFSDataStore"
+    },{
+        "name":"OpenStack Data Store",
+        "value": "#OData.DHuS.OpenStackDataStore"
+    },{
+        "name":"GMP Data Store",
+        "value": "#OData.DHuS.GMPDataStore"
+    }],
+    "kuperiods": ["DAYS"]
 }

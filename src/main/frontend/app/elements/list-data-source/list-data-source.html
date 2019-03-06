@@ -54,8 +54,8 @@ list data source
              */
             beforeRegister() {
                 this.is = 'list-data-source';
-                this._requestUrl = "/api/stub/products?filter=:filter&offset=:offset&limit=:limit&sortedby=:sortedby&order=:order";
-                this._countUrl = "/api/stub/products/count?filter=:filter";
+                this._requestUrl = "/api/owc/products?filter=:filter&offset=:offset&limit=:limit&sortedby=:sortedby&order=:order";
+                this._countUrl = "/api/owc/products/count?filter=:filter";
                 this._pageSize = 25;
                 this.owcApp = document.querySelector('#owc-app');
 

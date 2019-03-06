@@ -6,7 +6,7 @@
 		"width": "500px"
 	}, {
 		"title": "Combo Search",
-		"component": "combo-search-container",
+		"component": "owc-combo-component",
 		"icon": "search",
 		"width": "1500px"
 	},{

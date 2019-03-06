@@ -43,14 +43,14 @@ product details
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         .catContainer {
             @apply(--layout-vertical);
             width: var(--detailswidth, 100%);
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         .attribute {
             @apply(--layout-vertical);
             display: block;
@@ -60,48 +60,48 @@ product details
             overflow-y: auto;
             padding-left: 10px;
         }
-        
+
         .fieldContainer {
             @apply(--layout-horizontal);
         }
-        
+
         .flexchild {
             @apply(--layout-flex);
         }
-        
+
         .flex10child {
             @apply(--layout-flex-8);
             text-align: center;
         }
-        
+
         .flex2child {
             @apply(--layout-flex-2);
         }
-        
+
         .title {
             font-size: 14px;
             margin-top: 5px;
             font-weight: bold;
             text-align: center;
         }
-        
+
         .product-title {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
         }
-        
+
         .quicklook {
             max-width: 300px;
             text-align: center;
         }
-        
+
         img {
             max-width: 300px;
             max-height: 300px;
             /*width: var(--quicklookwidth, 100%);*/
         }
-        
+
         paper-button {
             background: #002664;
             color: white;
@@ -112,47 +112,81 @@ product details
             padding: 5px 5px;
             margin-bottom: 10px;
         }
-        
+
         paper-button[toggles][active].colorful {
             background-color: #002664;
         }
-        
+
         paper-button[toggles][active][raised].colorful {
             background-color: rgba(66, 133, 244, 0.75);
         }
-        
+
         section {
             height: var(--detailsheight, 500px);
             width: var(--detailswidth, 100%);
             @apply(--layout-vertical);
         }
-        
+
         section paper-dialog-scrollable {
             @apply(--layout-flex);
         }
-        
+
         .header {
             padding: 8px 24px;
         }
-        
+
         .footer {
             padding: 8px 24px;
             text-align: right;
         }
-        
+
         p.wrap {
             width: 98%;
             white-space: normal;
+        }
+
+        .offline {
+            font-size: 14px;
+            font-weight: bold;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            /* text-align: center; */
+            color: #fff;
+            background-color: #505050;
+            /* width: 60px; */
+            margin-top: 10px;
+            /* margin-bottom: 10px; */
+            position: relative;
+            /* right: 47%; */
+            padding: 2px;
+            text-align: center;
+            width: 60px;
+            left: 47%;
+        }
+
+        .product-link {
+            color: #337ab7;
+            text-decoration: none;
+            cursor: normal;
+        }
+
+        .product-link:hover {
+            text-decoration: underline;
+            cursor: pointer;
         }
         </style>
         <div class="container">
             <div>
                 <div class="title product-title" title="{{productname}} "> {{productname}} </div>
-                <div class="title product-title"><a href="{{productLink}}">{{productLink}}</a></div>
+                <div class="title product-title product-link" on-click="download">{{productLink}}</div>
+                <div class="offline" hidden="{{isOnline}}">
+                    <span>{{i18n("Offline")}}</span>
+                </div>
             </div>
             <div>
                 <br>
-                <paper-button raised class="colorful" on-click="odataSynch" disabled title="Quicklook">Quicklook</paper-button>
+                <paper-button raised class="colorful" on-click="odataSynch" disabled title="Quicklook">{{i18n("Quicklook")}}</paper-button>
                 <br>
                 <div class="fieldContainer">
                     <div class="flexchild"></div>
@@ -262,7 +296,7 @@ product details
                     },
 
                     /**
-                     * Product model  
+                     * Product model
                      *
                      * @type {Object}
                      */
@@ -309,7 +343,7 @@ product details
              *
              * @param {String} String1: first string to compare
              * @param {String} String2: second string to compare
-             * 
+             *
              * @return {null}
              */
             filter(String1, String2) {
@@ -320,7 +354,7 @@ product details
 
             /**
              * Get product model from server.
-             * 
+             *
              * @return {null}
              */
             getProduct() {
@@ -337,7 +371,7 @@ product details
 
             /**
              * Update the model
-             * 
+             *
              * @return {null}
              */
             processModel() {
@@ -365,7 +399,7 @@ product details
                 });
             }
 
-            /**             
+            /**
              *  This method is used to check if a category is valid and can be shown on product details page
              *
              * @return {Boolean} true if is NOT valid, false otherwise
@@ -380,7 +414,7 @@ product details
 
             /**
              * Resize method implementation
-             * 
+             *
              * @return {null}
              */
             resize() {
@@ -399,12 +433,58 @@ product details
 
             /**
              * Callback for on error thumb event.
-             * 
+             *
              * @return {null}
              */
             imageError() {
                 var IMAGE_PLACE_HOLDER_URL = this.owcApp.config.clientUrl + '/images/bigplaceholder.png';
                 Polymer.dom(this.root).querySelector("#image").src = IMAGE_PLACE_HOLDER_URL;
+            }
+
+            /**
+             * This method is used to download a product.
+             * Product download is triggered clicking on the proper link shown below product identifier
+             */
+            download() {
+                var self = this;
+                if (this.isOnline) {
+                    window.location = this.owcApp.config.baseUrl +
+                        "/odata/v1/Products('" + self.productuuid + "')/$value";
+                } else {
+                    return this.owcApp.httpManager.sendRequest(
+                        'GET',
+                        self.owcApp.config.baseUrl + "/odata/v1/Products('" + self.productuuid + "')/$value"
+                    ).then(function(response) {
+                        if (response.status == 202) {
+                            if (self.pinned) {
+                                self.owcApp.toastManager.info("Offline product has been requested for download. Please check your Cart to know when it will be online.", 6000);
+
+                            } else {
+                                self.cartmngr.addToCart(self.productuuid).then(function(data) {
+                                    setTimeout(function() {
+                                        self.pinned = true;
+                                        self.set('pinned', self.pinned);
+                                        self.notifyPath('pinned', self.pinned);
+                                    }, 6100);
+                                    self.owcApp.toastManager.info("Offline product has been requested for download and has been moved to Cart. Please check your Cart to know when it will be online.", 6000);
+                                });
+                            }
+                        } else {
+                            self.owcApp.toastManager.error("Error during offline product request for download");
+                        }
+
+                    }, function(response) {
+                        self.owcApp.toastManager.error("Error during offline product request for download");
+                        /*TEST PURPOSE  REMOVE!!!!!*/
+                        /*TEST PURPOSE  REMOVE!!!!!*/
+
+                    }).catch(function(reason) {
+                        //console.log("ERROR ", reason);
+                        self.owcApp.toastManager.error("Error during offline product request for download");
+
+                    });;
+                }
+
             }
 
         };

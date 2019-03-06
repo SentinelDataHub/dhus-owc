@@ -1,0 +1,259 @@
+<!--
+  @license
+
+
+  Data HUb Service (DHuS) - For Space data distribution.
+  Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
+  Copyright (C) 2013,2014,2015,2016 GAEL Systems
+  Copyright (C) 2013,2014,2015,2016 Serco Spa
+
+  This file is part of DHuS software sources.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<!--
+This component is used to display an eviction item of the list of the configured evictions
+
+
+@demo demo/index.html
+-->
+<dom-module id="owc-eviction-item">
+  <template>
+    <style type="text/css">
+    .container {
+      @apply(--layout-horizontal);
+      @apply(--layout-wrap);
+      height: var(--container-height, 150px !important);
+    }
+
+    .owc-list-item-title {
+      position: absolute;
+      top: var(--owc-list-item-title-top, 20px);
+      left: var(--owc-list-item-title-left, 30px);
+      width: var(--owc-list-item-title-width, calc(100% - 50px));
+    }
+
+    .owc-list-item-footer {
+      position: absolute;
+      top: var(--owc-list-item-title-top, 90px);
+      left: var(--owc-list-item-title-left, 30px);
+      width: var(--owc-list-item-title-width, calc(100% - 50px));
+      padding-top: 10px;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: bold;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    iron-list {
+      background-color: var(--paper-grey-200, #eee);
+    }
+
+    .item {
+      @apply(--layout-horizontal);
+      @apply(--layout-wrap);
+      border-radius: 8px;
+      background-color: white;
+      margin: 16px !important;
+      border: solid 1px #ecf0f1;
+    }
+
+    .owc-list-item {
+      margin-top: 5px !important;
+      margin-right: 10px!important;
+      margin-left: 7px!important;
+    }
+
+    .owc-list-item-attributes-container {
+      position: absolute;
+      top: var(--owc-list-item-attributes-container-top, 50px);
+      left: var(--owc-list-item-title-left, 30px);
+      width: 90%;
+    }
+
+    .owc-list-item-attribute {
+      width: calc(100% - 120px);
+    }
+
+    .attribute {
+      font-size: 12px!important;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .owc-list-item-buttons {
+      position: absolute;
+      bottom: 15px;
+      right: 15px
+    }
+
+    </style>
+    <div class="item owc-list-item" id="{{model.Id}}">
+      <div class="container">
+        <div hidden>{{model.Name}}</div>
+        <div class="title owc-list-item-title">
+          <span hidden="{{!model.Name}}" title="{{model.Name}}">{{model.Name}}</span>
+        </div>
+        <div class="owc-list-item-attributes-container">
+          <div class="attribute owc-list-item-attribute">
+            {{i18n('Keep Period')}}: {{model.KeepPeriod}}
+          </div>
+          <div class="attribute owc-list-item-attribute">
+            {{i18n('Keep Period Unit')}}: {{model.KeepPeriodUnit}}
+          </div>
+        </div>
+        <br>
+        <div class="title owc-list-item-footer" >
+          <span hidden="{{!model.SoftEviction}}" title="{{i18n('SOFT EVICTION')}}">{{i18n('SOFT EVICTION')}} - </span>
+          <span hidden="{{model.SoftEviction}}" title="{{i18n('HARD EVICTION')}}">{{i18n('HARD EVICTION')}} - </span>
+          <span hidden="{{!model.Status}}" title="{{model.Status}}">{{i18n('Eviction Status')}}:{{model.Status}}</span>
+        </div>
+        <div class="owc-list-item-buttons">
+          <paper-icon-button icon="av:play-arrow" on-click="startEviction" title="{{i18n('Start Eviction')}}"></paper-icon-button>
+          <paper-icon-button icon="av:stop" on-click="stopEviction" title="{{i18n('Stop Eviction')}}"></paper-icon-button>
+          <paper-icon-button icon="icons:close" on-click="deleteEviction" title="{{i18n('Delete Eviction')}}"></paper-icon-button>
+          <paper-icon-button icon="icons:create" on-click="editEviction" title="{{i18n('Edit Eviction')}}"></paper-icon-button>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+    class OwcEvictionItem {
+
+      /* --- POLYMER LIFECYCLE METHODS --- */
+
+      /**
+       * BeforeRegister method Polymer calls before creating the element.
+       * This method is where you shoud define the is property (element's name) and
+       * properties  object.
+       *
+       * @return {null}
+       */
+      beforeRegister() {
+        this.is = 'owc-eviction-item';
+        this.evictionUrl = "/odata/v2/Evictions(':name')";
+        this.options = {
+          headers: [{
+            name: "Accept",
+            value: "application/json"
+          }, {
+            name: "Content-Type",
+            value: "application/json"
+          }]
+
+        };
+
+
+        this.owcApp = document.querySelector('#owc-app');
+        this.properties = {
+
+          /**
+           * Model of list item
+           *
+           * @type {Object}
+           */
+          model: {
+            type: Object,
+            value: {}
+          }
+
+        }
+      };
+
+      attached() {
+        var self = this;
+        self.navigationManager = document.getElementById('navigation-manager');
+      }
+
+
+      /**
+       * Push in navigation manager the eviction editor
+       *
+       * @return {null}
+       */
+      editEviction() {
+        var _model = this.model;
+        var newEviction = document.createElement('owc-eviction-editor');
+        newEviction.setModel(_model);
+        this.navigationManager.pushComponent(newEviction, '500px', 'Eviction Editor');
+      }
+
+      /**
+       * Create and send http request to delete a synchronizer
+       *
+       * @return {null}
+       */
+      deleteEviction() {
+        var self = this
+
+        return self.owcApp.httpManager.sendRequest(
+          "DELETE", self.owcApp.config.baseUrl + self.evictionUrl.replace(':name', self.model.Name)
+        ).then(function() {
+          self.owcApp.messageBroker.publish('updateEviction');
+          self.owcApp.toastManager.info(self.i18n("Eviction Deleted"));
+          return true;
+        });
+
+
+      }
+
+      /**
+       * Start the eviction
+       *
+       * @return {null}
+       */
+      startEviction() {
+        var self = this;
+        var newEviction = document.createElement('owc-eviction-editor');
+        var modelStart = {
+          Name: self.model.Name,
+          Status: "STARTED"
+        }
+        newEviction.updateEviction(modelStart);
+      }
+
+      /**
+       * Stop the eviction
+       *
+       * @return {null}
+       */
+      stopEviction() {
+
+        var self = this;
+        var newEviction = document.createElement('owc-eviction-editor');
+        var modelStop = {
+          Name: self.model.Name,
+          Status: "STOPPED"
+        }
+        newEviction.updateEviction(modelStop);
+      }
+
+    };
+
+    Polymer(OwcEvictionItem);
+
+  })();
+
+  </script>
+</dom-module>

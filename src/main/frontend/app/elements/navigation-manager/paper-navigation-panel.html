@@ -18,20 +18,25 @@
             margin-right: 5px;
             min-width: 150px;
         }
-
+        
         :host {
             height: var(--heightnav, 500px);
         }
-
+        
         :host:hover .close-panel-button,
         :host.hover .close-panel-button {
             display: block !important;
         }
-
+        
+        :host:hover .maximize-panel-button,
+        :host.hover .maximize-panel-button {
+            display: block !important;
+        }
+        
         .close-panel-button {
             display: var(--close-panel-button-display, none);
         }
-
+        
         paper-material {
             border-radius: 5px;
             padding: var(--paper-navigation-panel-container-padding, 5px);
@@ -45,7 +50,7 @@
             opacity: var(--paper-navigation-panel-opacity, "0.94 !important");
             /*background-color: rgba(255, 255, 255, 0.94)!important;*/
         }
-
+        
         .paper-navigation-panel-container {
             position: absolute;
             overflow: hidden;
@@ -53,16 +58,16 @@
             height: calc(100% - 45px);
             font-size: 20px;
         }
-
+        
         .paper-navigation-panel {
             overflow-x: auto;
         }
-
+        
         .paper-navigation-panel:hover .close-panel-button,
         .paper-navigation-panel.hover .close-panel-button {
             display: block;
         }
-
+        
         .close-panel-button {
             position: var(--close-panel-button, absolute !important);
             top: 2px;
@@ -74,15 +79,31 @@
             width: 30px;
             height: 30px;
         }
-
+        
+        .maximize-panel-button {
+            position: var(--maximize-panel-button, absolute !important);
+            top: 2px;
+            right: 25px;
+            z-index: 200;
+            overflow: hidden;
+            display: var(--maximize-panel-button-display, none);
+            font-size: 10px;
+            width: 30px;
+            height: 30px;
+        }
+        
         .close-panel-button:hover {
             opacity: 0.6;
         }
-
+        
+        .maximize-panel-button:hover {
+            opacity: 0.6;
+        }
+        
         paper-material {
             background-color: var(--theme-background-color);
         }
-
+        
         .panel-title {
             position: relative;
             height: 35px;
@@ -92,7 +113,7 @@
             font-weight: bold;
             top: 3px;
         }
-
+        
         #resizer {
             position: absolute;
             width: 5px;
@@ -114,8 +135,9 @@
         </style>
         <div id="resizer">
         </div>
-        <div class="close-panel-button-container">
+        <div class="close-panel-button-container horizontal layout">
             <paper-icon-button class="close-panel-button" icon="close" on-click="closePanel" alt="close"></paper-icon-button>
+            <paper-icon-button class="maximize-panel-button" icon="{{buttonIcon}}" on-click="switchPanelView" alt="{{buttonTitle}}"></paper-icon-button>
         </div>
         <paper-material elevation="1" class="paper-navigation-panel" id="paper-navigation-panel">
             <div class="panel-title">{{title}}</div>
@@ -187,6 +209,18 @@
                 },
 
                 /**
+                 * Hide close button condition
+                 *
+                 * @type {Boolean}
+                 */
+                hidemaxminbutton: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                    readOnly: false
+                },
+
+                /**
                  * Panel title
                  *
                  * @type {String}
@@ -195,7 +229,38 @@
                     type: String,
                     value: "",
                     notify: true
+                },
+
+                /**
+                 * icon shown to switch from normal to full screen mode and viceversa
+                 *
+                 * @type {String}
+                 */
+                buttonIcon: {
+                    type: String,
+                    value: "flip-to-front"
+                },
+
+                /**
+                 * title shown to switch from normal to full screen mode and viceversa
+                 *
+                 * @type {String}
+                 */
+                buttonTitle: {
+                    type: String,
+                    value: "Maximize Panel"
+                },
+
+                /**
+                 * maximizable panel condition
+                 *
+                 * @type {Boolean}
+                 */
+                isMaximizable: {
+                    type: Boolean,
+                    value: true
                 }
+
             };
         }
 
@@ -206,10 +271,13 @@
          */
 
         fullScreen() {
+            var self=this;
             this.style.height = parseInt(window.height) + 'px';
             this.style.left = 0;
             this.style.position = "fixed";
+            this.fullScreenMode = true;
             this.closeButtonAlwaysVisible();
+            this.maxMinButtonAlwaysVisible();
             this.disableResize();
             this.customStyle['--paper-navigation-panel-container-width'] = '100% !important';
             this.customStyle['--paper-navigation-panel-container-height'] = '100% !important';
@@ -217,8 +285,13 @@
             this.customStyle['--paper-navigation-panel-container-position'] = 'fixed';
             this.customStyle['--paper-navigation-panel-opacity'] = "1.0 !important";
             this.customStyle['--close-panel-button'] = 'fixed !important';
+            this.customStyle['--maximize-panel-button'] = 'fixed !important';
             this.customStyle['--theme-background-color'] = 'white !important'
             this.updateStyles();
+            if (typeof(self.content.resize) == "function") {
+                $(window).trigger('resize');
+                self.content.resize();
+            } 
         }
 
         /**
@@ -242,7 +315,9 @@
                 self.style.width = parseInt(self.navigationManager.getContainer().childNodes[index].size.width + 0);
             this.style.left = 0;
             this.style.position = "relative";
+            this.fullScreenMode = false;
             this.closeButtonHoverVisible();
+            this.maxMinButtonHoverVisible();
             this.activeResize();
             this.customStyle['--paper-navigation-panel-container-padding'] = '5px';
             this.customStyle['--paper-navigation-panel-container-margin'] = '5px auto';
@@ -253,7 +328,12 @@
             this.customStyle['--paper-navigation-panel-container-position'] = 'relative';
             this.customStyle['--theme-background-color'] = '';
             this.customStyle['--close-panel-button'] = 'absolute !important';
-            this.updateStyles();
+            this.customStyle['--maximize-panel-button'] = 'absolute !important';
+            this.updateStyles(); 
+            if (typeof(self.content.resize) == "function") {
+                $(window).trigger('resize');
+                self.content.resize();
+            }              
         }
 
         /**
@@ -306,12 +386,36 @@
             this.updateStyles();
         }
 
+        /**
+         *  This method sets the maximize/minimize button always visible
+         *         
+         */
+        maxMinButtonAlwaysVisible() {
+            this.customStyle['--maximize-panel-button-display'] = 'block';
+            this.updateStyles();
+
+        }
+
+        /**
+         *  This method sets the maximize/minimize button always visible
+         *         
+         */
+        maxMinButtonHoverVisible() {
+            this.customStyle['--maximize-panel-button-display'] = 'none';
+            this.updateStyles();
+
+        }
+
         attached() {
             var self = this;
             this.__init();
             if (self.properties.hideclosebutton.value) {
                 var containerView = Polymer.dom(self.root).querySelector('.close-panel-button-container');
                 Polymer.dom(containerView).removeChild(Polymer.dom(self.root).querySelector('.close-panel-button'));
+            }
+            if (self.properties.hidemaxminbutton.value) {
+                var containerView = Polymer.dom(self.root).querySelector('.close-panel-button-container');
+                Polymer.dom(containerView).removeChild(Polymer.dom(self.root).querySelector('.maximize-panel-button'));
             }
         }
 
@@ -325,6 +429,28 @@
                 height: this.$['component-container'].offsetHeight,
                 width: this.$['component-container'].offsetWidth
             };
+        }
+
+        /**
+         *  This method is used to switch from Normal to Full screen size and viceversa
+         *         
+         */
+        switchPanelView() {
+            if (this.isMaximizable) {
+                this.buttonIcon = "flip-to-back";
+                this.buttonTitle = "Restore Panel";
+                this.fullScreen();
+            } else {
+                this.buttonIcon = "flip-to-front";
+                this.buttonTitle = "Maximize Panel";
+                this.normalScreen()
+            }
+            this.isMaximizable = !this.isMaximizable;
+            this.navigationManager.isMaximized=!this.navigationManager.isMaximized;
+            this.set('buttonIcon', this.buttonIcon);
+            this.notifyPath('buttonIcon', this.buttonIcon);
+            this.set('buttonTitle', this.buttonTitle);
+            this.notifyPath('buttonTitle', this.buttonTitle);
         }
 
         /**

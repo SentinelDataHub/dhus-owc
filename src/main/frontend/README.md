@@ -5,7 +5,7 @@
 
 
 ## Project overview
-“The Open Web Components (OWC) software provides baseline components, guidelines and services for the creation of web components finalized to the development of a web application for data dissemination. “
+“The Open Web Components (OWC) software provides baseline components, guidelines and services for the creation of web components finalized to the development of a web application for data dissemination. “.
 
 OWC is a client module of DHuS software, designed to provide ESA and Copernicus users with a distributable service of mirror archives and dissemination means for EO products.
 More information about DHuS can be found in RD 1 

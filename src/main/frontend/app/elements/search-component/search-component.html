@@ -45,17 +45,17 @@
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         .element-container {
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
         }
-        
+
         textarea {
             resize: vertical;
             overflow-y: auto;
         }
-        
+
         #search-box-input {
             display: block;
             min-height: 40px;
@@ -67,7 +67,7 @@
             resize: vertical;
             overflow-y: auto;
         }
-        
+
         paper-button {
             color: white;
             padding: 5px 5px;
@@ -75,73 +75,73 @@
             font-size: 16px;
             font-weight: bold;
         }
-        
+
         paper-button.colorful {
             background: #002664;
         }
-        
+
         paper-button[toggles][active].colorful {
             background-color: #002664;
         }
-        
+
         paper-button[toggles][active][raised].colorful {
             background-color: rgba(66, 133, 244, 0.75);
         }
-        
+
         paper-button.greyscale {
             background-color: rgb(100, 100, 100);
         }
-        
+
         paper-button[toggles][active].greyscale {
             background-color: rgba(100, 100, 100, 0.75);
         }
-        
+
         paper-icon-button {
             color: #002664;
             padding: 5px 5px;
             font-size: 16px;
             font-weight: bold;
         }
-        
+
         paper-icon-button.colorful {
             color: #002664;
             float: right;
         }
-        
+
         paper-icon-button[toggles][active].colorful {
             color: #002664;
         }
-        
+
         paper-icon-button[toggles][active][raised].colorful {
             color: rgba(66, 133, 244, 0.75);
         }
-        
+
         paper-icon-button.greyscale {
             color: rgb(100, 100, 100);
         }
-        
+
         paper-icon-button[toggles][active].greyscale {
             color: rgba(100, 100, 100, 0.75);
         }
-        
+
         .end {
             @apply(--layout-end-justified);
             float: right !important;
         }
-        
+
         #dialog {
             z-index: 999999999;
         }
-        
+
         #picker {
             z-index: 999999999;
         }
-        
+
         .bottom {
             bottom: 20px;
             position: absolute;
         }
-        
+
         .plugin-link {
             cursor: pointer;
             display: block;
@@ -157,11 +157,11 @@
         }
 
         .horizontalContainer {
-            @apply(--layout-horizontal);            
+            @apply(--layout-horizontal);
         }
 
         .vContainer {
-            @apply(--layout-vertical);            
+            @apply(--layout-vertical);
         }
 
         .date-icon {
@@ -181,26 +181,26 @@
         <div class="horizontalContainer">
         <paper-dropdown-menu style="float:left;margin-left: 5px;" class="flex2child" label="Sort By" required>
             <paper-menu attr-for-selected="value" selected="{{sortBy}}" class="dropdown-content">
-                <paper-item value="" disabled>Sort By</paper-item>
-                <paper-item value="ingestiondate">Ingestion date</paper-item>
-                <paper-item value="beginposition">Sensing date</paper-item>
+                <paper-item value="" disabled>{{i18n("Sort By")}}</paper-item>
+                <paper-item value="ingestiondate">{{i18n("Ingestion date")}}</paper-item>
+                <paper-item value="beginposition">{{i18n("Sensing date")}}</paper-item>
             </paper-menu>
         </paper-dropdown-menu>
-        <!-- <div style="float:left;width: 10px;height:15px;"> </div> -->
+
         <!-- ORDER BY -->
         <paper-dropdown-menu style="float:left" class="flex2child" label="Order By" required>
             <paper-menu attr-for-selected="value" selected="{{orderBy}}" class="dropdown-content">
-                <paper-item value="" disabled>Order By</paper-item>
-                <paper-item value="desc">Descending</paper-item>
-                <paper-item value="asc">Ascending</paper-item>
+                <paper-item value="" disabled>{{i18n("Order By")}}</paper-item>
+                <paper-item value="desc">{{i18n("Descending")}}</paper-item>
+                <paper-item value="asc">{{i18n("Ascending")}}</paper-item>
             </paper-menu>
         </paper-dropdown-menu>
         </div>
         <br/>
         <div class="vContainer">
             <div class="time-range horizontalContainer">
-                
-                    <div style="float:left; padding-top: 12px; margin-right: 8px;font-size:14px;margin-left: 5px;">Sensing time range</div>
+
+                    <div style="float:left; padding-top: 12px; margin-right: 8px;font-size:14px;margin-left: 5px;">{{i18n("Sensing time range")}}</div>
                     <div style="float:left">
                         <paper-icon-button raised icon="date-range" class="colorful date-icon" on-click="sensingStartDatePicker" title="{{i18n('Sensing Start')}}"></paper-icon-button>
                     </div>
@@ -212,12 +212,12 @@
                     <div style="float:left">
                         <paper-icon-button raised icon="cancel" class="colorful date-icon" on-click="cleanSensingDate" title="{{i18n('Clear Sensing Date')}}"></paper-icon-button>
                     </div>
-               
+
             </div>
-           
+
             <div class="time-range horizontalContainer" style="margin-top: 30px;">
-                
-                    <div style="float:left; font-size:14px; padding-top: 12px;margin-left: 5px;">Ingestion time range</div>
+
+                    <div style="float:left; font-size:14px; padding-top: 12px;margin-left: 5px;">{{i18n("Ingestion time range")}}</div>
                     <div style="float:left">
                         <paper-icon-button raised icon="date-range" class="colorful date-icon" on-click="ingestionStartDatePicker" title="{{i18n('Ingestion Start')}}"></paper-icon-button>
                     </div>
@@ -229,39 +229,43 @@
                     <div style="float:left">
                         <paper-icon-button raised icon="cancel" class="colorful date-icon" on-click="cleanIngestionDate" title="{{i18n('Clear Ingestion Date')}}"></paper-icon-button>
                     </div>
-                
+
             </div>
         </div>
+
         <!--  SENSING TIME RANGE  -->
         <paper-dialog id="sensing-start-dialog" class="paper-date-picker-dialog" on-iron-overlay-closed="dismissDialog">
             <paper-date-picker id="picker" date="{{sensingStart}}"></paper-date-picker>
             <div class="buttons">
-                <paper-button class="colorful" dialog-confirm on-tap="updateSensingStart">OK</paper-button>
+                <paper-button class="colorful" dialog-confirm on-tap="updateSensingStart">{{i18n("OK")}}</paper-button>
             </div>
         </paper-dialog>
         <paper-dialog id="sensing-stop-dialog" class="paper-date-picker-dialog" on-iron-overlay-closed="dismissDialog">
             <paper-date-picker id="picker" date="{{sensingStop}}"></paper-date-picker>
             <div class="buttons">
-                <paper-button class="colorful" dialog-confirm on-tap="updateSensingStop">OK</paper-button>
+                <paper-button class="colorful" dialog-confirm on-tap="updateSensingStop">{{i18n("OK")}}</paper-button>
             </div>
         </paper-dialog>
+
         <!--  INGESTION TIME RANGE  -->
         <paper-dialog id="ingestion-start-dialog" class="paper-date-picker-dialog" on-iron-overlay-closed="dismissDialog">
             <paper-date-picker id="picker" date="{{ingestionStart}}"></paper-date-picker>
             <div class="buttons">
-                <paper-button class="colorful" dialog-confirm on-tap="updateIngestionStart">OK</paper-button>
+                <paper-button class="colorful" dialog-confirm on-tap="updateIngestionStart">{{i18n("OK")}}</paper-button>
             </div>
         </paper-dialog>
         <paper-dialog id="ingestion-stop-dialog" class="paper-date-picker-dialog" on-iron-overlay-closed="dismissDialog">
             <paper-date-picker id="picker" date="{{ingestionStop}}"></paper-date-picker>
             <div class="buttons">
-                <paper-button class="colorful" dialog-confirm on-tap="updateIngestionStop">OK</paper-button>
+                <paper-button class="colorful" dialog-confirm on-tap="updateIngestionStop">{{i18n("OK")}}</paper-button>
             </div>
         </paper-dialog>
+
         <br/>
         <br/>
+
         <div class="bottom">
-            <a class="plugin-link" on-click="showPlugins" title="{{i18n('Show Plugins')}}">Show plugins</a>
+            <a class="plugin-link" on-click="showPlugins" title="{{i18n('Show Plugins')}}">{{i18n("Show plugins")}}</a>
         </div>
     </template>
     <script>
@@ -389,15 +393,11 @@
                         value: ""
                     }
                 };
-
-
-
             }
 
 
 
             // -- sensing --//
-
             sensingStartDatePicker() {
                 Polymer.dom(this.root).querySelector('#sensing-start-dialog').toggle();
             }
@@ -417,7 +417,6 @@
             }
 
             // -- ingestion -- //
-
             ingestionStartDatePicker() {
                 Polymer.dom(this.root).querySelector('#ingestion-start-dialog').toggle();
             }

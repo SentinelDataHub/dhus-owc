@@ -1,0 +1,411 @@
+<!--
+  @license
+
+
+  Data HUb Service (DHuS) - For Space data distribution.
+  Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
+  Copyright (C) 2013,2014,2015,2016 GAEL Systems
+  Copyright (C) 2013,2014,2015,2016 Serco Spa
+
+  This file is part of DHuS software sources.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<!--
+This is the component used to create or edit an eviction creteria via OData API
+
+
+@demo demo/index.html
+-->
+<dom-module id="owc-eviction-editor">
+  <template>
+    <style>
+    .container {
+      @apply(--layout-vertical);
+      height: var(--createheight, 500px);
+      width: var(--createwidth, 100%);
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    .fieldContainer {
+      @apply(--layout-horizontal);
+    }
+
+    .flexchild {
+      @apply(--layout-flex);
+    }
+
+    .flex2child {
+      @apply(--layout-flex-5);
+    }
+
+    .flex3child {
+      @apply(--layout-flex-5);
+    }
+
+    .panelHeader {
+      background: #002664;
+      color: white;
+      padding: 5px 5px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    paper-button {
+      background: #002664;
+      color: white;
+      padding: 5px 5px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      float: right;
+      margin-right: 10px
+    }
+
+    paper-button[toggles][active].colorful {
+      background-color: #002664;
+    }
+
+    paper-button[toggles][active][raised].colorful {
+      background-color: rgba(66, 133, 244, 0.75);
+    }
+
+    </style>
+    <div class="container">
+      <div class="panelHeader">{{i18n('Eviction Properties')}}</div>
+      <form is="iron-form" method="get" action="/" id="basic">
+        <div class="fieldContainer">
+          <paper-input class="flex2child" value="{{model.Name}}" name="label" label="{{i18n('Name')}}" required error-message="{{i18n('Name empty')}}" readonly="{{!isNew}}" invalid="{{!hasName}}"></paper-input>
+          <div class="flexchild"></div>
+          <paper-input class="flex2child" type="number" value="{{model.MaxEvictedProducts}}" label="{{i18n('Maximum Evicted Products')}}" required error-message="{{i18n('Maximum Evicted Products empty')}}" invalid="{{!hasMaxEvictedProducts}}"></paper-input>
+        </div>
+        <div class="fieldContainer">
+          <paper-input class="flex2child" type="number" value="{{model.KeepPeriod}}" error-message="{{i18n('Keep Period empty')}}" invalid="{{!hasKeepPeriod}}" label="{{i18n('Keep Period')}}" required></paper-input>
+          <div class="flexchild"></div>
+          <paper-dropdown-menu class="flex2child" label="{{i18n('Keep Period Unit')}}" value="{{model.KeepPeriodUnit}}" required>
+            <paper-menu attr-for-selected="value" selected="{{model.KeepPeriodUnit}}" class="dropdown-content">
+              <template is="dom-repeat" items="{{kuperiods}}">
+                <paper-item value="{{item}}">{{item}}</paper-item>
+              </template>
+            </paper-menu>
+          </paper-dropdown-menu>
+        </div>
+        <div class="fieldContainer">
+          <paper-input class="flex2child" value="{{model.Filter}}" label="{{i18n('Filter')}}"></paper-input>
+          <div class="flexchild"></div>
+          <paper-input class="flex2child" value="{{model.OrderBy}}" label="{{i18n('Order By')}}"></paper-input>
+        </div>
+        <div class="fieldContainer">
+          <paper-dropdown-menu class="flex2child" label="{{i18n('Status')}}" value="{{model.Status}}" required>
+            <paper-menu attr-for-selected="value" selected="{{model.Status}}" class="dropdown-content">
+              <paper-item value="Status" disabled>{{i18n('Status')}}</paper-item>
+              <paper-item value="STARTED">STARTED</paper-item>
+              <paper-item value="STOPPED">STOPPED</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+          <div class="flexchild"></div>
+          <paper-dropdown-menu class="flex2child" label="{{i18n('Target Collection')}}" value="{{model.TargetCollection}}" required>
+            <paper-menu attr-for-selected="value" selected="{{model.TargetCollection}}" class="dropdown-content">
+              <template is="dom-repeat" items="{{collections}}">
+                <paper-item value="{{item}}">{{item}}</paper-item>
+              </template>
+            </paper-menu>
+          </paper-dropdown-menu>
+        </div>
+        <div class="fieldContainer">
+          <paper-checkbox class="flex6child" checked="{{model.SoftEviction}}" name="{{i18n('Is Soft Eviction')}}" label="{{i18n('Is Soft Eviction')}}">{{i18n('Is Soft Eviction')}}</paper-checkbox>
+          <div class="flexchild"></div>
+          <div class="flex2child"></div>
+        </div>
+        <br>
+        <br>
+        <paper-button raised on-click="save" title="{{i18n('save')}}">{{i18n('save')}}</paper-button>
+      </form>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+    class OwcEvictionEditor {
+
+      /* --- POLYMER LIFECYCLE METHODS --- */
+
+      /**
+       * BeforeRegister method Polymer calls before creating the element.
+       * This method is where you shoud define the is property (element's name) and
+       * properties  object.
+       *
+       * @return {null}
+       */
+      beforeRegister() {
+        this.is = 'owc-eviction-editor';
+        this._url = "/odata/v2/Evictions";
+        this._jsonParameter = "$format=json";
+        this.options = {
+          headers: [{
+            name: "Accept",
+            value: "application/json"
+          }, {
+            name: "Content-Type",
+            value: "application/json"
+          }]
+
+        };
+
+        this.owcApp = document.querySelector('#owc-app');
+        this.properties = {
+          /**
+           * Eviction editor model
+           *
+           * @type {Object}
+           */
+          model: {
+            type: Object,
+            value: {},
+            notify: true
+          },
+
+          /**
+           * check if the data store already exists
+           *
+           * @type {Boolean}
+           */
+          isNew: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Configured Target Collections
+           *
+           * @type {Object}
+           */
+          collections: {
+            type: Object,
+            value: []
+          },
+          /**
+           * Configured keep unit periods
+           *
+           * @type {Object}
+           */
+          kuperiods: {
+            type: Object,
+            value: []
+          }
+        };
+      }
+
+      /**
+       *  Generate and send collections list http request
+       *
+       * @return {null}
+       */
+      collectionsRequest() {
+        var self = this;
+        var collectionsUrl = "/odata/v1/Collections";
+        var jsonParameter = "$format=json";
+        self.options = {
+          headers: [{
+            name: "Content-Type",
+            value: "application/json"
+          }, {
+            name: "Accept",
+            value: "application/json"
+          }]
+        };
+
+        return self.owcApp.httpManager.sendRequest(
+          'GET',
+          self.owcApp.config.baseUrl + collectionsUrl + '?' + jsonParameter, self.options
+        ).then(function(response) {
+          if (response.status == 200) {
+            var collectionModel = response.data.d.results;
+            var collections = [];
+            for (var i = 0; i < collectionModel.length; i++) {
+              collections.push(collectionModel[i].Name);
+            }
+            self.collections = collections;
+            return self.collections;
+          } else
+            return new Promise(function(resolve, reject) {
+              reject("model_empty");
+            });
+        }).catch(function(error) {
+          self.owcApp.toastManager.error(self.i18n("Cannot get configured collections"));
+        });;
+      }
+
+      attached() {
+        var self = this;
+        self.navigationManager = document.getElementById('navigation-manager');
+        this.kuperiods = this.owcApp.appconfig.kuperiods;
+        window.addEventListener("resize", function() {
+          self.resize();
+        });
+        self.collectionsRequest();
+      }
+
+      /**
+       * Set Eviction editor model
+       *
+       * @param {Object} model: data model of event sychronizer editor
+       * @return {null}
+       */
+      setModel(model) {
+        this.set('model', model);
+        this.notifyPath('model', model);
+      }
+
+      /**
+       * Resize handler
+       *
+       * @return {null}
+       */
+      resize() {
+        var self = this;
+        self.customStyle['--createheight'] = parseInt(self.parentPanel.getSize().height) + "px";
+        self.updateStyles();
+        self.customStyle['--createwidth'] = parseInt(self.parentPanel.getSize().width - 5) + "px";
+        self.updateStyles();
+      }
+
+
+      createModel() {
+        var _model = {};
+        _model.Name = this.model.Name;
+        _model.MaxEvictedProducts = parseInt(this.model.MaxEvictedProducts);
+        _model.KeepPeriod = parseInt(this.model.KeepPeriod);
+        _model.KeepPeriodUnit = this.model.KeepPeriodUnit;
+        _model.Filter = this.model.Filter;
+        _model.OrderBy = this.model.OrderBy;
+        _model.TargetCollection = this.model.TargetCollection;
+        _model.SoftEviction = this.model.SoftEviction;
+        _model.Status = this.model.Status;
+        return _model;
+      }
+
+      checkField(field) {
+        var checked = false;
+        if ($.isNumeric(field)) {
+          checked = true;
+        } else {
+          if (field && field.trim().length > 0)
+            checked = true;
+        }
+        return checked;
+      }
+
+      checkFields() {
+
+        this.hasName = this.checkField(this.model.Name);
+        this.hasMaxEvictedProducts = this.checkField(this.model.MaxEvictedProducts);
+        this.hasKeepPeriod = this.checkField(this.model.KeepPeriod);
+        return this.hasName && this.hasMaxEvictedProducts && this.hasKeepPeriod;
+
+
+
+      }
+      /**
+       * Generate and send http request to update a data store
+       *
+       * @param {Number} id: data store id
+       * @param {Object} model: data store model reference
+       * @return {null}
+       */
+      updateEviction(model, closePanel) {
+        var self = this;
+        var data = JSON.stringify(model);
+        self.options.body = data;
+        self.owcApp.httpManager.sendRequest(
+          'PUT',
+          self.owcApp.config.baseUrl + self._url + '(\'' + encodeURIComponent(model.Name) + '\')', self.options
+        ).then(function(response) {
+          if (response.status >= 200 && response.status < 300) {
+            if(closePanel)
+              self.parentPanel.closePanel();
+            self.owcApp.messageBroker.publish('updateEviction');
+            self.owcApp.toastManager.info(self.i18n("Eviction Updated"));
+            return true;
+          } else {
+            console.log("yy");
+            self.owcApp.toastManager.error(self.i18n("Failed to update Eviction"));
+          }
+        },function(error) {
+          console.log("xx");
+          self.owcApp.toastManager.error(self.i18n("Failed to update Eviction"));
+        });
+      }
+
+
+
+      /**
+       * Generate and send http request to create a new data store
+       *
+       * @param {Number} id: data store id
+       * @param {Object} model: data store model reference
+       * @return {null}
+       */
+      createEviction(model) {
+        var self = this;
+        var data = JSON.stringify(model);
+        self.options.body = data;
+        self.owcApp.httpManager.sendRequest(
+          'POST',
+          self.owcApp.config.baseUrl + self._url, self.options
+        ).then(function(response) {
+          if (response.status >= 200 && response.status < 300) {
+            self.parentPanel.closePanel();
+            self.owcApp.messageBroker.publish('updateEviction');
+            self.owcApp.toastManager.info(self.i18n("Eviction Created"));
+            return true;
+          } else {
+            self.owcApp.toastManager.error(self.i18n("Failed to create Eviction"));
+          }
+        }).catch(function(error) {
+          self.owcApp.toastManager.error(self.i18n("Failed to create Eviction"));
+        });
+      }
+
+      /**
+       * save evicion event handler
+       *
+       * @return {null}
+       */
+      save() {
+        var self = this;
+        if (self.checkFields()) {
+          var _model = self.createModel();
+          if (self.isNew)
+            self.createEviction(_model);
+          else
+            self.updateEviction(_model, true);
+        }
+
+      }
+
+    };
+
+    Polymer(OwcEvictionEditor);
+
+  })();
+
+  </script>
+</dom-module>

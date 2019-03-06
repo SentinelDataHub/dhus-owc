@@ -40,15 +40,35 @@ owc eviction container
             overflow-y: auto;
             overflow-x: auto;
         }
+        
+        paper-button {
+            background: #002664;
+            color: white;
+            padding: 5px 5px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            float: right;
+            margin-right: 10px
+        }
+        
+        paper-button[toggles][active].colorful {
+            background-color: #002664;
+        }
+        
+        paper-button[toggles][active][raised].colorful {
+            background-color: rgba(66, 133, 244, 0.75);
+        }
         </style>
+        <paper-button raised class="colorful" on-click="createEviction" title="{{i18n('Create Eviction')}}">{{i18n('Create Eviction')}}</paper-button>
         <div id="list-container-main-container">
-        <owc-eviction-manager></owc-eviction-manager>
+          <owc-eviction-list></owc-eviction-list>
         </div>
     </template>
     <script>
     (function() {
         'use strict';
-        class OwcEvictioContainer {
+        class OwcEvictionContainer {
 
             /* --- POLYMER LIFECYCLE METHODS --- */
 
@@ -64,29 +84,48 @@ owc eviction container
 
             }
 
-             attached() {
+            /**
+             *  This method is used to force component resize. 
+             *  This allows the menu to fit well to screen size and to manage screen resizing or mobile device
+             */
+            resize() {
+                this.customStyle['--listheight'] = parseInt(this.parentPanel.getSize().height - 50) + "px";
+                this.updateStyles();
+                this.customStyle['--listwidth'] = parseInt(this.parentPanel.getSize().width -5) + "px";
+                this.updateStyles();
+            }
+
+            /**
+             *  Called after the element is attached to the document.
+             *  Can be called multiple times during the lifetime of an element.
+             *  The first 'attached' callback is guaranteed not to fire until after 'ready'
+             *
+             * @return {null}
+             */
+            attached() {
                 var self = this;
+                self.navigationManager = document.getElementById('navigation-manager');
                 setTimeout(function() {
                     self.resize();
                 }, 0);
             }
 
             /**
-             * Resize callback handler
+             * Create and push synchronizer-creator component to navigation system
              *
              * @return {null}
              */
-            resize() {
-                this.customStyle['--listheight'] = parseInt(this.parentPanel.getSize().height) + "px";
-                this.updateStyles();
-                this.customStyle['--listwidth'] = parseInt(this.parentPanel.getSize().width) + "px";
-                this.updateStyles();
+            createEviction() {
+                var newEviction = document.createElement('owc-eviction-editor');
+                newEviction.setModel({});
+                newEviction.isNew=true;
+                this.navigationManager.pushComponent(newEviction, '500px', 'Eviction Creator');
             }
 
 
         };
 
-        Polymer(OwcEvictioContainer);
+        Polymer(OwcEvictionContainer);
 
     })();
     </script>

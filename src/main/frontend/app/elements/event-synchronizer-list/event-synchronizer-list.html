@@ -41,17 +41,17 @@ This component contains a template repeat of event-synchronizer-item components,
             opacity: 0.95;
             font-weight: bold;
         }
-        
+
         .synchContainer {
             background-color: #ecf0f1;
         }
         </style>
         <div class="synchContainer">
             <div class="synch-number" hidden="{{!noSynch}}">
-                Your Event synchronizers list is empty
+              {{i18n('Your Event synchronizers list is empty')}}
             </div>
             <div class="synch-number" hidden="{{noSynch}}">
-                Your Event synchronizers list contains {{synchCount}} synchronizers.
+              {{i18n('Your Event synchronizers list contains')}} {{synchCount}} synchronizers.
             </div>
             <iron-list id="ironlist" items="{{synchModel}}" as="synch" style="width: 100%!important">
                 <template>
@@ -130,7 +130,7 @@ This component contains a template repeat of event-synchronizer-item components,
              *  Called after the element is attached to the document.
              *  Can be called multiple times during the lifetime of an element.
              *  The first 'attached' callback is guaranteed not to fire until after 'ready'
-             *           
+             *
              */
             attached() {
                 var self = this;
@@ -193,7 +193,7 @@ This component contains a template repeat of event-synchronizer-item components,
                             var extractDate = synchModel[i].CreationDate;
                             var exdate = extractDate.substring(extractDate.indexOf('(') + 1, extractDate.indexOf(")"));
                             var dateString = moment.unix((exdate / 1000)).format('YYYY-MM-DDTHH:mm:ss');
-                            entry.CreationDate = dateString;                            
+                            entry.CreationDate = dateString;
                             entry.Id = synchModel[i].Id;
                             entry.Label = synchModel[i].Label;
                             entry.Request = synchModel[i].Request;
@@ -202,7 +202,7 @@ This component contains a template repeat of event-synchronizer-item components,
                             entry.ServiceUrl = synchModel[i].ServiceUrl;
                             entry.ServiceLogin = synchModel[i].ServiceLogin;
                             entry.FilterParam = synchModel[i].FilterParam;
-                            model.push(entry);                           
+                            model.push(entry);
                         }
                         return model;
                     } else
@@ -211,7 +211,7 @@ This component contains a template repeat of event-synchronizer-item components,
                         });
                 });
             }
-            
+
         };
 
         Polymer(EventSynchronizerList);

@@ -46,7 +46,7 @@
     <!-- VIEW  CODE HERE -->
     <template>
         <div id="map-container-main-container">
-            <owc-map id="cristina"></owc-map>
+            <owc-map id="_map"></owc-map>
             <map-data-source id="mapdatasource"></map-data-source>
             <map-coder></map-coder>
         </div>
@@ -123,7 +123,7 @@
                 this.set("newQuery", newQuery);
                 var self = this;
 
-                self.owcMap = document.getElementById("cristina");
+                self.owcMap = document.getElementById("_map");
                 var mapdatasource = Polymer.dom(self.root).querySelector('#mapdatasource'),
                     mapCoder = document.createElement('map-coder'),
                     mapSemanticManager = document.createElement('map-semantic-manager'),

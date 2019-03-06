@@ -15,7 +15,7 @@ onmessage = function(e) {
     // for(var i = 0; i < input.length; i++){
     //   console.log("input[i]: ", input[i]);
     // }
-    var searchUrl = "/api/stub/products?filter=:filter&offset=:offset&limit=:limit&sortedby=:sort&order=:order";
+    var searchUrl = "/api/owc/products?filter=:filter&offset=:offset&limit=:limit&sortedby=:sort&order=:order";
     searchUrl = searchUrl.replace(':filter', filter)
         .replace(':offset', offset)
         .replace(':limit', limit)

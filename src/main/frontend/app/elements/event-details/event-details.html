@@ -24,198 +24,256 @@
 
 
 -->
-
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-
 <!--
 This component contains event details and is accessible to all authenticated users from event-list component or from calendar of publication density
 
 
 @demo demo/index.html
 -->
-
 <dom-module id="event-details">
-
   <template>
-
-
     <style>
-      .container {
-          @apply(--layout-vertical);
-          /*height: var(--createheight, 500px);*/
-          width: var(--createwidth, 100%);
-          overflow-y: auto;
-          overflow-x: auto;
-      }
+    .container {
+      @apply(--layout-vertical);
+      height: var(--height, 500px);
+      width: var(--width, 100%);
+      overflow-y: auto;
+      overflow-x: auto;
+    }
 
-      .fieldContainer {
-          @apply(--layout-horizontal);
-      }
+    .fieldContainer {
+      @apply(--layout-horizontal);
+    }
 
-      .flexchild {
-          @apply(--layout-flex);
-      }
+    .flexchild {
+      @apply(--layout-flex);
+    }
 
-      .flex2child {
-          @apply(--layout-flex-5);
-      }
+    .flex2child {
+      @apply(--layout-flex-5);
+    }
 
-      .flex3child {
-          @apply(--layout-flex-5);
-      }
+    .flex3child {
+      @apply(--layout-flex-12);
+    }
 
-      .panelHeader {
-          background: #002664;
-          color: white;
-          padding: 5px 5px;
-          font-size: 16px;
-          font-weight: bold;
-          margin-bottom: 20px;
-          text-align: center;
-      }
+    .rightflex {
+      text-align: right;
+    }
 
-      paper-button {
-          background: #002664;
-          color: white;
-          padding: 5px 5px;
-          font-size: 16px;
-          font-weight: bold;
-          margin-bottom: 20px;
-          float: right;
-          margin-right: 10px
-      }
+    .panelHeader {
+      background: #002664;
+      color: white;
+      padding: 5px 5px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
 
-      paper-button[toggles][active].colorful {
-          background-color: #002664;
-      }
+    paper-button {
+      background: #002664;
+      color: white;
+      padding: 5px 5px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      float: right;
+      margin-right: 10px
+    }
 
-      paper-button[toggles][active][raised].colorful {
-          background-color: rgba(66, 133, 244, 0.75);
+    paper-button[toggles][active].colorful {
+      background-color: #002664;
+    }
+
+    paper-button[toggles][active][raised].colorful {
+      background-color: rgba(66, 133, 244, 0.75);
+    }
+
+
+    paper-textarea {
+      --paper-input-container-input: {
+        background-color: #fafafa;
       }
+      ;
+    }
+
+    label {
+      font-family: 'Roboto', 'Noto', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.011em;
+      line-height: 20px;
+      color: #737373;
+    }
+
+    a {
+      color: #002664;
+      -webkit-appearance: none;
+      text-align: inherit;
+      vertical-align: bottom;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    b {
+      font-size: 16px !important;
+    }
+
+    img {
+      display: block;
+      margin: 0 auto;
+      max-height: 200px;
+    }
 
     </style>
-
     <div class="container">
-
-        <form is="iron-form" method="get" action="/" id="basic">
-
-            <div class="fieldContainer">
-                <paper-input class="flex2child" value="{{model.Category}}" name="category" label="Category" readonly></paper-input>
-                <div class="flexchild"></div>
-                <paper-input class="flex2child" value="{{model.Subcategory}}" name="sub-category" label="Sub-category" required readonly></paper-input>
-            </div>
-
-            <div class="fieldContainer">
-                <paper-input class="flex2child" value="{{model.Title}}" name="title" label="Title" required readonly></paper-input>
-                <div class="flexchild"></div>
-                <paper-input class="flex2child" value="{{model.Description}}" name="description" label="Description" required readonly></paper-input>
-            </div>
-
-            <div class="fieldContainer">
-                <paper-input class="flex2child" value="{{StartDate}}" name="start-date" label="Start date" required readonly></paper-input>
-                <div class="flexchild"></div>
-                <paper-input class="flex2child" value="{{StopDate}}" name="stop-date" label="Stop date" required readonly></paper-input>
-            </div>
-
-            <div class="fieldContainer">
-                <paper-input class="flex2child" value="{{PublicationDate}}" name="publication-date" label="Publication Date" required readonly></paper-input>
-                <div class="flexchild"></div>
-                <paper-input class="flex2child" value="{{model.Icon}}" name="icon" label="Icon" required readonly></paper-input>
-            </div>
-
-            <div class="fieldContainer">
-              <paper-input class="flex2child" value="{{localEvent}}" name="local-event" label="Local Event" required readonly></paper-input>
-              <div class="flexchild"></div>
-              <paper-input class="flex2child" value="{{publicEvent}}" name="public-event" label="Public Event" required readonly></paper-input>
-            </div>
-
-            <div class="fieldContainer">
-                <paper-input class="flex2child" value="{{model.Originator}}" name="originator" label="Originator" required readonly></paper-input>
-                <div class="flexchild"></div>
-                <paper-input class="flex2child" value="{{model.HubTag}}" name="hub-tag" label="Hub Tag" required readonly></paper-input>
-            </div>
-
-            <div class="fieldContainer">
-                <paper-input class="flex2child" value="{{model.MissionTag}}" name="mission-tag" label="Mission Tag" required readonly></paper-input>
-                <div class="flexchild"></div>
-                <paper-input class="flex2child" value="{{model.InstrumentTag}}" name="instrument-tag" label="Instrument Tag" required readonly></paper-input>
-            </div>
-
-            <div class="fieldContainer">
-                <paper-input class="flex2child" value="{{model.ExternalUrl}}" name="external-url" label="External Url" required readonly></paper-input>
-                <div class="flexchild"></div>
-            </div>
-
-            <br>
-            <br>
-
-        </form>
+      <form is="iron-form" method="get" action="/" id="basic">
+        <div class="rightflex">
+          <label>Publication Date: <b>{{PublicationDate}}</b></label>
+        </div>
+        <template is="dom-if" if="{{model.Icon}}">
+          <div class="flex3child">
+            <a href="{{model.Icon}}" target="_blank"><img id="image" src="{{model.Icon}}" on-error="imageError"></a>
+          </div>
+        </template>
+        <div class="fieldContainer">
+          <div data-tip="Max 255 characters" class="flex3child">
+            <paper-input id="event-title" value="{{model.Title}}" name="title" label="{{i18n('Title (max 255 chars)')}}" required maxlength="255" readonly></paper-input>
+            <paper-tooltip for="event-title" offset="0">{{i18n('Title (max 255 chars)')}}</paper-tooltip>
+          </div>
+        </div>
+        <div class="fieldContainer">
+          <div data-tip="Max 1024 characters" class="flex3child" style="width: 100%;">
+            <paper-textarea label="{{i18n('Description (max 1024 chars)')}}" always-float-label rows="5" max-rows="5" name="description" value="{{model.Description}}" maxlength="1024" required char-counter=true readonly></paper-textarea>
+          </div>
+        </div>
+        <div class="fieldContainer">
+          <paper-input class="flex2child" value="{{model.Category}}" name="category" label="{{i18n('Category')}}" readonly></paper-input>
+          <div class="flexchild"></div>
+          <div class="flex2child" hidden="{{model.Subcategory}}"></div>
+          <paper-input class="flex2child" value="{{model.Subcategory}}" name="sub-category" label="{{i18n('Sub-category')}}" required readonly hidden="{{!model.Subcategory}}"></paper-input>
+        </div>
+        <div class="fieldContainer">
+          <paper-input class="flex2child" value="{{StartDate}}" name="start-date" label="{{i18n('Start date')}}" required readonly></paper-input>
+          <div class="flexchild"></div>
+          <paper-input class="flex2child" value="{{StopDate}}" name="stop-date" label="{{i18n('Stop date')}}" required readonly></paper-input>
+        </div>
+        <div class="fieldContainer">
+          <paper-input class="flex2child" value="{{localEvent}}" name="local-event" label="{{i18n('Local Event')}}" required readonly></paper-input>
+          <div class="flexchild"></div>
+          <paper-input class="flex2child" value="{{publicEvent}}" name="public-event" label="{{i18n('Public Event')}}" required readonly></paper-input>
+        </div>
+        <div class="fieldContainer">
+          <paper-input class="flex2child" value="{{model.Originator}}" name="originator" label="{{i18n('Originator')}}" required readonly></paper-input>
+          <div class="flexchild"></div>
+          <paper-input class="flex2child" value="{{model.HubTag}}" name="hub-tag" label="{{i18n('Hub Tag')}}" required readonly></paper-input>
+        </div>
+        <div class="fieldContainer">
+          <paper-input class="flex2child" value="{{model.MissionTag}}" name="mission-tag" label="{{i18n('Mission Tag')}}" required readonly></paper-input>
+          <div class="flexchild"></div>
+          <paper-input class="flex2child" value="{{model.InstrumentTag}}" name="instrument-tag" label="{{i18n('Instrument Tag')}}" required readonly></paper-input>
+        </div>
+        <!-- <div class="fieldContainer">
+          <div class="flex3child">
+            <paper-input value="{{model.ExternalUrl}}" name="external-url" label="External Url" required readonly></paper-input>
+          </div>
+        </div> -->
+        <template is="dom-if" if="{{model.ExternalUrl}}">
+          <label>External Url</label>
+          <div class="flex3child">
+            <a href="{{model.ExternalUrl}}" target="_blank">{{model.ExternalUrl}}</a>
+          </div>
+        </template>
+        <br>
+        <br>
+      </form>
     </div>
-
-
   </template>
+  <script>
+  (function() {
+    'use strict';
+    class EventDetails {
 
-<script>
-    (function() {
-       'use strict';
-       class EventDetails {
+      /* --- POLYMER LIFECYCLE METHODS --- */
 
-                                            /* --- POLYMER LIFECYCLE METHODS --- */
+      /**
+       * BeforeRegister method Polymer calls before creating the element.
+       * This method is where you shoud define the is property (element's name) and
+       * properties  object.
+       *
+       * @return {null}
+       */
+      beforeRegister() {
+        this.is = 'event-details';
 
-            /**
-             * BeforeRegister method Polymer calls before creating the element.
-             * This method is where you shoud define the is property (element's name) and
-             * properties  object.
-             *
-             * @return {null}
-             */
-           beforeRegister() {
-               this.is = 'event-details';
+      }
 
-           }
+      /**
+       * this method is used to convert events date in ISO date
+       *
+       * @param {string} edm.datetime
+       * @return {string} iso date
+       */
+      _extractDateFromJson(date) {
+        var dateString = null;
+        if (date) {
+          var exdate = date.substring(date.indexOf('(') + 1, date.indexOf(")"));
+          dateString = moment.unix((exdate / 1000)).format('YYYY-MM-DDTHH:mm:ss');
+        }
+        return dateString;
+      }
 
-           /**
-            * this method is used to convert events date in ISO date
-            *
-            * @param {string} edm.datetime
-            * @return {string} iso date
-            */
-           _extractDateFromJson(date) {
-               var dateString = null;
-               if (date) {
-                   var exdate = date.substring(date.indexOf('(') + 1, date.indexOf(")"));
-                   dateString = moment.unix((exdate / 1000)).format('YYYY-MM-DDTHH:mm:ss');
-               }
-               return dateString;
-           }
+      /**
+       * Resize handler
+       *
+       * @return {null}
+       */
+      resize() {
+        var self = this;
+        self.customStyle['--height'] = parseInt(self.parentPanel.getSize().height) + "px";
+        self.updateStyles();
+        self.customStyle['--width'] = parseInt(self.parentPanel.getSize().width -5 ) + "px";
+        self.updateStyles();
+      }
 
-           attached(){
+      attached() {
+        var self = this;
+        this.PublicationDate = this._extractDateFromJson(this.model.PublicationDate);
+        this.StartDate = this._extractDateFromJson(this.model.StartDate);
+        this.StopDate = this._extractDateFromJson(this.model.StopDate);
+        this.set("PublicationDate", this.PublicationDate);
+        this.notifyPath("PublicationDate", this.PublicationDate);
+        this.set("StartDate", this.StartDate);
+        this.notifyPath("StartDate", this.StartDate);
+        this.set("StopDate", this.StopDate);
+        this.notifyPath("StopDate", this.StopDate);
 
-             this.PublicationDate = this._extractDateFromJson(this.model.PublicationDate);
-             this.StartDate = this._extractDateFromJson(this.model.StartDate);
-             this.StopDate = this._extractDateFromJson(this.model.StopDate);
-             this.set("PublicationDate",        this.PublicationDate);
-             this.notifyPath("PublicationDate", this.PublicationDate);
-             this.set("StartDate",              this.StartDate);
-             this.notifyPath("StartDate",       this.StartDate);
-             this.set("StopDate",               this.StopDate);
-             this.notifyPath("StopDate",        this.StopDate);
+        this.set("localEvent", (this.model.LocalEvent) ? "true" : "false");
+        this.notifyPath("localEvent", (this.model.LocalEvent) ? "true" : "false");
 
-             this.set("localEvent",             (this.model.LocalEvent)?"true":"false");
-             this.notifyPath("localEvent",      (this.model.LocalEvent)?"true":"false");
+        this.set("publicEvent", (this.model.PublicEvent) ? "true" : "false");
+        this.notifyPath("publicEvent", (this.model.PublicEvent) ? "true" : "false");
 
-             this.set("publicEvent",             (this.model.PublicEvent)?"true":"false");
-             this.notifyPath("publicEvent",      (this.model.PublicEvent)?"true":"false");
+        window.addEventListener("resize", function() {
+          self.resize();
+        });
 
+      }
 
+    };
 
-           }
+    Polymer(EventDetails);
 
-       };
+  })();
 
-      Polymer(EventDetails);
-
-    })();
   </script>
-
 </dom-module>

@@ -115,10 +115,10 @@ This component is devoted to contain information related to a Filescanner object
         </style>
         <div class="item owc-list-item" id="filescanner-item{{model.id}}" style="{{model.selectionColor}}" >
             <div class="container">
-                <div hidden>{{model.id}}</div>
+                <div hidden>{{model.Id}}</div>
                 <div class="title owc-list-item-title">
                     <iron-icon icon="{{model.classicon}}" class="fsstatus"></iron-icon>
-                    <span title="{{model.url}}">{{model.url}}</span>
+                    <span title="{{model.Url}}">{{model.Url}}</span>
                 </div>
                 <div class="owc-list-item-buttons">
                     <paper-icon-button icon="av:play-arrow" on-click="startFilescanner" title="Play File Scanner"></paper-icon-button>
@@ -143,10 +143,10 @@ This component is devoted to contain information related to a Filescanner object
              */
             beforeRegister() {
                 this.is = 'filescanner-item';
-                this.filescannerDeleteRequestUrl = "/api/stub/admin/filescanners/:fsid";
-                this.filescannerActivateDeactivateUrl = "/api/stub/admin/filescanners/:fsid?activate=:status";
-                this.filescannerStartUrl = "/api/stub/admin/filescanners/:fsid?start=true";
-                this.filescannerStopUrl = "/api/stub/admin/filescanners/:fsid?stop=true";
+                this.filescannerDeleteRequestUrl = "/odata/v1/Scanners(:fsidL)";
+                this.filescannerActivateDeactivateUrl = "/odata/v1/Scanners(:fsidL)";
+                this.filescannerStartUrl = "/odata/v1/StartScanner?id=:fsid";
+                this.filescannerStopUrl = "/odata/v1/StopScanner?id=:fsid";
                 this.owcApp = document.querySelector('#owc-app');
                 this.options = {
                     headers: [{
@@ -234,8 +234,8 @@ This component is devoted to contain information related to a Filescanner object
             startFilescanner() {
                 var self = this;
                 return self.owcApp.httpManager.sendRequest(
-                    'PUT',
-                    self.owcApp.config.baseUrl + self.filescannerStartUrl.replace(":fsid", self.model.id), self.options
+                    'POST',
+                    self.owcApp.config.baseUrl + self.filescannerStartUrl.replace(":fsid", self.model.Id), self.options
                 ).then(function(response) {
                     if (response.status >= 200 && response.status < 300) {
                         self.owcApp.toastManager.info(self.i18n("File Scanner Played"));
@@ -256,8 +256,8 @@ This component is devoted to contain information related to a Filescanner object
             stopFilescanner() {
                 var self = this;
                 return self.owcApp.httpManager.sendRequest(
-                    'PUT',
-                    self.owcApp.config.baseUrl + self.filescannerStopUrl.replace(":fsid", self.model.id), self.options
+                    'POST',
+                    self.owcApp.config.baseUrl + self.filescannerStopUrl.replace(":fsid", self.model.Id), self.options
                 ).then(function(response) {
                     if (response.status >= 200 && response.status < 300) {
                         self.owcApp.toastManager.info(self.i18n("File Scanner stopped"));
@@ -277,33 +277,32 @@ This component is devoted to contain information related to a Filescanner object
              */
             scheduleFilescanner() {
                 var self = this;
-                var status = !self.model.active;
+                var status = !self.model.Active;
+                var info_message = (status) ? "File Scanner is activated" : "File Scanner is deactivated";
+                var error_message = (status) ? "Error activating File Scanner" : "Error deactivating File Scanner";
+                var fs = {Active: status};
+                self.options.body = JSON.stringify(fs);
                 return self.owcApp.httpManager.sendRequest(
                     'PUT',
                     self.owcApp.config.baseUrl +
-                    self.filescannerActivateDeactivateUrl.replace(":fsid", self.model.id).replace(":status", status),
+                    self.filescannerActivateDeactivateUrl.replace(":fsid", self.model.Id),
                     self.options
                 ).then(function(response) {
                     if (response.status >= 200 && response.status < 300) {
-                        if (status) {
-                            self.owcApp.toastManager.info(self.i18n("File Scanner is activated"));
-                        } else {
-                            self.owcApp.toastManager.info(self.i18n("File Scanner is deactivated"));
-                        }
+                        self.owcApp.toastManager.info(self.i18n(info_message));
+                        
                         self.owcApp.messageBroker.publish('update-filescanners');
                     } else {
-                        if (status) {
-                            self.owcApp.toastManager.info(self.i18n("Error activating File Scanner"));
-                        } else {
-                            self.owcApp.toastManager.info(self.i18n("Error deactivating File Scanner"));
-                        }
+                        self.owcApp.toastManager.error(self.i18n(error_message));
+                        
                     }
-                }, function() {
-                    if (status) {
-                        self.owcApp.toastManager.info(self.i18n("Error activating File Scanner"));
+                }, function(response) {
+                    if (response.status == 409) {
+                        self.owcApp.toastManager.error(error_message + ": " + response.data.error.message.value, 5000);
                     } else {
-                        self.owcApp.toastManager.info(self.i18n("Error deactivating File Scanner"));
-                    }
+                        self.owcApp.toastManager.error(self.i18n(error_message));
+                    }                    
+
                 });
             }
 
@@ -316,7 +315,7 @@ This component is devoted to contain information related to a Filescanner object
                 var self = this;
                 return self.owcApp.httpManager.sendRequest(
                     'DELETE',
-                    self.owcApp.config.baseUrl + self.filescannerDeleteRequestUrl.replace(":fsid", self.model.id)
+                    self.owcApp.config.baseUrl + self.filescannerDeleteRequestUrl.replace(":fsid", self.model.Id)
                 ).then(function(response) {
                     if (response.status >= 200 && response.status < 300) {
                         self.owcApp.toastManager.info(self.i18n("File Scanner removed"));

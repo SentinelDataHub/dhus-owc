@@ -33,8 +33,8 @@
 <link rel="import" href="Map.html">
 <!--
                 owc map
-                
-                
+
+
                 @demo demo/index.html
                 -->
 <dom-module id="owc-map">
@@ -43,7 +43,7 @@
         width: 100%;
         height: 100%;
     }
-    
+
     .mapButton {
         top: 50px;
         float: right;
@@ -54,7 +54,7 @@
         text-decoration: none;
         border-radius: 50%;
     }
-    
+
     .mapButtonleft {
         padding: 0px!important;
         bottom: 50px;
@@ -66,7 +66,7 @@
         text-decoration: none;
         border-radius: 50%;
     }
-    
+
     #layerSelector {
         z-index: 1;
         bottom: 50px;
@@ -74,7 +74,7 @@
     /*paper-icon-item.focused {
         background: var(--paper-icon-item-background, yellow !important);
     }*/
-    
+
     paper-icon-item {
         --paper-item-selected: {
             background: #a9a9a9 !important;
@@ -91,7 +91,7 @@
         <paper-icon-button icon="open-with" class="mapButton" on-click="activateSelection" hidden="{{!activeSelection}}" title="Navigate on Map"></paper-icon-button>
         <paper-icon-button icon="flip-to-front" class="mapButton" on-click="activateSelection" hidden="{{activeSelection}}" title="Draw region of Interest"></paper-icon-button>
         <map-coder id="map-coder"></map-coder>
-        <div id="{{mapId}}" style="height: 91%;"></div>
+        <div id="{{mapId}}" style="height: 100%;"></div>
         <paper-menu-button ignore-select class="mapButtonleft" vertical-align="bottom" title="Map Layer Selector">
             <paper-icon-button icon="maps:layers" vertical-align="bottom" class="dropdown-trigger"></paper-icon-button>
             <paper-menu multi selected-values="{{maplayers.selected}}" class="dropdown-content" vertical-align="bottom" on-iron-select="showLayer" on-iron-deselect="hideLayer">
@@ -147,8 +147,8 @@
 
 
             /**
-             * Called after the element is attached to the document. 
-             * Can be called multiple times during the lifetime of an element. 
+             * Called after the element is attached to the document.
+             * Can be called multiple times during the lifetime of an element.
              * The first `attached` callback is guaranteed not to fire until after `ready`.
              *
              * @return {null}
@@ -197,8 +197,8 @@
                     },
 
                     /**
-                     * Interanal property, If it is true the infinite scroll calls http requests, 
-                     * if it is false the scroll event is ignored. 
+                     * Interanal property, If it is true the infinite scroll calls http requests,
+                     * if it is false the scroll event is ignored.
                      *
                      * @type {Boolean}
                      */
@@ -280,6 +280,17 @@
                         value: null
                     },
 
+                    /**
+                     *
+                     * @type {Object}
+                     */
+                    combo: {
+                        type: Object,
+                        value: {},
+                        notify: true
+
+                    }
+
 
                 };
 
@@ -291,7 +302,7 @@
                         if (self.genericModel != null) {
                             var page = self.genericModel.getModel();
                             var coder = document.getElementById('map-coder');
-                            if(coder) {
+                            if (coder) {
                                 var specificModel = coder.extractSpecificModel(page);
                                 self.visibleMap = true;
                                 setTimeout(function() {
@@ -310,6 +321,30 @@
                                 self.map.setModel(specificModel);
                                 self.map.deleteLayers(specificModel);
                             }
+                        }
+
+                    }, self.target);
+
+                self.owcApp.messageBroker.subscribe('zoom-to',
+                    function(eventname, model) {
+                        if (model && self.map) {
+                            if (self.combo.mapHidden) {
+                                self.combo.showMap();
+                                setTimeout(function() {
+                                    self.map.zoomToProduct(model);
+                                }, 500);
+
+                            } else {
+                                self.map.zoomToProduct(model);
+                            }
+                        }
+
+                    }, self.target);
+
+                self.owcApp.messageBroker.subscribe('select-footprint',                    
+                    function(eventname, model) {
+                        if (model && self.map) {
+                            self.map.selectFootprint(model);                            
                         }
 
                     }, self.target);
@@ -354,9 +389,9 @@
 
             }
 
-            addLayer(param,target) {
+            addLayer(param, target) {
                 var self = this;
-                self.map.addLayer(param,target);
+                self.map.addLayer(param, target);
 
             }
 
@@ -402,7 +437,7 @@
             }
 
             /**
-             * Initialization of map component             
+             * Initialization of map component
              *
              * @return {null}
              */
@@ -424,8 +459,8 @@
 
 
 
-            /**             
-             *   Set the datasource of map            
+            /**
+             *   Set the datasource of map
              *
              * @param {Object} delegate: datasource reference
              * @return {null}
@@ -435,8 +470,8 @@
             }
 
 
-            /**             
-             *   Set Generic model         
+            /**
+             *   Set Generic model
              *
              * @param {Object} genericModel: generic model (list of products)
              * @return {null}
@@ -445,7 +480,7 @@
                 this.genericModel = genericModel;
             }
 
-            /**             
+            /**
              *   Set Map container
              *
              * @param {Object} mapContainer: Map container reference
@@ -455,7 +490,7 @@
                 this.container = mapContainer;
             }
 
-            /**             
+            /**
              *   Set Query object
              *
              * @param {Object} owcQuery: Owc object reference
@@ -465,21 +500,24 @@
                 this.owcQuery = owcQuery;
             }
 
-            /**             
+            /**
              *   Setup open layer map
              *
              * @param {Object} owcQuery: Owc object reference
              * @return {null}
              */
-            setMap() {
+            setMap(target) {
                 var self = this;
                 self.map.setOwcQuery(self.owcQuery);
                 self.map.setDataSource(self.datasource);
                 self.map.setOwcMap(self);
+                if(target) {
+                    self.map.setTarget(target);
+                }
             }
 
-            /**             
-             *   Update search data 
+            /**
+             *   Update search data
              *
              * @return {null}
              */
@@ -488,7 +526,7 @@
                 this.mapContainer.updateSearch();
             }
 
-            /**             
+            /**
              * Set Active selection (flag)
              * @param {Boolean} status
              *
@@ -500,7 +538,7 @@
 
             /**
              * Set new model
-             * 
+             *
              * @param {Object} page: model new page
              *
              * @return {null}
@@ -529,7 +567,7 @@
              * Append new page into the mode
              *
              * @param {Object} page: page to append into the model
-             * 
+             *
              * @return {null}
              */
             appendNewPage(page) {
@@ -553,6 +591,10 @@
 
             activateSelection() {
                 this.map.activateSelection();
+            }
+
+            setCombo(combo) {
+                this.combo = combo;
             }
 
 

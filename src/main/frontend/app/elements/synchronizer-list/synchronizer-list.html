@@ -51,10 +51,10 @@ synchronizer list
         </style>
         <div class="synchContainer">
             <div class="synch-number" hidden="{{!noSynch}}">
-                Your Product synchronizer list is empty
+                {{i18n('Your Product synchronizer list is empty')}}
             </div>
             <div class="synch-number" hidden="{{noSynch}}">
-                Your Product synchronizer list contains {{synchCount}} synchronizers.
+                {{i18n('Your Product synchronizer list contains')}} {{synchCount}} {{i18n('synchronizers')}}.
             </div>
             <iron-list id="ironlist" items="{{synchModel}}" as="synch" style="width: 100%!important">
                 <template>

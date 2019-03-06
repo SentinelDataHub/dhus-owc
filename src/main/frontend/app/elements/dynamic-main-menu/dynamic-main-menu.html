@@ -217,7 +217,8 @@ This component contains:
                 owcApp.messageBroker.subscribe('update-configurations', function(eventName, sections) {
                     self.sections = sections;
                     self._loadMenuItems();
-                    self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "";
+                    if(self.owcApp && self.owcApp.theme && self.owcApp.theme.logourl )
+                      self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "";
                     self.resize();
 
                 });
@@ -238,7 +239,8 @@ This component contains:
                 });
 
                 owcApp.messageBroker.subscribe('theme-loaded', function() {
-                    self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "";
+                    if(self.owcApp && self.owcApp.theme && self.owcApp.theme.logourl )
+                      self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "";
                     self.parentPanel.title = (self.owcApp.theme.title) ? self.owcApp.theme.title : "";
                     self.resize();
 
@@ -263,7 +265,8 @@ This component contains:
                         if (response.status == 200) {
                             self.sections = response.data.sections;
                             self._loadMenuItems();
-                            self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "";
+                            if(self.owcApp && self.owcApp.theme && self.owcApp.theme.logourl )
+                              self.logo_url = (self.owcApp.theme.logourl) ? self.owcApp.theme.logourl : "";
                             self.resize();
                         }
                     });

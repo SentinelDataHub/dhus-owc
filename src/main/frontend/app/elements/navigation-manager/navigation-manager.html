@@ -147,8 +147,8 @@ pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInsta
         }
         </style>
         <paper-spinner id="request-spinner" class="centered"></paper-spinner>
-        <paper-icon-button id="navigation-back-button" icon="arrow-back" on-click="scrollLeftButton" alt="heart" class="back-button"></paper-icon-button>
-        <paper-icon-button id="navigation-forward-button" icon="arrow-forward" on-click="scrollRightButton" alt="heart" class="forward-button"></paper-icon-button>
+        <paper-icon-button id="navigation-back-button" icon="arrow-back" on-click="scrollLeftButton"  class="back-button"></paper-icon-button>
+        <paper-icon-button id="navigation-forward-button" icon="arrow-forward" on-click="scrollRightButton"  class="forward-button"></paper-icon-button>
         <div id="navigation-scroll">
             <div id="navigation-container"></div>
         </div>
@@ -172,6 +172,7 @@ pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInsta
                 this.MOBILE_MODE = Symbol();
                 this.DESKTOP_MODE = Symbol();
                 this.layoutMode = this.DESKTOP_MODE;
+                this.isMaximized=false;
                 this.owcApp = document.querySelector('#owc-app');
 
                 /**
@@ -456,6 +457,8 @@ pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInsta
 
                 var self = this;
                 window.addEventListener("resize", function() {
+                    if(self.isMaximized)
+                        return;
                     self.responsiveLayout(
                         function xs() {
 
@@ -522,7 +525,7 @@ pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInsta
              * @param {Number} maxInstances: Max instances of panels pushed in the navigation system for this panel.
              * @return {null}
              */
-            pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInstances) {
+            pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInstances, hideMaxMinButton) {
                 var self = this;
                 var componentInstances = 0;
                 var panel = document.createElement('paper-navigation-panel');
@@ -534,6 +537,7 @@ pushComponent(component, panelWidth, title, hideCloseButton, resizable, maxInsta
                 panel.resizable = resizable;
                 panel.navigationManager = self;
                 panel.properties.hideclosebutton.value = hideCloseButton;
+                panel.properties.hidemaxminbutton.value = hideMaxMinButton;
                 panel.componentName = component.is;
                 panel.maxInstances = (maxInstances) ? maxInstances : this.owcApp.appconfig.max_instances_per_panel;
                 component.parentPanel = panel;

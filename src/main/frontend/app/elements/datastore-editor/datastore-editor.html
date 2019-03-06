@@ -1,0 +1,536 @@
+<!--
+  @license
+
+
+  Data HUb Service (DHuS) - For Space data distribution.
+  Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
+  Copyright (C) 2013,2014,2015,2016 GAEL Systems
+  Copyright (C) 2013,2014,2015,2016 Serco Spa
+
+  This file is part of DHuS software sources.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<!--
+This component is used to create and edit an OData data store
+
+
+@demo demo/index.html
+-->
+<dom-module id="datastore-editor">
+    <template>
+        <style is="custom-style">
+        .container {
+            @apply(--layout-vertical);
+            height: var(--createheight, 500px);
+            width: var(--createwidth, 100% !important);
+            overflow-y: hidden !important;
+            overflow-x: hidden !important;
+        }
+
+        .propContainer {
+            @apply(--layout-vertical);
+            height: var(--createheight, 500px);
+            width: var(--createwidth, 98%);
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .buttonContainer {
+            margin-bottom: 0px;
+            height: 40px!important;
+            width: 98%!important;
+            overflow: hidden;
+        }
+
+        .fieldContainer {
+            @apply(--layout-horizontal);
+        }
+
+        .flexchild {
+            @apply(--layout-flex);
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .flex6child {
+            @apply(--layout-flex-6);
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .panelHeader {
+            background: #002664;
+            color: white;
+            padding: 5px 5px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        paper-button {
+            background: #002664;
+            color: white;
+            padding: 5px 5px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            float: right;
+            margin-right: 10px
+        }
+
+        paper-button[toggles][active].colorful {
+            background-color: #002664;
+        }
+
+        paper-button[toggles][active][raised].colorful {
+            background-color: rgba(66, 133, 244, 0.75);
+        }
+
+        paper-checkbox {
+            font-size: 16px;
+            --paper-checkbox-size: 16px !important;
+            padding-bottom: 10px;
+            padding-top: 15px;
+        }
+
+        .ds-info-label {
+            font-size: 16px;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+
+        paper-dropdown-menu {
+            --paper-input-container-input: {
+                color: black;
+                opacity: 1;
+            }
+            --paper-input-container-disabled: {
+                color: black;
+                opacity: 1;
+            }
+        }
+        </style>
+        <div class="container">
+            <div class="propContainer">
+                <div class="panelHeader">{{i18n('Data Store Properties')}}</div>
+                <form is="iron-form" method="get" action="/" id="basic">
+                    <div class="fieldContainer">
+                        <paper-input class="flexchild" value="{{model.Name}}" name="label" label="{{i18n('Name')}}" required readonly="{{!isNew}}" invalid="{{!hasName}}" error-message="{{i18n('Name empty')}}"></paper-input>
+                    </div>
+                    <div class="fieldContainer">
+                        <paper-checkbox class="flex6child" checked="{{model.ReadOnly}}" name="ReadOnly" label="{{i18n('Read only')}}">{{i18n('Read only')}}</paper-checkbox>
+                        <paper-checkbox class="flex6child" checked="{{model.AutoEviction}}" name="Auto Eviction" label="{{i18n('Auto Eviction')}}">{{i18n('Auto Eviction')}}</paper-checkbox>
+                    </div>
+                    <div class="fieldContainer">
+                        <paper-input class="flex6child" value="{{model.MaximumSize}}" label="{{i18n('Maximum Size')}}" type="number"></paper-input>
+                        <paper-input class="flex6child" value="{{model.CurrentSize}}" label="{{i18n('Current Size')}}" type="number"></paper-input>
+                    </div>
+                    <div class="fieldContainer">
+                        <paper-input class="flexchild" value="{{model.Priority}}" label="{{i18n('Priority')}}" type="number" required invalid="{{!hasPriority}}" error-message="{{i18n('Priority empty')}}"></paper-input>
+                    </div>
+                    <div class="fieldContainer">
+                        <paper-dropdown-menu class="flexchild" label="{{i18n('Type')}}" value="{{model.type}}" required on-select="checkType" error-message="{{i18n('Type empty')}}" disabled="{{!isNew}}" invalid="{{!hasType}}">
+                            <paper-menu attr-for-selected="value" selected="{{model.type}}" class="dropdown-content">
+                                <paper-item value="{{i18n('Select Type')}}" disabled>{{i18n('Select Type')}}</paper-item>
+                                <template is="dom-repeat" items="{{dstypes}}">                                    
+                                        <paper-item value="{{item.value}}">{{item.name}}
+                                        </paper-item>
+                                </template>
+                            </paper-menu>
+                        </paper-dropdown-menu>
+                    </div>
+                    <div hidden$="{{!isHFS(model.type)}}">
+                        <div class="fieldContainer">
+                            <paper-input class="flexchild" value="{{model.Path}}" label="{{i18n('Path')}}" invalid="{{!hasPath}}" error-message="{{i18n('Path empty')}}"></paper-input>
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flexchild" value="{{model.MaxFileDepth}}" label="{{i18n('Max File Depth')}}" type="number" required invalid="{{!hasMaxFileDepth}}" error-message="{{i18n('Max File Depth empty')}}"></paper-input>
+                        </div>
+                    </div>
+                    <div hidden$="{{!isOpenStack(model.type)}}">
+                        <div class="fieldContainer">
+                            <paper-input class="flex6child" value="{{model.Provider}}" label="{{i18n('Provider')}}" invalid="{{!hasProvider}}" error-message="{{i18n('Provider empty')}}"></paper-input>
+                            <paper-input class="flex6child" value="{{model.Identity}}" label="{{i18n('Identity')}}" invalid="{{!hasIdentity}}" error-message="{{i18n('Identity empty')}}"> </paper-input>
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flexchild" value="{{model.Credential}}" label="{{i18n('Credential')}}" invalid="{{!hasCredential}}" error-message="{{i18n('Credential empty')}}"></paper-input>
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flexchild" value="{{model.Url}}" label="{{i18n('Url')}}" invalid="{{!hasUrl}}" error-message="{{i18n('Url empty')}}"></paper-input>
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flex6child" value="{{model.Region}}" label="{{i18n('Region')}}" invalid="{{!hasRegion}}" error-message="{{i18n('Region empty')}}"></paper-input>
+                            <paper-input class="flex6child" value="{{model.Container}}" label="{{i18n('Container')}}" invalid="{{!hasContainer}}" error-message="{{i18n('Container empty')}}"></paper-input>
+                        </div>
+                    </div>
+                    <div hidden$="{{!isGMP(model.type)}}">
+                        <div class="fieldContainer">
+                            <paper-input class="flexchild" value="{{model.GMPRepoLocation}}" label="{{i18n('GMP Repo Location')}}" required error-message="{{i18n('GMP Repo Location empty')}}" invalid="{{!hasGMPRepoLocation}}"></paper-input>
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flexchild" value="{{model.HFSLocation}}" label="{{i18n('HFS Location')}}" required error-message="{{i18n('HFS Location empty')}}" invalid="{{!hasHFSLocation}}"></paper-input>
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flex6child" value="{{model.MaxQueuedRequest}}" label="{{i18n('Max Queued Request')}}" type="number" required invalid="{{!hasMaxQueuedRequest}}" error-message="{{i18n('Max Queued Request empty')}}"></paper-input>
+                            <paper-checkbox class="flex6child" checked="{{model.IsMaster}}" name="Is Master" label="{{i18n('Is Master')}}">{{i18n('Is Master')}}</paper-checkbox>
+                        </div>
+                        <div class="fieldContainer ds-info-label">
+                            {{i18n('MySQL Connection Info')}}
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flexchild" value="{{model.MySQLConnectionInfo.DatabaseUrl}}" label="{{i18n('Database Url')}}" required error-message="{{i18n('Database Url empty')}}" invalid="{{!hasDatabaseUrl}}"></paper-input>
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flex6child" value="{{model.MySQLConnectionInfo.User}}" label="{{i18n('User')}}" required error-message="{{i18n('User empty')}}" invalid="{{!hasUser}}"></paper-input>
+                            <paper-input class="flex6child" value="{{model.MySQLConnectionInfo.Password}}" label="{{i18n('Password')}}" required type="password" error-message="{{i18n('Password empty')}}" invalid="{{!hasPassword}}"></paper-input>
+                        </div>
+                        <div class="fieldContainer ds-info-label">
+                            {{i18n('User Quotas')}}
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flex6child" value="{{model.Quotas.MaxQueryPerUser}}" label="{{i18n('Maximum Query Per User')}}" type="number"></paper-input>
+                            <paper-input class="flex6child" value="{{model.Quotas.Timespan}}" label="{{i18n('Time to live for Quotas (ms)')}}" type="number"></paper-input>
+                        </div>
+
+                        <div class="fieldContainer ds-info-label">
+                            {{i18n('Configuration')}}
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flex6child" value="{{model.Configuration.Agentid}}" label="{{i18n('Agent id')}}" ></paper-input>
+                            <paper-input class="flex6child" value="{{model.Configuration.Targetid}}" label="{{i18n('Target id')}}" ></paper-input>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="buttonContainer">
+                <paper-button raised on-click="save" title="{{i18n('save')}}">{{i18n('save')}}</paper-button>
+            </div>
+        </div>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+        class DataStoreEditor {
+
+            /* --- POLYMER LIFECYCLE METHODS --- */
+
+            /**
+             * BeforeRegister method Polymer calls before creating the element.
+             * This method is where you shoud define the is property (element's name) and
+             * properties  object.
+             *
+             * @return {null}
+             */
+            beforeRegister() {
+                this.is = 'datastore-editor';
+                this._url = "/odata/v2/DataStores";
+                this._jsonParameter = "$format=json";
+                this.options = {
+                    headers: [{
+                        name: "Accept",
+                        value: "application/json"
+                    }, {
+                        name: "Content-Type",
+                        value: "application/json"
+                    }]
+
+                };
+
+                this.owcApp = document.querySelector('#owc-app');
+                this.properties = {
+                    /**
+                     * Synchronizer editor model
+                     *
+                     * @type {Object}
+                     */
+                    model: {
+                        type: Object,
+                        value: {},
+                        notify: true
+                    },
+
+                    /**
+                     * check if the data store already exists
+                     *
+                     * @type {Boolean}
+                     */
+                    isNew: {
+                        type: Boolean,
+                        value: false
+                    }
+                };
+            }
+
+            attached() {
+                var self = this;
+                self.navigationManager = document.getElementById('navigation-manager');
+                this.dstypes = this.owcApp.appconfig.dstypes;
+                window.addEventListener("resize", function() {
+                    self.resize();
+                });
+            }
+
+            /**
+             * Set EventSynchronizer editor model
+             *
+             * @param {Object} model: data model of event sychronizer editor
+             * @return {null}
+             */
+            setModel(model) {
+                this.set('model', model);
+                this.notifyPath('model', model);
+            }
+
+            /**
+             * Resize handler
+             *
+             * @return {null}
+             */
+            resize() {
+                var self = this;
+                self.customStyle['--createheight'] = parseInt(self.parentPanel.getSize().height) + "px";
+                self.updateStyles();
+                self.customStyle['--createwidth'] = parseInt(self.parentPanel.getSize().width - 5) + "px";
+                self.updateStyles();
+            }
+
+            /**
+             * Check the data store type to hide/show the proper settings panel
+             *
+             * @return {null}
+             */
+            checkType() {
+                var self = this;
+                this.isHFS(self.model.type);
+                this.isGMP(self.model.type);
+                this.isOpenStack(self.model.type);
+            }
+
+            createModel() {
+                var _model = {};
+                _model.Name = this.model.Name;
+                _model.ReadOnly = (this.model.ReadOnly) ? this.model.ReadOnly : false;
+                _model.Priority = parseInt(this.model.Priority);
+                _model.AutoEviction = (this.model.AutoEviction) ? this.model.AutoEviction : false;
+                if (this.model.MaximumSize)
+                    _model.MaximumSize = parseInt(this.model.MaximumSize);
+                if (this.model.CurrentSize)
+                    _model.CurrentSize = parseInt(this.model.CurrentSize);
+                if (this.model['@odata.type'] == "#OData.DHuS.HFSDataStore") { //fields to remove in case of HFSDataStore creation/editing
+                    _model['@odata.type'] = "#OData.DHuS.HFSDataStore"
+                    _model.Path = this.model.Path;
+                    _model.MaxFileDepth = parseInt(this.model.MaxFileDepth);
+
+                } else if (this.model['@odata.type'] == "#OData.DHuS.GMPDataStore") { //fields to remove in case of GMPDataStore creation/editing
+                    _model['@odata.type'] = "#OData.DHuS.GMPDataStore"
+                    _model.GMPRepoLocation = this.model.GMPRepoLocation;
+                    _model.HFSLocation = this.model.HFSLocation;
+                    _model.MySQLConnectionInfo = {};
+                    _model.MySQLConnectionInfo.DatabaseUrl = this.model.MySQLConnectionInfo.DatabaseUrl;
+                    _model.MySQLConnectionInfo.User = this.model.MySQLConnectionInfo.User;
+                    _model.MySQLConnectionInfo.Password = this.model.MySQLConnectionInfo.Password;
+                    _model.Configuration = {};
+                    _model.Configuration.Agentid = this.model.Configuration.Agentid;
+                    _model.Configuration.Targetid = this.model.Configuration.Targetid;
+                    _model.IsMaster = (this.model.IsMaster) ? this.model.IsMaster : false;
+                    _model.MaxQueuedRequest = parseInt(this.model.MaxQueuedRequest);
+                    _model.Quotas = {};
+                    if (this.model.Quotas.MaxQueryPerUser)
+                        _model.Quotas.MaxQueryPerUser = parseInt(this.model.Quotas.MaxQueryPerUser);
+                    if (this.model.Quotas.Timespan)
+                        _model.Quotas.Timespan = parseInt(this.model.Quotas.Timespan);
+                } else if (this.model['@odata.type'] == "#OData.DHuS.OpenStackDataStore") { //fields to remove in case of OpenStackDataStore creation/editing
+                    _model.Url = this.model.Url;
+                    _model.Provider = this.model.Provider;
+                    _model.Identity = this.model.Identity;
+                    _model.Credential = this.model.Credential;
+                    _model.Region = this.model.Region;
+                    _model.Container = this.model.Container;
+                    _model['@odata.type'] = "#OData.DHuS.OpenStackDataStore"
+                }
+                return _model;
+            }
+
+            checkField(field) {
+                var checked = false;
+                if ($.isNumeric(field)) {
+                    checked = true;
+                } else {
+                    if (field && field.trim().length > 0)
+                        checked = true;
+                }
+                return checked;
+            }
+
+            checkFields() {
+                this.hasType = true;
+                if (this.model['@odata.type'] == "#OData.DHuS.HFSDataStore") { //fields to remove in case of HFSDataStore creation/editing
+                    this.hasName = this.checkField(this.model.Name);
+                    this.hasPriority = this.checkField(this.model.Priority);
+                    this.hasMaxFileDepth = this.checkField(this.model.MaxFileDepth);
+                    this.hasPath = this.checkField(this.model.Path);
+                    return this.hasName && this.hasPriority && this.hasMaxFileDepth && this.hasPath;
+
+                } else if (this.model['@odata.type'] == "#OData.DHuS.GMPDataStore") { //fields to remove in case of GMPDataStore creation/editing
+                    this.hasName = this.checkField(this.model.Name);
+                    this.hasPriority = this.checkField(this.model.Priority);
+                    this.hasGMPRepoLocation = this.checkField(this.model.GMPRepoLocation);
+                    this.hasHFSLocation = this.checkField(this.model.HFSLocation);
+                    this.hasDatabaseUrl = this.checkField(this.model.MySQLConnectionInfo.DatabaseUrl);
+                    this.hasUser = this.checkField(this.model.MySQLConnectionInfo.User);
+                    this.hasPassword = this.checkField(this.model.MySQLConnectionInfo.Password);
+                    this.hasMaxQueuedRequest = this.checkField(this.model.MaxQueuedRequest);
+                    return this.hasName && this.hasPriority && this.hasGMPRepoLocation && this.hasHFSLocation && this.hasDatabaseUrl &&
+                        this.hasUser && this.hasPassword && this.hasMaxQueuedRequest;
+                } else if (this.model['@odata.type'] == "#OData.DHuS.OpenStackDataStore") { //fields to remove in case of OpenStackDataStore creation/editing
+                    this.hasName = this.checkField(this.model.Name);
+                    this.hasPriority = this.checkField(this.model.Priority);
+                    this.hasUrl = this.checkField(this.model.Url);
+                    this.hasProvider = this.checkField(this.model.Provider);
+                    this.hasIdentity = this.checkField(this.model.Identity);
+                    this.hasCredential = this.checkField(this.model.Credential);
+                    this.hasRegion = this.checkField(this.model.Region);
+                    this.hasContainer = this.checkField(this.model.Container);
+                    return this.hasName && this.hasPriority && this.hasUrl && this.hasProvider && this.hasIdentity && this.hasCredential && this.hasRegion && this.hasContainer;
+                } else {
+                    this.hasType = false;
+                    return false;
+                }
+            }
+
+            isHFS(newValue) {
+                var isHFS = false;
+                if (newValue == "HFS Data Store") {
+                    isHFS = true;
+                    this.model['@odata.type'] = "#OData.DHuS.HFSDataStore";
+                    delete this.model['MySQLConnectionInfo'];
+                    delete this.model['Quotas'];
+                }
+                return isHFS;
+            }
+
+            isGMP(newValue) {
+                var isGMP = false;
+                if (newValue == "GMP Data Store") {
+                    isGMP = true;
+                    this.model['@odata.type'] = "#OData.DHuS.GMPDataStore";
+                    if (!this.model.MySQLConnectionInfo)
+                        this.model.MySQLConnectionInfo = {}
+                    if (!this.model.Quotas)
+                        this.model.Quotas = {};
+                    if (!this.model.Configuration)
+                        this.model.Configuration = {};
+                }
+                return isGMP;
+            }
+
+            isOpenStack(newValue) {
+                var isOpenStack = false;
+                if (newValue == "OpenStack Data Store") {
+                    isOpenStack = true;
+                    this.model['@odata.type'] = "#OData.DHuS.OpenStackDataStore";
+                    delete this.model['MySQLConnectionInfo'];
+                    delete this.model['Quotas'];
+                }
+                return isOpenStack;
+            }
+
+            /**
+             * Generate and send http request to update a data store
+             *
+             * @param {Number} id: data store id
+             * @param {Object} model: data store model reference
+             * @return {null}
+             */
+            updateDS(model) {
+                var self = this;
+                delete model['type'];
+                var data = JSON.stringify(model);
+                self.options.body = data;
+                self.owcApp.httpManager.sendRequest(
+                    'PUT',
+                    self.owcApp.config.baseUrl + self._url + '(\'' + encodeURIComponent(model.Name) + '\')', self.options
+                ).then(function(response) {
+                    if (response.status >= 200 && response.status < 300) {
+                        self.parentPanel.closePanel();
+                        self.owcApp.messageBroker.publish('updateDS');
+                        self.owcApp.toastManager.info(self.i18n("Data Store Updated"));
+                        return true;
+                    } else {
+                        self.owcApp.toastManager.error(self.i18n("Failed to update Data Store"));
+                    }
+                }).catch(function(error) {
+                    self.owcApp.toastManager.error(self.i18n("Failed to update Data Store"));
+                });
+            }
+
+
+
+            /**
+             * Generate and send http request to create a new data store
+             *
+             * @param {Number} id: data store id
+             * @param {Object} model: data store model reference
+             * @return {null}
+             */
+            createDS(model) {
+                var self = this;
+                delete model['type'];
+                var data = JSON.stringify(model);
+                self.options.body = data;
+                self.owcApp.httpManager.sendRequest(
+                    'POST',
+                    self.owcApp.config.baseUrl + self._url, self.options
+                ).then(function(response) {
+                    if (response.status >= 200 && response.status < 300) {
+                        self.parentPanel.closePanel();
+                        self.owcApp.messageBroker.publish('updateDS');
+                        self.owcApp.toastManager.info(self.i18n("Data Store Created"));
+                        return true;
+                    } else {
+                        self.owcApp.toastManager.error(self.i18n("Failed to create Data Store"));
+                    }
+                }).catch(function(error) {
+                    self.owcApp.toastManager.error(self.i18n("Failed to create Data Store"));
+                });
+            }
+
+            /**
+             * save synchronizer event handler
+             *
+             * @return {null}
+             */
+            save() {
+                var self = this;
+                if (self.checkFields()) {
+                    var _model = self.createModel();
+                    if (self.isNew)
+                        self.createDS(_model);
+                    else
+                        self.updateDS(_model);
+                }
+
+            }
+        };
+
+        Polymer(DataStoreEditor);
+
+    })();
+    </script>
+</dom-module>

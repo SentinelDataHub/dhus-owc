@@ -1,0 +1,572 @@
+<!--
+  @license
+
+
+  Data HUb Service (DHuS) - For Space data distribution.
+  Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
+  Copyright (C) 2013,2014,2015,2016 GAEL Systems
+  Copyright (C) 2013,2014,2015,2016 Serco Spa
+
+  This file is part of DHuS software sources.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<!--
+This component is used to allow the users to edit specific fields of their own profile
+
+@demo demo/index.html
+-->
+<dom-module id="edit-profile">
+    <template>
+        <style>
+            :root {
+                --default-primary-color: green;
+            }
+
+            .section-item {
+                padding: 30px;
+                margin: 30px;
+            }
+
+            .remove-section-button {
+                float: right;
+            }
+
+            paper-button {
+                background: #002664;
+                color: white;
+                width: 20%;
+                font-size: 16px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                float: right;
+                margin-right: 20px;
+                padding: 5px 5px;
+            }
+
+            paper-button[toggles][active].colorful {
+                background-color: #002664;
+            }
+
+            paper-button[toggles][active][raised].colorful {
+                background-color: rgba(66, 133, 244, 0.75);
+            }
+
+            paper-button.change {
+                width: 40%;
+            }
+
+            #owcSettingsContainer {
+                @apply(--layout-vertical);
+                height: var(--containerheight, 500px);
+                width: var(--containerwidth, 100%);
+                overflow-y: auto;
+            }
+
+            .buttonContainer {
+                margin-bottom: 0px;
+                height: 60px !important;
+                width: 98% !important;
+            }
+
+            .settingsHeader {
+                float: left;
+                margin-left: 10px;
+            }
+
+            .panelHeader {
+                background: #002664;
+                color: white;
+                padding: 5px 5px;
+                font-size: 16px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .fieldContainer {
+                @apply(--layout-horizontal);
+            }
+
+            .flexchild {
+                @apply(--layout-flex);
+            }
+
+            .flex2child {
+                @apply(--layout-flex-5);
+            }
+
+            .panel-title {
+                position: relative;
+                height: 35px;
+                font-size: 20px;
+                width: calc(100% - 5px);
+                text-align: center;
+                font-weight: bold;
+                top: 3px;
+            }
+        </style>
+        <div id="owcSettingsContainer">
+            <paper-material class="section-item">
+                <div>
+                    <form is="iron-form">
+                        <paper-input auto-validate value="{{model.firstname}}" name="firstname" label="{{i18n('Firstname')}}" required></paper-input>
+                        <paper-input auto-validate value="{{model.lastname}}" name="lastname" label="{{i18n('Lastname')}}" required></paper-input>
+                        <paper-input auto-validate value="{{model.email}}" name="email" label="{{i18n('E-mail')}}" type="email" required></paper-input>
+                        <br/>
+                        <paper-dropdown-menu class="flex2child" label="Select Domain" on-select="_domainChanged">
+                            <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{model.domain}}" required>
+                                <paper-item value="Select Domain" disabled>{{i18n("Select Domain")}}</paper-item>
+                                <paper-item value="Atmosphere">{{i18n("Atmosphere")}}</paper-item>
+                                <paper-item value="Emergency">{{i18n("Emergency")}}</paper-item>
+                                <paper-item value="Marine">{{i18n("Marine")}}</paper-item>
+                                <paper-item value="Land">{{i18n("Land")}}</paper-item>
+                                <paper-item value="Security">{{i18n("Security")}}</paper-item>
+                                <paper-item value="Climate">{{i18n("Climate")}}</paper-item>
+                                <paper-item value="Other">{{i18n("Other")}}</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <br/>
+                        <paper-input hidden$="{{hideDomain}}" value="{{model.subDomain}}" name="other-domain" label="{{i18n('Other Domain')}}" required></paper-input>
+                        <br/>
+                        <paper-dropdown-menu class="flex2child" label="Select Usage" on-select="_usageChanged">
+                            <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{model.usage}}" required>
+                                <paper-item value="Select Usage" disabled>{{i18n("Select Usage")}}</paper-item>
+                                <paper-item value="Research">{{i18n("Research")}}</paper-item>
+                                <paper-item value="Commercial">{{i18n("Commercial")}}</paper-item>
+                                <paper-item value="Education">{{i18n("Education")}}</paper-item>
+                                <paper-item value="Other">{{i18n("Other")}}</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <br/>
+                        <paper-input hidden$="{{hideUsage}}" value="{{model.subUsage}}" name="other-usage" label="{{i18n('Other Usage')}}" required></paper-input>
+                        <br/>
+                        <paper-dropdown-menu class="flex2child" label="Select Country">
+                            <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{model.country}}" required>
+                                <paper-item value="Select Country" disabled>{{i18n("Select Country")}}</paper-item>
+                                <template is="dom-repeat" items="{{countries}}">
+                                    <paper-item value="{{item.name}}">{{item.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <br/>
+                    </form>
+                </div>
+            </paper-material>
+            <div class="buttonContainer">
+                <paper-button raised class="colorful" on-click="save" title="{{i18n('save')}}">{{i18n("save")}}</paper-button>
+            </div>
+            <div class="panel-title">{{i18n("Change Password")}}</div>
+            <paper-material class="section-item">
+                <div>
+                    <form is="iron-form">
+                        <div class="fieldContainer">
+                            <paper-input class="flex2child" type="password" value="{{oldpassword}}" label="Old Password"></paper-input>
+                            <div class="flexchild"></div>
+                            <div class="flex2child"></div>
+                        </div>
+                        <div class="fieldContainer">
+                            <paper-input class="flex2child" type="password" value="{{password}}" label="Password" minlength="8" invalid="{{isPasswordEmpty}}"
+                                error-message="Password too short. Minimum 8 characters" required on-change="checkPassword"></paper-input>
+                            <div class="flexchild"></div>
+                            <paper-input class="flex2child" type="password" value="{{confirmpassword}}" label="Confirm Password" required error-message="Password doesn't match"
+                                invalid="{{isPasswordInvalid}}" on-change="checkConfirmPassword"></paper-input>
+                        </div>
+                    </form>
+                </div>
+            </paper-material>
+            <div class="buttonContainer">
+                <paper-button raised class="colorful change" on-click="changePassword" title="{{i18n('change password')}}">{{i18n("change password")}}</paper-button>
+            </div>
+        </div>
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            class EditProfile {
+
+                /* --- POLYMER LIFECYCLE METHODS --- */
+
+                /**
+                 * BeforeRegister method Polymer calls before creating the element.
+                 * This method is where you shoud define the is property (element's name) and
+                 * properties  object.
+                 *
+                 * @return {null}
+                 */
+                beforeRegister() {
+                    this.is = 'edit-profile';
+                    this.owcApp = document.querySelector('#owc-app');
+                    this.editUserUrl = "/api/stub/users/0";
+                    this.countriesUrl = "/api/stub/countries";
+
+                    this.properties = {
+
+                        /**
+                         * User data model property
+                         *
+                         * @type {Object}
+                         */
+                        model: {
+                            type: Object,
+                            value: {},
+                            notify: true
+                        },
+
+                        hideDomain: {
+                            type: Boolean,
+                            value: true
+                        },
+
+                        hideUsage: {
+                            type: Boolean,
+                            value: true
+
+                        },
+
+                        password: {
+                            type: String,
+                            value: "",
+                            notify: true
+                        },
+
+                        oldpassword: {
+                            type: String,
+                            value: "",
+                            notify: true
+                        },
+
+                        confirmpassword: {
+                            type: String,
+                            value: "",
+                            notify: true
+                        }
+                    }
+                }
+
+                /**
+                 *  Called after the element is attached to the document.
+                 *  Can be called multiple times during the lifetime of an element.
+                 *  The first 'attached' callback is guaranteed not to fire until after 'ready'
+                 *
+                 * @return {null}
+                 */
+                attached() {
+                    var self = this;
+                    this.loadCountries();
+                    this.hideDomain = !(this.model.domain == "Other");
+                    this.hideUsage = !(this.model.usage == "Other");
+                    var event = document.createEvent('Event');
+                    event.initEvent('resize', true, true);
+                    document.dispatchEvent(event);
+                    window.addEventListener("resize", function () {
+                        self.resize();
+                    });
+                }
+
+                /**
+                 *  This method is used to force component resize. This allows the panel to fit well to screen size and to manage screen resizing or mobile device
+                 *
+                 */
+                resize() {
+                    var self = this;
+                    self.customStyle['--containerheight'] = parseInt(self.parentPanel.getSize().height) + "px";
+                    self.updateStyles();
+                    self.customStyle['--containerwidth'] = parseInt(self.parentPanel.getSize().width) + "px";
+                    self.updateStyles();
+
+                }
+
+                /* observers */
+                _domainChanged() {
+                    this.hideDomain = !(this.model.domain == "Other");
+                    this.set('this.hideDomain', this.hideDomain);
+                    this.notifyPath('this.hideDomain', this.hideDomain);
+                    if (this.model.domain != "Other") {
+                        this.model.subDomain = "";
+                        this.set('this.model.subDomain', "");
+                        this.notifyPath('this.model.subDomain', "");
+                    }
+                }
+
+                /* observers */
+                _usageChanged() {
+                    this.hideUsage = !(this.model.usage == "Other");
+                    this.set('this.hideUsage', this.hideUsage);
+                    this.notifyPath('this.hideUsage', this.hideUsage);
+                    //console.log('this.hideUsage', this.hideUsage);
+                    if (this.model.usage != "Other") {
+                        this.model.subUsage = "";
+                        this.set('this.model.subUsage', "");
+                        this.notifyPath('this.model.subUsage', "");
+                    }
+                }
+
+                /**
+                 * This method is used to retrieve countries list from dhus server
+                 *
+                 * @return {null}
+                 */
+                loadCountries() {
+                    var self = this;
+                    return this.owcApp.httpManager.sendRequest(
+                        'GET',
+                        self.owcApp.config.baseUrl + "/api/stub/countries"
+                    ).then(function (response) {
+                        self.countries = response.data;
+                    });
+                }
+
+                /**
+                 * This method is used to check if required fields are not empty
+                 *
+                 * @return {null}
+                 */
+                basicFieldValidation(item) {
+                    return item != undefined && item != '';
+                }
+
+
+
+
+
+                /**
+                 * This method is used to validate user email with proper regular expression
+                 *
+                 * @return {Boolean} true if email is valid, false otherwise
+                 */
+                validateEmail(email) {
+                    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    return re.test(email);
+                }
+
+                /**
+                 * This method is used to validate user email
+                 *
+                 * @return {null}
+                 */
+                emailValidation() {
+                    return this.basicFieldValidation(this.model.email) && this.validateEmail(this.model.email)
+                }
+
+                /**
+                 * This method is used to validate user firstname
+                 *
+                 * @return {null}
+                 */
+                firstnameValidation() {
+                    return this.basicFieldValidation(this.model.firstname);
+                }
+
+                /**
+                 * This method is used to validate user lastname
+                 *
+                 * @return {null}
+                 */
+                lastnameValidation() {
+                    return this.basicFieldValidation(this.model.lastname);
+                }
+
+                /**
+                 * This method is used to validate user domain
+                 *
+                 * @return {null}
+                 */
+                domainValidation() {
+                    if (this.model.domain == "Other" && (!this.model.subDomain || this.model.subDomain == ''))
+                        return false;
+                    return this.basicFieldValidation(this.model.domain);
+                }
+
+                /**
+                 * This method is used to validate user usage
+                 *
+                 * @return {null}
+                 */
+                usageValidation() {
+                    if (this.model.usage == "Other" && (!this.model.subUsage || this.model.subUsage == ''))
+                        return false;
+                    return this.basicFieldValidation(this.model.usage);
+                }
+
+                /**
+                 * This method is used to validate user country
+                 *
+                 * @return {null}
+                 */
+                countryValidation() {
+                    return this.basicFieldValidation(this.model.country);
+                }
+                /**
+                 * This method is used to validate user properties
+                 *
+                 * @return {null}
+                 */
+                validateFields() {
+                    return this.emailValidation() &&
+                        this.firstnameValidation() &&
+                        this.lastnameValidation() &&
+                        this.domainValidation() &&
+                        this.usageValidation() &&
+                        this.countryValidation()
+                }
+
+                /**
+                 * This method is used to save user settings
+                 *
+                 * @return {null}
+                 */
+                save() {
+                    var self = this;
+
+                    if (!this.validateFields()) {
+                        self.owcApp.toastManager.warn(self.i18n("Data not valid, updating the user"));
+                        return;
+                    }
+                    delete this.model["password"];
+                    var options = {
+                        body: JSON.stringify({
+                            user: this.model,
+                            pm: {}
+                        }),
+                        headers: [{
+                            name: "Accept",
+                            value: "application/json"
+                        }, {
+                            name: "Content-Type",
+                            value: "application/json"
+                        }]
+                    };
+
+                    return this.owcApp.httpManager.sendRequest(
+                        'PUT',
+                        self.owcApp.config.baseUrl + self.editUserUrl,
+                        options
+                    ).then(
+                        function (response) {
+                            self.owcApp.messageBroker.publish('updateUsersList');
+                            setTimeout(function () {
+                                self.owcApp.toastManager.info(self.i18n("User updated with success"));
+                            }, 500);
+
+                        },
+                        function () {
+                            self.owcApp.toastManager.warn(self.i18n("Failed user update"));
+                        });
+
+                }
+
+                /**
+                 * This method is used to check if password fields added by user is empty or shorter than 8 characters.
+                 *
+                 * @return {boolean}: true if field is filled, false otherwise
+                 */
+                checkPassword() {
+
+                    var check = true;
+                    if (!this.password || this.password.trim() == '' || this.password.length < 8) {
+                        this.isPasswordEmpty = true;
+                        check = false;
+                    } else {
+                        this.isPasswordEmpty = false;
+                    }
+                    this.checkFields = this.checkFields && check;
+                };
+
+                /**
+                 * This method is used to check if passwords fields added by user match.
+                 *
+                 * @return {boolean}: true if password and confirmation password fields match, false otherwise
+                 */
+                checkConfirmPassword() {
+                    var check = true;
+                    if (this.confirmpassword && this.confirmpassword.trim().length > 0 && this.password.localeCompare(this.confirmpassword) == 0) {
+                        this.isPasswordInvalid = false;
+                    } else {
+                        this.isPasswordInvalid = true;
+                        check = false;
+                    }
+                    this.checkFields = this.checkFields && check;
+                }
+
+                /**
+                 * This method is used to validate all registration fields.
+                 *
+                 */
+                validatePasswordFields() {
+                    this.checkFields = true;
+                    this.checkPassword();
+                    this.checkConfirmPassword();
+                    return this.checkFields;
+                };
+
+                /**
+                 * This method is used to change user password
+                 *
+                 * @return {null}
+                 */
+                changePassword() {
+                    var self = this;
+
+                    if (!this.validatePasswordFields()) {
+                        self.owcApp.toastManager.warn(self.i18n("Data not valid, updating the user"));
+                        return;
+                    }
+
+                    var options = {
+                        body: JSON.stringify({
+                            user: {
+                                password: this.password
+                            },
+                            pm: {
+                                oldPassword: this.oldpassword,
+                                confirmPassword: this.confirmpassword
+                            }
+                        }),
+                        headers: [{
+                            name: "Accept",
+                            value: "application/json"
+                        }, {
+                            name: "Content-Type",
+                            value: "application/json"
+                        }]
+                    };
+
+                    return this.owcApp.httpManager.sendRequest(
+                        'PUT',
+                        self.owcApp.config.baseUrl + self.editUserUrl,
+                        options
+                    ).then(
+                        function (response) {
+                            self.owcApp.messageBroker.publish('updateUsersList');
+                            setTimeout(function () {
+                                self.owcApp.toastManager.info(self.i18n("User Password updated with success"));
+                            }, 500);
+
+                        },
+                        function () {
+                            self.owcApp.toastManager.warn(self.i18n("User password update failed"));
+                        });
+
+                }
+            };
+
+            Polymer(EditProfile);
+
+        })();
+    </script>
+</dom-module>

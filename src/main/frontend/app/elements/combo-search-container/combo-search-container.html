@@ -141,7 +141,7 @@
                     </div>
                 </div>
                 <div id="list-container-main-container">
-                    <owc-list id="list"></owc-list>
+                    <owc-list id="list" class$="{{computeCssSelector()}}"></owc-list>
                     <list-coder id="list-coder"></list-coder>
                     <wms-coder id="wms-coder"></wms-coder>
                     <owc-cart-manager id="owc-cart-manager"></owc-cart-manager>
@@ -176,6 +176,7 @@
             beforeRegister() {
                 this.is = 'combo-search-container';
                 this.owcApp = document.querySelector('#owc-app');
+                this.target;
                 /* --- CLASS PROPERTIES --- */
 
                 this.properties = {
@@ -280,9 +281,9 @@
                         value: null
                     },
                     /**
-                     * Number of products in one page
+                     * check if the product list is hidden or shown in the combo container
                      *
-                     * @type {Number}
+                     * @type {Boolean}
                      */
                     listHidden: {
                         type: Boolean,
@@ -292,7 +293,17 @@
                     isExternal: {
                         type: Boolean,
                         value: false
-                    }
+                    },
+
+                    /**
+                     * check if the map is hidden or shown in the combo container
+                     *
+                     * @type {Boolean}
+                     */
+                    mapHidden: {
+                        type: Boolean,
+                        value: false
+                    },
 
                 };
             }
@@ -320,11 +331,15 @@
                 this.pageSize = pageSize;
             }
 
+            created() {
+                this.target = this.owcApp.utils.generateUUID();
+            }
+
             attached() {
                 $(window).trigger('resize');
 
                 var self = this,
-                    target = self.owcApp.utils.generateUUID(),
+                    target = self.target,
                     owcsearch = Polymer.dom(self.root).querySelector('#search-component'),
                     owcquery = Polymer.dom(self.root).querySelector('#owc-query'),
                     list = Polymer.dom(self.root).querySelector('#list'),
@@ -369,14 +384,15 @@
                 datasource.setListContainer(this); // the combo is the list container?
                 datasource.setOwcQuery(owcquery);
                 datasource.setGenericModel(genericModel);
-                //var owcMap = Polymer.dom(self.root).querySelector('#owc-map');
+
                 owcsearch.setOwcMap(self.owcMap);
                 self.owcMap.init();
                 self.owcMap.setGenericModel(genericModel);
                 self.owcMap.setOwcQuery(owcquery);
                 self.owcMap.setDelegate(datasource);
-                self.owcMap.setMap();
+                self.owcMap.setMap(target);
                 self.owcMap.setTarget(target);
+                self.owcMap.setCombo(self);
                 this.query = owcquery.text;
                 self.toggleList();
                 if (self.isExternal) {
@@ -415,7 +431,7 @@
                 this.$.showMap.removeAttribute("hidden");
                 this.$.hideMap.setAttribute("hidden", "true");
                 this.parentPanel.style.width = parseInt((this.parentPanel.getSize().width) - (this.mapWidth - 10)) + "px";
-
+                this.mapHidden = true;
             }
 
             /**
@@ -430,6 +446,7 @@
                 this.$.showMap.setAttribute("hidden", "true");
                 this.parentPanel.style.width = parseInt((this.parentPanel.getSize().width) + (this.mapWidth)) + 20 + "px";
                 this.resizeMap();
+                this.mapHidden = false;
             }
 
             /**
@@ -552,6 +569,12 @@
 
             setIsExternal(isExternal) {
                 this.isExternal = isExternal;
+            }
+
+            
+            computeCssSelector() {
+                return "_" + this.target;
+
             }
 
         };

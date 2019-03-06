@@ -1,0 +1,151 @@
+<!--
+  @license
+
+
+  Data HUb Service (DHuS) - For Space data distribution.
+  Copyright (C) 2013,2014,2015,2016 European Space Agency (ESA)
+  Copyright (C) 2013,2014,2015,2016 GAEL Systems
+  Copyright (C) 2013,2014,2015,2016 Serco Spa
+
+  This file is part of DHuS software sources.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!--
+
+@demo demo/index.html
+-->
+
+<dom-module id="collection-list">
+<template>
+
+    <iron-list id="ironlist" items="{{collectionModel}}" as="collection" style="width: 100%!important">
+        <template>
+            <collection-item parent="{{that}}" model="{{collection}}"></collection-item>
+        </template>
+    </iron-list>
+</template>
+
+<script>
+    (function() {
+       'use strict';
+       class CollectionList {
+
+                                            /* --- POLYMER LIFECYCLE METHODS --- */
+
+            /**
+             * BeforeRegister method Polymer calls before creating the element.
+             * This method is where you shoud define the is property (element's name) and
+             * properties  object.
+             *
+             * @return {null}
+             */
+           beforeRegister() {
+               this.is = 'collection-list';
+               this._url = "/api/stub/admin/collections";
+
+               this._requestHeaders = {
+                   'Content-Type': 'application/atom+xml',
+                   'Accept': 'application/json'
+               };
+
+               this.options = {
+                   headers: [{
+                       name: "Accept",
+                       value: "application/json"
+                   }]
+               };
+
+               this.owcApp = document.querySelector('#owc-app');
+
+           }
+
+           attached() {
+               var self = this;
+               self.request().then(function(response) {
+                   self.synchModel = response;
+
+                   self.set('collectionModel', null);
+                   self.notifyPath('collectionModel', null);
+                   self.set('collectionModel', response);
+                   self.notifyPath('collectionModel', response);
+
+
+                   var event = document.createEvent('Event');
+                   event.initEvent('resize', true, true);
+                   document.dispatchEvent(event);
+
+               });
+
+               self.owcApp.messageBroker.subscribe('updateCollection',
+                   function() {
+                     self.request().then(function(response) {
+                         self.synchModel = response;
+
+                         self.set('collectionModel', null);
+                         self.notifyPath('collectionModel', null);
+                         self.set('collectionModel', response);
+                         self.notifyPath('collectionModel', response);
+
+
+                         var event = document.createEvent('Event');
+                         event.initEvent('resize', true, true);
+                         document.dispatchEvent(event);
+
+                     });
+                   });
+           }
+
+
+           /**
+            * Create and send http request to retrieve the collection list
+            *
+            * @return {null}
+            */
+           request() {
+
+               var self = this;
+
+               return self.owcApp.httpManager.sendRequest(
+                   'GET',
+                   self.owcApp.config.baseUrl + self._url , self.options
+               ).then(function(response) {
+                   if (response.status == 200) {
+                       var collectionModel = response.data;
+                       //console.warn("request response");
+                       //console.log("response: ", response);
+                       for (var i = 0, len = collectionModel.length; i < len; i++) {
+
+                       }
+                       return collectionModel;
+                   } else
+                       return new Promise(function(resolve, reject) {
+                       reject("model_empty");
+                   });
+               });
+           }
+
+       };
+
+      Polymer(CollectionList);
+
+    })();
+  </script>
+
+</dom-module>

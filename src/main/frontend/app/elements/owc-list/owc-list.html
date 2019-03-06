@@ -93,7 +93,7 @@ This component, at present, is used to show:
             <template is="dom-if" if="{{default}}">
                 <iron-list id="ironlist" class="owclist" items="{{listmodel}}" as="product" style="width: 100%!important" hidden="{{!visibleList}}">
                     <template>
-                        <button-list-item parent="{{that}}" iscart="{{isCart}}" target="{{target}}" cart="{{cartIds}}" cartmngr="{{cartManager}}" model="{{product}}" class="owc-list-item"></button-list-item>
+                        <button-list-item parent="{{that}}" iscart="{{isCart}}" iscalendar="{{isCalendar}}" target="{{target}}" cart="{{cartIds}}" cartmngr="{{cartManager}}" index="{{index}}" model="{{product}}" class="owc-list-item"></button-list-item>
                     </template>
                 </iron-list>
             </template>
@@ -419,6 +419,18 @@ This component, at present, is used to show:
                         notify: true,
                         readOnly: false
                     },
+
+                    /**
+                     * Internal property, If it is true, <i>owc-list</i> component is used to show list of products calendar details
+                     * If it is false, <i>owc-list</i> component is <b>NOT</b> used to show list of products calendar details
+                     *
+                     * @private
+                     * @type {Boolean}
+                     */
+                    isCalendar: {
+                        type: Boolean,
+                        value: false
+                    },
                 };
 
                 this.that = this;
@@ -433,7 +445,7 @@ This component, at present, is used to show:
              * @private
              * @param {Object} model: object containg list data model
              */
-            _setListProperties(model) {
+            _setListProperties(model) {                
                 var self = this;
                 self.set('listmodel', null);
                 self.notifyPath('listmodel', null);
@@ -447,6 +459,7 @@ This component, at present, is used to show:
 
             attached() {
                 var self = this;
+                var _count = 0;
                 if (self.cartManager) {
                     self.cartManager.getCartIds().then(function(cartIdsModel) {
                         self.cartIds = cartIdsModel;
@@ -454,12 +467,21 @@ This component, at present, is used to show:
                         self.notifyPath('self.cartIds', self.cartIds);
                     });
                 }
+
+                self.owcApp.messageBroker.subscribe('reloadList',
+                  function(){
+                    //console.warn("reloadList()");
+                    //console.log("self.get('datasource'): ", self.get('datasource'));
+                    self.get('datasource').loadDataFromServer();
+
+                  }
+                );
+                
                 if (self.genericModel != null) {
                     self.loadingNewPage = false;
                     self.owcApp.messageBroker.subscribe('setNewModel',
 
                         function() {
-
                             function clone(obj) {
                                 if (null == obj || "object" != typeof obj) return obj;
                                 var copy = obj.constructor();
@@ -516,7 +538,7 @@ This component, at present, is used to show:
 
                                     });
 
-                                } else {
+                                } else {                                    
                                     self._setListProperties(specificModel);
 
                                 }
@@ -543,13 +565,16 @@ This component, at present, is used to show:
 
                                 }
                                 self.combo && self.combo.setProductsRange(self.genericModel.startIndex, self.genericModel.endIndex);
-                                if (self.combo && self.listmodel && self.listmodel.length)
-                                    self.combo.setPageSize(self.genericModel.model.length);
+                                if (self.combo && self.listmodel && self.listmodel.length) {
+                                    self.combo.setPageSize(self.genericModel.model.length);                                    
+                                }
+                                if(self.datasource && self.datasource._listContainer && self.datasource._listContainer.count) {
+                                    _count =  self.datasource._listContainer.count;
+                                }
 
 
                                 $(Polymer.dom(self).parentNode).scrollTop(updatedPosition);
-
-                                self.readyToLoadNewPage = self.properties.paginationEnabled && true;
+                                self.readyToLoadNewPage = self.properties.paginationEnabled && true && (self.genericModel.endIndex < _count);
                                 //setTimeout(function() {
                                 var toReload = (self.container.offsetHeight > Polymer.dom(self.root).querySelector('.owclist').offsetHeight);
                                 if (toReload) {
@@ -607,7 +632,7 @@ This component, at present, is used to show:
                     //throttledScroll();
                 }
 
-            }
+            }            
 
             /**
              * Public method to update <b>listmodel</b> property.

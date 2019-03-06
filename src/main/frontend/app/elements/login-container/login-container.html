@@ -28,6 +28,8 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <!--
 `login-container` component is used to provide different functionalities, depending on user's authentication status.
 If user is not yet authenticated to server, `login-container` provides:
@@ -48,9 +50,9 @@ If user is already authenticated to server, `login-container` allows user to:
         <!-- view code here -->
         <style is="custom-style">
         .login-container {
-            width: 98%;
+            margin: 0px;
         }
-        
+
         #login-component {
             @apply(--layout-vertical);
             height: var(--loginheight, 500px);
@@ -58,7 +60,7 @@ If user is already authenticated to server, `login-container` allows user to:
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         #user-component {
             @apply(--layout-vertical);
             height: var(--loginheight, 500px);
@@ -66,18 +68,17 @@ If user is already authenticated to server, `login-container` allows user to:
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         #wronglogin {
             width: 100%;
             text-align: center;
             font-weight: bold;
-            margin: 20px 0px;
             color: rgb(190, 0, 0);
             word-wrap: break-word;
             white-space: normal;
             font-size: 18px;
         }
-        
+
         paper-button {
             background: #002664;
             color: white;
@@ -87,42 +88,109 @@ If user is already authenticated to server, `login-container` allows user to:
             font-weight: bold;
             margin-top: 5px;
         }
-        
+
         paper-button[toggles][active].colorful {
             background-color: #002664;
         }
-        
+
         paper-button[toggles][active][raised].colorful {
             background-color: rgba(66, 133, 244, 0.75);
         }
-        
+
         #signupButton {
             background: rgb(173, 173, 173) !important;
         }
-        
+
         paper-button[toggles][active][raised].signup {
             background: rgba(173, 173, 173, 0.75) !important;
         }
-        
+
         .element-container {
             margin-top: 10px;
         }
+
+        .roles {
+            display: flex;
+        }
+
+        .user-badge {
+            color: #373B50;
+            margin-right: 3px;
+            font-size: 16px;
+            margin-top: 3px;
+        }
+
+        .user-h4 {
+            color: #373B50;
+            font-size: 18px;
+            text-align: left;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .user-h5 {
+            color: #373B50;
+            font-size: 14px;
+            text-align: left;
+            font-weight: normal;
+            margin-bottom: 15px;
+        }
+
+        .user-button {
+            margin-top: 20px;
+        }
+
+        .forgotPassword{
+          text-align: center;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          font-weight: bold;
+          font-size: 14px;
+        }
+
+        .forgotPassword:hover{
+          cursor: pointer;
+          text-decoration: underline;
+        }
+
         </style>
         <div id="login-component" hidden$="{{isLogged()}}">
-            <paper-input label="Username" value="{{username}}"></paper-input>
-            <paper-input type="password" label="Password" value="{{password}}"></paper-input>
-            <paper-button raised class="colorful" id="loginButton" on-click="login" title="Login">Login</paper-button>
+            <paper-input label="{{i18n('Username')}}" value="{{username}}"></paper-input>
+            <paper-input type="password" label="{{i18n('Password')}}" value="{{password}}"></paper-input>
             <div id="wronglogin"></div>
-            <paper-button raised class="signup" id="signupButton" on-click="goToSignup" title="Signup">Signup</paper-button>
+            <paper-button raised class="user-button colorful" id="loginButton" on-click="login" title="Login">{{i18n('Login')}}</paper-button>
+
+            <paper-button raised class="user-button signup" id="signupButton" on-click="goToSignup" title="Signup" hidden$="{{!show_signup}}">{{i18n('Signup')}}</paper-button>
+
+            <div class="forgotPassword" hidden$="{{!show_forgotpwd}}"  on-click="goToForgotPwd">{{i18n('Forgot password?')}}</div>
         </div>
         <div id="user-component" hidden$="{{!isLogged()}}">
-            <paper-button title="Logout" raised class="colorful" on-click="logout">Logout</paper-button>
+            <h4 class="user-h4">{{model.username}}</h4>
+            <h5 class="user-h5">{{model.email}}</h5>
+            <div class="user-badge">{{i18n('Allowed functions')}}</div>
+            <div class="roles">
+                <iron-icon class="user-badge" icon="search"         title="{{i18n('Search')}}"          style="display:none;" id="role_SEARCH"></iron-icon>
+                <iron-icon class="user-badge" icon="file-download"  title="{{i18n('Download')}}"        style="display:none;" id="role_DOWNLOAD"></iron-icon>
+                <iron-icon class="user-badge" icon="file-upload"    title="{{i18n('Upload')}}"          style="display:none;" id="role_UPLOAD"></iron-icon>
+                <iron-icon class="user-badge" icon="social:people"  title="{{i18n('User Manager')}}"    style="display:none;" id="role_USER_MANAGER"></iron-icon>
+                <iron-icon class="user-badge" icon="archive"        title="{{i18n('Archive Manager')}}" style="display:none;" id="role_ARCHIVE_MANAGER"></iron-icon>
+                <iron-icon class="user-badge" icon="cloud"          title="{{i18n('Data Manager')}}"    style="display:none;" id="role_DATA_MANAGER"></iron-icon>
+                <iron-icon class="user-badge" icon="dns"            title="{{i18n('System Manager')}}"  style="display:none;" id="role_SYSTEM_MANAGER"></iron-icon>
+                <iron-icon class="user-badge" icon="date-range"     title="{{i18n('Event Manager')}}"   style="display:none;" id="role_EVENT_MANAGER"></iron-icon>
+            </div>
             <br>
             <hr>
             <br>
-            <paper-button title="Cart" raised class="colorful" on-click="showCart">Cart</paper-button>
+            <paper-button title="Cart" raised class="colorful" on-click="showCart">{{i18n('Cart')}}</paper-button>
             <br>
             <paper-button raised class="colorful" on-click="savedSearches" title="{{i18n('Saved Searches')}}">{{i18n("Saved Searches")}}</paper-button>
+            <br>
+            <paper-button title="Edit Profile" raised class="colorful" on-click="editProfile" hidden$="{{!enable_editprofile}}">{{i18n("Edit Profile")}}</paper-button>
+            <br>
+            <hr>
+            <br>
+            <paper-button title="Logout" raised class="colorful" on-click="logout">{{i18n('Logout')}}</paper-button>
+            <br>
         </div>
         <iron-a11y-keys id="keys" keys="enter" target="[[target]]" on-keys-pressed="login">
         </iron-a11y-keys>
@@ -199,7 +267,74 @@ If user is already authenticated to server, `login-container` allows user to:
                         type: String,
                         value: "",
                         notify: true
-                    }
+                    },
+
+                    /**
+                     * Property containing user data model
+                     *
+                     * @type {Object}
+                     */
+                    model: {
+                        type: Object,
+                        value: {},
+                        notify: true
+                    },
+
+                    /**
+                     * Property used to check if signup button is to be shown
+                     *
+                     * @type {Boolean}
+                     */
+                    show_signup: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+
+                    /**
+                     * Property used to check if "edit profile" button is to be shown
+                     *
+                     * @type {Boolean}
+                     */
+                    show_editprofile: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
+
+                    /**
+                     * Property used to check if logged-in user is "root" user
+                     *
+                     * @type {Boolean}
+                     */
+                    isRootUser: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+
+                    /**
+                     * Property used to compute "edit profile" button visibility
+                     *
+                     * @type {Boolean}
+                     */
+                    enable_editprofile: {
+                        type: Boolean,
+                        value: true,
+                        notify: true,
+                        computed: '_computeEnableProfile(show_editprofile,isRootUser)',
+                    },
+
+                    /**
+                     * Property used to check if "forgot password" link is to be shown
+                     *
+                     * @type {Boolean}
+                     */
+                    show_forgotpwd: {
+                        type: Boolean,
+                        value: true,
+                        notify: true
+                    },
 
                 };
             }
@@ -228,17 +363,28 @@ If user is already authenticated to server, `login-container` allows user to:
                 var event = document.createEvent('Event');
                 event.initEvent('resize', true, true);
                 document.dispatchEvent(event);
-
+                self.model = self.owcApp.userManager.getUserModel();
+                self.set('model', self.model);
+                self.notifyPath('model', self.model);
+                if (self.model)
+                    self.getInfoByRole(self.model.roles);
+                if (self.owcApp.appconfig) {
+                       self.show_signup = self.owcApp.appconfig.show_signup;
+                       self.show_forgotpwd = self.owcApp.appconfig.show_forgotpwd;
+                       self.show_editprofile = self.owcApp.appconfig.show_editprofile;
+                       self.isRootUser =
+                        (self.model && self.model.username && self.model.username.localeCompare(self.owcApp.appconfig.superuser) == 0) ? true : false;
+                }
                 window.addEventListener("resize", function() {
                     self.resize();
                 });
+
 
                 self.owcApp.httpManager.sendRequest('GET', self.owcApp.config.baseUrl + '/api/owc/settings/menu').then(function(response) {
                     setTimeout(function() {
                         self.config.sections = (response.status == 200) ? response.data.sections : [];
                         self.set('config.sections', self.config.sections);
                         self.notifyPath('config.sections', self.config.sections);
-
                     }, 0);
                 });
 
@@ -250,9 +396,9 @@ If user is already authenticated to server, `login-container` allows user to:
              * @return {null}
              */
             closaAllLoginContainers() {
-              for (var i = 0; i < this.navigationManager._navigationStack.length; i++)
-                  if( this.navigationManager._navigationStack[i].componentName == 'login-container')
-                    return;
+                for (var i = 0; i < this.navigationManager._navigationStack.length; i++)
+                    if (this.navigationManager._navigationStack[i].componentName == 'login-container')
+                        return;
             }
 
             /**
@@ -285,7 +431,7 @@ If user is already authenticated to server, `login-container` allows user to:
                             self.owcApp.authenticationManager.logged = true;
                             self.owcApp.authenticationManager.username = self.username;
                             self.owcApp.authenticationManager.password = self.password;
-                            self.owcApp.authenticationManager.basicAuthentication = "Basic " + window.btoa(self.username + ':' + self.password);                            
+                            self.owcApp.authenticationManager.basicAuthentication = "Basic " + window.btoa(self.username + ':' + self.password);
                             self.owcApp.userManager.getUserInfo(self.username).then(function(response) {
                                 if (response.status == 200) {
 
@@ -302,7 +448,7 @@ If user is already authenticated to server, `login-container` allows user to:
                                 } else {
                                     $('#wronglogin').html('The username and password you entered don\'t match.');
                                 }
-                            });                            
+                            });
                         } else {
                             $('#wronglogin').html('The username and password you entered don\'t match.');
                         }
@@ -382,6 +528,55 @@ If user is already authenticated to server, `login-container` allows user to:
                 var savedsearchList = document.createElement('savedsearch-list');
                 this.navigationManager.pushComponent(savedsearchList, '500px', 'Saved Search List', false, true, 1);
             }
+
+            /**
+             *   This method is used to get the icons corresponding to the roles available for the logged-in user
+             *
+             */
+            getInfoByRole(roles) {
+                //console.log(roles);
+                var divrole = $('#roles');
+                //console.log(divrole);
+                var role = "";
+                if (roles) {
+                    roles.forEach(function(entry) {
+                        //console.log(entry);
+                        role = "#role_" + entry;
+
+                        $(role).show();
+                    });
+                }
+
+            }
+
+            /**
+             *   This method is used to check if the "edit profile" button si to be shown or not
+             *
+             */
+            _computeEnableProfile(show_editprofile,isRootUser) {
+                return show_editprofile && !isRootUser;
+            }
+
+            /**
+             *   This method is used to open the edit profile panel, used to allow the users to edit their own profile
+             *
+             */
+            editProfile() {
+                var userContainer = document.createElement('edit-profile');
+                userContainer.model = this.model;
+                this.navigationManager.pushComponent(userContainer, '500px', 'User '+this.model.username+' profile', false, true, 1);
+            }
+
+            /**
+             *  This method is used to show forgot password panel for users who need to retrieve their DHuS credentials
+             *
+             * @return {null}
+             */
+            goToForgotPwd() {
+                var forgotpwdContainer = document.createElement('forgot-password');
+                this.navigationManager.pushComponent(forgotpwdContainer, '500px', 'Forgot Password', false, true, 1);
+            }
+
         };
 
         Polymer(LoginContainer);

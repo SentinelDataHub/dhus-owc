@@ -252,7 +252,9 @@ ComponentsCoder is devoted to take from Generic Model the fields useful for comp
                     for (var i = 0; i < genericModel.length; i++) {
                         var product_styles = self.getStyleFromProduct(genericModel[i]);
                         genericModel[i].default_style = product_styles.default_style;
-                        genericModel[i].footprint = this.createJTSMultipolygon(genericModel[i].footprintGml);
+                        genericModel[i].selected_style = product_styles.selected_style;
+                        genericModel[i].highlighted_style = product_styles.highlighted_style;
+                        genericModel[i].footprint = (genericModel[i].footprintWkt) ?  genericModel[i].footprintWkt : this.createJTSMultipolygon(genericModel[i].footprintGml);
 
                     }
                 }

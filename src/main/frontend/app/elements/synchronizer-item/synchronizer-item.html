@@ -116,25 +116,25 @@ synchronizer item
                 </div>
                 <div class="owc-list-item-attributes-container">
                     <div class="attribute owc-list-item-attribute">
-                        Service Url: {{model.ServiceUrl}}
+                        {{i18n('Service Url')}}: {{model.ServiceUrl}}
                     </div>
                     <div class="attribute owc-list-item-attribute">
-                        Copy Product: {{model.CopyProduct}}
+                        {{i18n('Copy Product')}}: {{model.CopyProduct}}
                     </div>
                     <div class="attribute owc-list-item-attribute">
-                        Schedule: {{model.Schedule}}
+                        {{i18n('Schedule')}}: {{model.Schedule}}
                     </div>
                 </div>
                 <br>
                 <div class="title owc-list-item-footer" title="{{model.LastIngestionDate}}">
-                    <span hidden="{{!model.LastIngestionDate}}" title="{{model.LastIngestionDate}}">Last Ingestion Date:{{model.LastIngestionDate}} - </span>
-                    <span hidden="{{!model.Status}}" title="{{model.Status}}">Synchronizer Status:{{model.Status}}</span>
+                    <span hidden="{{!model.LastIngestionDate}}" title="{{model.LastIngestionDate}}">{{i18n('Last Ingestion Date')}}:{{model.LastIngestionDate}} - </span>
+                    <span hidden="{{!model.Status}}" title="{{model.Status}}">{{i18n('Synchronizer Status')}}:{{model.Status}}</span>
                 </div>
                 <div class="owc-list-item-buttons">
-                    <paper-icon-button icon="av:play-arrow" on-click="startSynch" title="Play Synchronizer"></paper-icon-button>
-                    <paper-icon-button icon="av:stop" on-click="stopSynch" title="Stop Synchronizer"></paper-icon-button>
-                    <paper-icon-button icon="icons:close" on-click="deleteSynch" title="Delete Synchronizer"></paper-icon-button>
-                    <paper-icon-button icon="icons:create" on-click="editSynch" title="Edit Synchronizer"></paper-icon-button>
+                    <paper-icon-button icon="av:play-arrow" on-click="startSynch" title="{{i18n('Play Synchronizer')}}"></paper-icon-button>
+                    <paper-icon-button icon="av:stop" on-click="stopSynch" title="{{i18n('Stop Synchronizer')}}"></paper-icon-button>
+                    <paper-icon-button icon="icons:close" on-click="deleteSynch" title="{{i18n('Delete Synchronizer')}}"></paper-icon-button>
+                    <paper-icon-button icon="icons:create" on-click="editSynch" title="{{i18n('Edit Synchronizer')}}"></paper-icon-button>
                 </div>
             </div>
         </div>
@@ -167,8 +167,8 @@ synchronizer item
                         name: "Content-Type",
                         value: "application/atom+xml"
                     }]
-
                 };
+                
                 this.owcApp = document.querySelector('#owc-app');
                 this.properties = {
 
@@ -269,7 +269,7 @@ synchronizer item
                     "DELETE", self.owcApp.config.baseUrl + self._url + '(' + self.model.Id + 'L)', self.options
                 ).then(function() {
                     self.owcApp.messageBroker.publish('updateSynch');
-                    self.owcApp.toastManager.info("Synchronizer Deleted");
+                    self.owcApp.toastManager.info(self.i18n("Synchronizer Deleted"));
                     return true;
                 });
 
@@ -302,7 +302,7 @@ synchronizer item
              * @return {null}
              */
             stopSynch() {
-              
+
               var self = this;
               var synchEditor = document.createElement('synchronizer-editor');
               var modelStart = {

@@ -75,13 +75,13 @@ Information extracted from <i>generic-model</i> component by means of <i>list-co
              */
             _getIsOnline(id) {
                 var self = this;
-                var url = (this.owcApp.appconfig.odataContentLengthUrl) ? this.owcApp.appconfig.odataContentLengthUrl : "/odata/v1/Products(%27:uuid%27)/ContentLength/$value";
+                var url = "/odata/v1/Products(%27:uuid%27)/$value";
                 return this.owcApp.httpManager.sendRequest(
-                    'GET',
+                    'HEAD',
                     self.owcApp.config.baseUrl + url.replace(':uuid', id)
                 ).then(function(response) {
-                    if (response.status == 200) {
-                        return parseInt(response.data);
+                    if (response.status == 200 && response.xhr) {
+                        return parseInt(response.xhr.getResponseHeader('Content-Length'));
                     } else {
                         return -1
                     }
@@ -156,6 +156,7 @@ Information extracted from <i>generic-model</i> component by means of <i>list-co
                 if (test != null) {
                     for (let i = 0; i < genericModel.length; i++) {
                         test[i].thumb = this.getQuicklook(genericModel[i]);
+                        test[i].selected=false;
                         for (let j = 0; genericModel[i].attributes && j < genericModel[i].attributes.length; j++) {
                             var keys = Object.keys(genericModel[i].attributes[j]);
                             if ((keys[0].toUpperCase() == sensingLabel.toUpperCase()) || (keys[0].toUpperCase() == validityLabel.toUpperCase()) || (keys[0].toUpperCase() == dateLabel.toUpperCase())) {

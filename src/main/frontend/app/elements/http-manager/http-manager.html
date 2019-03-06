@@ -123,14 +123,13 @@ This approach is inspired from Aspect oriented programming.
              *
              * @param {Object} response: contains response body
              * @param {Object} status: contains http response status
-             * @param {Object} headers: contains response headers
+             * @param {Object} xhr: contains the whole HTTP response 
              * @return {Object} JSON object with the following fields:
                                 data: formatted http response body.
                                 status: http response status
-                                headers: http response headers
+                                xhr: the whole HTTP response
              */
-            _processResponse(response, status, headers) {
-
+            _processResponse(response, status, xhr) {
                 var spinner = document.getElementById('request-spinner');
                 this.navigationManager.counter -= 1;
 
@@ -144,7 +143,7 @@ This approach is inspired from Aspect oriented programming.
                 return {
                     data: processedResponse,
                     status: status,
-                    headers: headers
+                    xhr: xhr
                 };
             }
 
@@ -198,7 +197,7 @@ This approach is inspired from Aspect oriented programming.
                     xhr.onload = function() {
 
                         if (xhr.status >= 200 && xhr.status < 300) {
-                            resolve(self._processResponse(xhr.response, xhr.status, xhr.getAllResponseHeaders()));
+                            resolve(self._processResponse(xhr.response, xhr.status, xhr));
                         } else {
                             var spinner = document.getElementById('request-spinner');
                             self.navigationManager.counter -= 1;
@@ -206,10 +205,7 @@ This approach is inspired from Aspect oriented programming.
                             if(self.navigationManager.counter<=0)
                                 spinner.active = false;
 
-                            reject({
-                                status: xhr.status,
-                                statusText: xhr.statusText
-                            });
+                            reject(self._processResponse(xhr.response, xhr.status, xhr));
                         }
                     };
                     xhr.onerror = function() {
@@ -219,10 +215,7 @@ This approach is inspired from Aspect oriented programming.
                         if(self.navigationManager.counter<=0)
                             spinner.active = false;
 
-                        reject({
-                            status: xhr.status,
-                            statusText: xhr.statusText
-                        });
+                        reject(self._processResponse(xhr.response, xhr.status, xhr));
                     };
                     if (options && options.body) {
                         xhr.send(options.body);

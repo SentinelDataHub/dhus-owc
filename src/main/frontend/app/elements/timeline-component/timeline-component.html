@@ -42,51 +42,51 @@ timeline component
             height: 20%;
             margin: 0px;
         }
-        
+
         .fieldContainer {
             @apply(--layout-vertical);
         }
-        
+
         .flexchild {
             @apply(--layout-flex);
         }
-        
+
         .flex2child {
             @apply(--layout-flex-2);
         }
-        
+
         .chart {
             font-family: Arial, sans-serif;
             font-size: 14px!important;
         }
-        
+
         .axis path,
         .axis line {
             fill: none;
             stroke: #000;
             shape-rendering: crispEdges;
         }
-        
+
         .bar {
             fill: #33b5e5;
         }
-        
+
         .bar-failed {
             fill: #CC0000;
         }
-        
+
         .bar-running {
             fill: #669900;
         }
-        
+
         .bar-succeeded {
             fill: #33b5e5;
         }
-        
+
         .bar-killed {
             fill: #ffbb33;
         }
-        
+
         #forkme_banner {
             display: block;
             position: absolute;
@@ -102,7 +102,7 @@ timeline component
             border-bottom-right-radius: 2px;
             text-decoration: none;
         }
-        
+
         #timeline-container {
             font-size: 14px!important;
             height: var(--timeheight, 500px);
@@ -110,7 +110,7 @@ timeline component
             overflow-y: auto;
             overflow-x: auto;
         }
-        
+
         .products-number {
             font-size: 15px;
             text-align: center;
@@ -118,7 +118,7 @@ timeline component
             opacity: 0.95;
             font-weight: bold;
         }
-        
+
         h5 {
             text-align: center;
             -webkit-margin-after: 0em;
@@ -127,7 +127,7 @@ timeline component
         </style>
         <div class="fieldContainer" hidden="{{hide}}">
             <h5>{{i18n('Products ordered by descending sensing date')}}</h5>
-            <div class="products-number">Sensing period: {{startDate}} - {{endDate}}</div>
+            <div class="products-number"><span>{{i18n("Sensing period")}}</span>: {{startDate}} - {{endDate}}</div>
             <div class="flexchild">
                 <div class="products-number">
                     <paper-icon-button icon="chevron-left" on-click="next" disabled="{{disablednext}}" title="{{i18n('click here to see products with older sensing date')}}"></paper-icon-button> display from {{from}} to {{to}} of {{count}} products
@@ -323,8 +323,8 @@ timeline component
 
             /**
              *  Public method used to process model from server and create the proper data for timeline creation
-             * 
-             * @param {Object} model: http response from server 
+             *
+             * @param {Object} model: http response from server
              * @return {Promise}: processed model
              */
             processModel(model) {
@@ -361,7 +361,7 @@ timeline component
 
             }
 
-            /**             
+            /**
              *  Called after the element is attached to the document.
              *  Can be called multiple times during the lifetime of an element.
              *  The first 'attached' callback is guaranteed not to fire until after 'ready'
@@ -381,10 +381,10 @@ timeline component
                 window.taskNames = _.keys(this.owcApp.appconfig.timeline.styles);
             }
 
-            /**             
-             *  This method update the configured list of missions from data model 
+            /**
+             *  This method update the configured list of missions from data model
              *
-             * @param {Object} model: processed model 
+             * @param {Object} model: processed model
              * @return {Object}
              */
             updateTasknameList(model) {
@@ -392,13 +392,13 @@ timeline component
                     if (window.taskNames.indexOf(model[i].taskName) < 0) {
                         window.taskNames.push(model[i].taskName);
                     }
-                }                
+                }
             }
 
-            /**             
+            /**
              *  This method is used to create Timeline d3 object on the basis of information retrieved via OData from DHuS
              *
-             * @param {Object} model: processed model 
+             * @param {Object} model: processed model
              * @return {Promise}: processed model
              */
             createTimeline(timeModel) {
@@ -436,7 +436,7 @@ timeline component
 
             /**
              * Resize method (called when component is attached to DOM)
-             *             
+             *
              * @return {null}
              */
             resize() {
@@ -514,13 +514,13 @@ timeline component
                 tasks.sort(function(a, b) {
                     return a.endDate - b.endDate;
                 });
-                timeDomainEnd = tasks[tasks.length - 1].endDate;                
+                timeDomainEnd = tasks[tasks.length - 1].endDate;
                 tasks.sort(function(a, b) {
                     return a.startDate - b.startDate;
                 });
                 timeDomainStart = tasks[0].startDate;
                 if(timeDomainStart.getTime() === timeDomainEnd.getTime()) {
-                    timeDomainEnd = d3.time.minute.offset(timeDomainEnd, +1);                    
+                    timeDomainEnd = d3.time.minute.offset(timeDomainEnd, +1);
                 }
             }
         };

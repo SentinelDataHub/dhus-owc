@@ -218,8 +218,10 @@ class Map {
             // self.owcMap.container.newQuery = self.query;
             // console.log("self.owcMap.container.newQuery",self.owcMap.container.newQuery);
             //            console.log("MAP self.owcquery", self.owcquery);
-            self.owcquery.setFootprint(self.geoselection);
-            self.datasource.updateQuery();
+            if (self.owcquery)
+                self.owcquery.setFootprint(self.geoselection);
+            if (self.datasource)
+                self.datasource.updateQuery();
             //self.owcquery.footprint = self.geoselection;
             // self.owcMap.updateSearch(self.newQuery.query);
             // var dataSource = document.getElementById("mapdatasource");
@@ -309,6 +311,10 @@ class Map {
         this.map.removeLayer(name);
     }
 
+    setTarget(target) {
+        this.target = target;
+    }
+
     addLayer(param, target) {
         var wmsURL = "";
         var wmsSettings = [];
@@ -316,10 +322,10 @@ class Map {
         if (ls) {
             wmsSettings = JSON.parse(ls);
         } else {
-            if(this.owcApp.appconfig.wms_server_config)
-            wmsSettings = this.owcApp.appconfig.wms_server_config;
+            if (this.owcApp.appconfig.wms_server_config)
+                wmsSettings = this.owcApp.appconfig.wms_server_config;
         }
-        
+
         for (var i = 0; i < wmsSettings.length; i++) {
             var regexp = new RegExp(wmsSettings[i].rule);
             if (regexp.test(param)) {
@@ -327,7 +333,7 @@ class Map {
                 break;
             }
         }
-        
+
         var ll = this.map.getLayer(param + '.SEN3');
         this.target = target;
         if (ll) {
@@ -461,17 +467,7 @@ class Map {
                 var feature = format.readFeature(products[i].footprint);
                 feature.getGeometry().transform(self.config.transformation.source, self.config.transformation.destination);
                 feature.product = products[i];
-                // feature.product.default_style = new ol.style.Style({
-                //     fill: new ol.style.Fill({
-                //         color: [255, 255, 255, 0.4]
-                //     }),
-                //     stroke: new ol.style.Stroke({
-                //         color: [0, 153, 255, 1],
-                //         width: 1
-                //     })
-                // })
-
-
+                
 
                 feature.setStyle(feature.product.default_style);
                 features.push(feature);
@@ -567,9 +563,31 @@ class Map {
 
     setupSelection() {
         var self = this;
+        var selectedFeature;
         self.map.on('click', function(e) {
             self.clearSelection();
-            self.owcquery.setFootprint("");
+            self.clearSelectedFeatures();
+            if (self.owcquery)
+                self.owcquery.setFootprint("");
+            self.setCurrentSelection(null);
+            if (selectedFeature && selectedFeature.product) {
+                selectedFeature.product.selected=false;
+                    self.owcApp.messageBroker.publish('select-product', selectedFeature.product, self.target);
+                selectedFeature.setStyle(selectedFeature.product.default_style);
+            }
+            selectedFeature = self.map.forEachFeatureAtPixel(e.pixel, function(feature, layer) {
+                return feature;
+            });
+            if (selectedFeature && selectedFeature.product) {
+                //selectSingleProduct
+                selectedFeature.product.selected=true;
+                self.owcApp.messageBroker.publish('select-product', selectedFeature.product, self.target);
+                selectedFeature.setStyle(selectedFeature.product.selected_style);
+            } else {
+                
+                self.clearSelectedFeatures();
+                self.owcApp.messageBroker.publish('select-product', null, self.target);
+            }   
         });
     }
 
@@ -589,6 +607,74 @@ class Map {
 
     setActivedSelection(status) {
         this.activedSelection = status;
+    }
+
+    zoomToProduct(model) {
+        var self = this;
+        var features = self.map.getLayers()
+            .item(self.mapLayers.length - 1).getSource()
+            .getFeatures();
+        for (var i = 0; i < features.length; i++) {
+            features[i].setStyle(features[i].product.default_style);
+        }
+
+        var selectedFeature = self.map.getLayers()
+            .item(self.mapLayers.length - 1).getSource()
+            .getFeatures()[_.findIndex(self.map.getLayers()
+                .item(self.mapLayers.length - 1).getSource().getFeatures(),
+                function(element) {
+                    return (model.uuid == element.product.uuid)
+                })];
+        var duration = 800;
+        var start = +new Date();
+        var pan = ol.animation.pan({
+            duration: duration,
+            source: (self.map.getView().getCenter()),
+            start: start
+        });
+
+        var zoom = ol.animation.zoom({
+            duration: duration,
+            resolution: self.map.getView().getResolution(),
+            start: start
+        });
+        self.map.beforeRender(pan, zoom);
+        if (selectedFeature) {
+            selectedFeature.setStyle(selectedFeature.product.selected_style);
+            self.map.getView().fitExtent(selectedFeature.getGeometry().getExtent(), self.map.getSize());
+        }
+    }
+
+    selectFootprint(model) {
+        var self = this;
+        var features = self.map.getLayers()
+            .item(self.mapLayers.length - 1).getSource()
+            .getFeatures();
+        for (var i = 0; i < features.length; i++) {
+            features[i].setStyle(features[i].product.default_style);
+        }
+
+        var selectedFeature = self.map.getLayers()
+            .item(self.mapLayers.length - 1).getSource()
+            .getFeatures()[_.findIndex(self.map.getLayers()
+                .item(self.mapLayers.length - 1).getSource().getFeatures(),
+                function(element) {
+                    return (model.uuid == element.product.uuid)
+                })];
+        
+        if (selectedFeature) {      
+            var style = (model.selected) ? selectedFeature.product.selected_style : selectedFeature.product.default_style;
+            selectedFeature.setStyle(style);            
+        }
+    }
+
+    clearSelectedFeatures() {
+        var features = this.map.getLayers()
+            .item(this.mapLayers.length - 1).getSource()
+            .getFeatures();
+        for (var i = 0; i < features.length; i++) {
+            features[i].setStyle(features[i].product.default_style);
+        }
     }
 
 }
